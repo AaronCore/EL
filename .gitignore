@@ -338,3 +338,15 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/EL.Admin/obj
+/EL.Admin/bin
+/EL.Application/obj
+/EL.Application/bin
+/EL.Common/obj
+/EL.Common/bin
+/EL.Entity/obj
+/EL.Entity/bin
+/EL.EntityFrameworkCore/obj
+/EL.EntityFrameworkCore/bin
+/EL.Repository/obj
+/EL.Repository/bin
