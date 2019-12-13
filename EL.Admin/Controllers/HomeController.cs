@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using EL.Common;
 using EL.Admin.Models;
 using EL.Application.Log;
@@ -12,15 +13,16 @@ namespace EL.Admin.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ILogger _logger;
         private readonly ILogService _logService;
-        public HomeController(ILogService logService)
+        public HomeController(ILogger<HomeController> logger, ILogService logService)
         {
+            _logger = logger;
             _logService = logService;
         }
 
         public IActionResult Index()
         {
-            Logger.Write("123456789");
             return View();
         }
 
