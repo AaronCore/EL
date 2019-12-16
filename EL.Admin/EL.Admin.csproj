@@ -32,5 +32,9 @@
     <ProjectReference Include="..\EL.Repository\EL.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 
 </Project>

@@ -7,8 +7,7 @@
             <h1 class="logo_box" :class="{is_not_nollapse:!isCollapse , is_collapse:isCollapse}" title="vue admin">
                 admin
             </h1>
-            <el-menu ref="menu" :default-active="menuDefaultActive" class="el-menu-vertical-demo" v-on:select="handleSelect"
-                     :collapse="isCollapse" :unique-opened="true">
+            <el-menu ref="menu" :default-active="menuDefaultActive" class="el-menu-vertical-demo" v-on:select="handleSelect" :collapse="isCollapse" :unique-opened="true">
                 <template v-for="item in menuArr">
                     <template v-if="item.show">
                         <el-submenu v-if="hasShowItem(item.children).length > 0" :index="item.key">
@@ -87,17 +86,18 @@
 
         <!-- tabs右键菜单 -->
         <transition name="fade">
-            <ul v-show="tabsPopper.isShow" class="el-dropdown-menu el-popper" id="dropdown-menu-20190222161055" 
+            <ul v-show="tabsPopper.isShow" class="el-dropdown-menu el-popper" id="dropdown-menu-20190222161055"
                 style="transform-origin: center top 0px; z-index: 99999; position: absolute;"
                 :style="{top: tabsPopper.top, left: tabsPopper.left}" x-placement="bottom-end">
                 <li tabindex="-1" class="el-dropdown-menu__item" v-on:click="tabRefresh" style="text-align: center;">
-                    <i class="el-icon-refresh"
-                       style="font-weight: bold;color: #67C23A;"></i>&nbsp;刷新
+                    <i class="el-icon-refresh" style="font-weight: bold;color: #67C23A;"></i>&nbsp;刷新
                 </li>
-                <li tabindex="-1" v-show="tabsPopper.id !== homeTab.name" class="el-dropdown-menu__item" v-on:click="tabPosition"
-                    style="text-align: center;"><i class="el-icon-location" style="font-weight: bold;color: #409EFF;"></i>&nbsp;定位</li>
-                <li tabindex="-1" v-show="tabsPopper.id !== homeTab.name" class="el-dropdown-menu__item" v-on:click="tabClose(tabsPopper.id)"
-                    style="text-align: center;"><i class="el-icon-close" style="font-weight: bold;color: #F56C6C;"></i>&nbsp;关闭</li>
+                <li tabindex="-1" v-show="tabsPopper.id !== homeTab.name" class="el-dropdown-menu__item" v-on:click="tabPosition" style="text-align: center;">
+                    <i class="el-icon-location" style="font-weight: bold;color: #409EFF;"></i>&nbsp;定位
+                </li>
+                <li tabindex="-1" v-show="tabsPopper.id !== homeTab.name" class="el-dropdown-menu__item" v-on:click="tabClose(tabsPopper.id)" style="text-align: center;">
+                    <i class="el-icon-close" style="font-weight: bold;color: #F56C6C;"></i>&nbsp;关闭
+                </li>
                 <li tabindex="-1" class="el-dropdown-menu__item" v-on:click="tabCloseRight">关闭右侧</li>
                 <li tabindex="-1" v-show="tabsPopper.id !== homeTab.name" class="el-dropdown-menu__item" v-on:click="tabCloseAll">关闭全部</li>
             </ul>
