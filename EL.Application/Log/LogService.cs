@@ -4,17 +4,23 @@ using System.Text;
 using System.Threading.Tasks;
 using EL.Entity;
 using EL.Repository;
+using EL.DapperCore;
 
 namespace EL.Application
 {
     public class LogService : ILogService
     {
         private readonly IBaseRepository<LogEntity> _logRepository;
+        private readonly DapperRepository _dapperRepository;
+        public LogService()
+        {
+            _dapperRepository = new DapperRepository();
+        }
         public LogService(IBaseRepository<LogEntity> logRepository)
         {
             _logRepository = logRepository;
         }
-        public async Task SaveException(Exception ex)
+        public void SaveException(Exception ex)
         {
             var entity = new LogEntity
             {
@@ -23,8 +29,15 @@ namespace EL.Application
                 Exception = ex.ToString(),
                 CreateTime = DateTime.Now
             };
-            await _logRepository.AddEntityAsync(entity);
-            await _logRepository.CommitAsync();
+            string sql = "insert into logs(message,exception,stacktrace,createtime) values(@message,@exception,@stacktrace,@createtime)";
+            var param = new
+            {
+                message = entity.Message,
+                exception = entity.Exception,
+                stacktrace = entity.StackTrace,
+                createtime = entity.CreateTime
+            };
+            _dapperRepository.Execute(sql, param);
         }
     }
 }

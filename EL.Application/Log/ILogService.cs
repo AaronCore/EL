@@ -8,6 +8,6 @@ namespace EL.Application
 {
     public interface ILogService
     {
-        Task SaveException(Exception ex);
+        void SaveException(Exception ex);
     }
 }

@@ -7,18 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using EL.Common;
 using EL.Admin.Models;
-using EL.Application.Log;
+using EL.Application;
 
 namespace EL.Admin.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger _logger;
-        private readonly ILogService _logService;
-        public HomeController(ILogger<HomeController> logger, ILogService logService)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _logService = logService;
         }
 
         public IActionResult Index()

@@ -350,4 +350,3 @@ healthchecksdb
 /EL.EntityFrameworkCore/bin
 /EL.Repository/obj
 /EL.Repository/bin
-/EL.Admin/Logs

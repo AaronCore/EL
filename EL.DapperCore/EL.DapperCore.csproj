@@ -5,10 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="a1lgmyk5.bed~" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.30" />
+    <PackageReference Include="MySql.Data" Version="8.0.18" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EL.Common\EL.Common.csproj" />
-    <ProjectReference Include="..\EL.DapperCore\EL.DapperCore.csproj" />
-    <ProjectReference Include="..\EL.Entity\EL.Entity.csproj" />
-    <ProjectReference Include="..\EL.Repository\EL.Repository.csproj" />
   </ItemGroup>
 
 </Project>
