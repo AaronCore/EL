@@ -170,7 +170,6 @@ new Vue({
                     activeName = key;
                 }
                 _this.tabActive = activeName;
-
             }
         };
         api.closeTab = function(tab) {
