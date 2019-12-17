@@ -6,8 +6,6 @@ var gobal = {
         windowFullWidth: document.documentElement.clientWidth, // 窗口可视宽度
         windowFullHeight: document.documentElement.clientHeight, // 窗口可视高度
         windowIsXs: false, // 窗口可视宽度小于 786 ?
-
-
     },
     utils: {
         // 使用正则获取dom
@@ -29,11 +27,7 @@ var gobal = {
         sortItems: [],// 排序集合
         expandItems: []// 扩展集合
     }
-
-
 };
-
-
 
 (function() {
     // 初始计算参数值

@@ -9,5 +9,6 @@ namespace EL.Application
     public interface ILogService
     {
         void SaveException(Exception ex);
+        List<LogEntity> GetLogList(int pageIndex, int pageSize, out int total, string searchKey);
     }
 }

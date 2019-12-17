@@ -1,10 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Collections.Generic;
 using EL.Entity;
 using EL.Repository;
 using EL.DapperCore;
+using EL.Common;
 
 namespace EL.Application
 {
@@ -19,6 +22,17 @@ namespace EL.Application
         public LogService(IBaseRepository<LogEntity> logRepository)
         {
             _logRepository = logRepository;
+        }
+        public List<LogEntity> GetLogList(int pageIndex, int pageSize, out int total, string searchKey)
+        {
+            Expression<Func<LogEntity, bool>> where = e => true;
+            if (!string.IsNullOrWhiteSpace(searchKey))
+            {
+                where = where.And(p => p.Message.Contains(searchKey));
+            }
+            var logList = _logRepository.LoadEntityEnumerable(where, p => p.CreateTime, "desc", pageIndex, pageSize).ToList();
+            total = _logRepository.GetEntitiesCount(where);
+            return logList;
         }
         public void SaveException(Exception ex)
         {

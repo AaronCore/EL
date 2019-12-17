@@ -12,7 +12,7 @@ namespace EL.Common
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static String ObjectToJsonString(this Object obj)
+        public static String ToJson(this Object obj)
         {
             return JsonConvert.SerializeObject(obj);
         }
@@ -23,7 +23,7 @@ namespace EL.Common
         /// <typeparam name="T"></typeparam>
         /// <param name="jsonString"></param>
         /// <returns></returns>
-        public static T JsonStringToObject<T>(this String jsonString)
+        public static T ToObj<T>(this String jsonString)
         {
             return JsonConvert.DeserializeObject<T>(jsonString);
         }

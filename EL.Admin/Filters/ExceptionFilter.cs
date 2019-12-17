@@ -24,7 +24,7 @@ namespace EL.Admin.Filters
                 code = -1,
                 message = context.Exception.Message,
             };
-            context.Result = new ContentResult { Content = obj.ObjectToJsonString() };
+            context.Result = new ContentResult { Content = obj.ToJson() };
         }
     }
 }

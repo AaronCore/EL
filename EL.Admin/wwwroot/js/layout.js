@@ -77,7 +77,7 @@ var homeTab = {
     notClosable: true
 };
 new Vue({
-    el: '#app',
+    el: '#home_app',
     data: function() {
         return {
             isCollapse: false,
@@ -86,19 +86,19 @@ new Vue({
 
             menuDefaultActive: 'useDocTemplate',
             menuArr: [
-				{
-                    key: 'usedoc',
-                    title: '使用文档',
+                {
+                    key: 'log_manage',
+                    title: '日志管理',
                     show: true,
-                    url: 'usedoc.html',
-                    icon: 'el-icon-document',
+                    //url: 'usedoc.html',
+                    icon: 'el-icon-fa-cubes',
                     children: [
-						{
-                            key: 'useDocBasic',
-                            title: '基础说明',
+                        {
+                            key: 'log_list',
+                            title: '日志列表',
                             show: true,
-                            url: 'aaa.html',
-                            icon: 'el-icon-tickets'
+                            url: '/Log/Index',
+                            icon: 'el-icon-fa-list'
                         }
                     ]
                 },
@@ -113,7 +113,6 @@ new Vue({
 
             tabItems: [homeTab],
             tabActive: homeTab.key,
-
             tabsPopper: {
                 id: homeTab.key,
                 isShow: false,
