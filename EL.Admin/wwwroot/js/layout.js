@@ -126,7 +126,7 @@ new Vue({
                             key: 'menu_list',
                             title: '菜单列表',
                             show: true,
-                            url: '',
+                            url: '/Menu/Index',
                             icon: 'el-icon-fa-list',
                         }
                     ]
