@@ -50,18 +50,17 @@ body,
 	margin: 0;
 	border-right: 1px solid #e6e6e6;
 	background-repeat: no-repeat;
-	background-position-x: 14px;
+	background-position-x: 15px;
 	font-size: 0;
 }
-
 .logo_box.is_not_nollapse {
 	padding-left: 16px;
-	background-image: url(../image/supalle_logo.png);
+	/*background-position-x: 75px;
+	background-image: url(../image/logo.png);*/
 }
 
 .logo_box.is_collapse {
-	text-align: center;
-	background-image: url(../image/supalle_logo_min.png);
+	background-image: url(../image/logo.png);
 }
 
 .right_box {

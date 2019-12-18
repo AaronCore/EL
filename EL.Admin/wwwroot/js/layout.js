@@ -1,6 +1,6 @@
 var api = {
     // 1.提示框
-    showMsgByObj: function({
+    showMsgByObj: function ({
         type,
         code,
         msg
@@ -8,22 +8,22 @@ var api = {
         // 传入对象提示消息
         this.showMsg(type, code, msg);
     },
-    showMsg: function(type, code, msg) {
+    showMsg: function (type, code, msg) {
         // 传入参数显示消息
     },
-    showMsgByHtml: function(title, html) {
+    showMsgByHtml: function (title, html) {
         // 提示HTML内容
     },
     // 2.弹出窗
     // 3.子页面参数
-    getTabParams: function(tabKey) { // 子页面的Key传进来
+    getTabParams: function (tabKey) { // 子页面的Key传进来
 
     },
-    setTabParams: function(tabKey, params) { // 子页面的Key和params对象传进来
+    setTabParams: function (tabKey, params) { // 子页面的Key和params对象传进来
 
     },
     // 4.tabs操作
-    jumpTabByObj: function({
+    jumpTabByObj: function ({
         id,
         title,
         url,
@@ -31,10 +31,10 @@ var api = {
     }) {
         jumpTab(id, title, url, icon);
     },
-    jumpTab: function(id, title, url, icon) {
+    jumpTab: function (id, title, url, icon) {
 
     },
-    tabCloseOrCallBack: function(tab, chain) {
+    tabCloseOrCallBack: function (tab, chain) {
         if (tab) {
             if (typeof chain === 'undefined') { // 传个空的防止出现 undefined 
                 chain = new SalChain([], null);
@@ -48,21 +48,21 @@ var api = {
             }
         }
     },
-    closeTab: function(tab) {
+    closeTab: function (tab) {
 
     },
     // 5.全屏loading遮罩
-    openLoading: function(time) { // 打开遮罩,传入自动取消时间
+    openLoading: function (time) { // 打开遮罩,传入自动取消时间
 
     },
-    closeLoading: function() { // 手动关闭遮罩
+    closeLoading: function () { // 手动关闭遮罩
 
     },
     // 6.检查是否拥有资源，本质上是从menuArr中查找出来
-    cr: function(key) { // Check Resource 的简写
+    cr: function (key) { // Check Resource 的简写
 
     },
-    getCurrTabRes: function(iframWindow) { // 获取当前tab页对应的资源
+    getCurrTabRes: function (iframWindow) { // 获取当前tab页对应的资源
 
     }
 };
@@ -78,19 +78,18 @@ var homeTab = {
 };
 new Vue({
     el: '#home_app',
-    data: function() {
+    data: function () {
         return {
             isCollapse: false,
             gobalParams: gobal.params,
             loadding: {},
-
             menuDefaultActive: 'useDocTemplate',
             menuArr: [
                 {
                     key: 'log_manage',
                     title: '日志管理',
                     show: true,
-                    //url: 'usedoc.html',
+                    //url: '',
                     icon: 'el-icon-fa-cubes',
                     children: [
                         {
@@ -103,10 +102,40 @@ new Vue({
                     ]
                 },
                 {
+                    key: 'permission_manage',
+                    title: '权限管理',
+                    show: true,
+                    //url: '',
+                    icon: 'el-icon-setting',
+                    children: [
+                        {
+                            key: 'account_list',
+                            title: '账号列表',
+                            show: true,
+                            url: '',
+                            icon: 'el-icon-fa-list',
+                        },
+                        {
+                            key: 'role_list',
+                            title: '角色列表',
+                            show: true,
+                            url: '',
+                            icon: 'el-icon-fa-list',
+                        },
+                        {
+                            key: 'menu_list',
+                            title: '菜单列表',
+                            show: true,
+                            url: '',
+                            icon: 'el-icon-fa-list',
+                        }
+                    ]
+                },
+                {
                     key: 'gerenzhongxin',
                     title: '个人中心',
                     show: true,
-                    url: 'gerenzhongxin.html',
+                    url: '#',
                     icon: 'layui_icon layui_icon_friends'
                 }
             ],
@@ -122,11 +151,11 @@ new Vue({
             tabParams: {}
         }
     },
-    created: function() {
+    created: function () {
         var _this = this;
         // 重写api
         // 1.提示框
-        api.showMsg = function(type, code, msg) {
+        api.showMsg = function (type, code, msg) {
             _this.$notify({
                 title: (type === 'success' ? '成功' : type === 'warning' ? '警告' :
                     type === 'info' ? '消息' : '错误') + ':' + code,
@@ -135,7 +164,7 @@ new Vue({
                 position: 'bottom-right'
             });
         };
-        api.showMsgByHtml = function(title, html) {
+        api.showMsgByHtml = function (title, html) {
             _this.$notify({
                 title: title,
                 dangerouslyUseHTMLString: true,
@@ -144,17 +173,19 @@ new Vue({
         };
         // 2.弹出窗----需要固定自定义的,先不做统一接口
         // 3.子页面参数
-        api.getTabParams = function(tabKey) { //子页面的Key传进来
+        api.getTabParams = function (tabKey) {
+            //子页面的Key传进来
             return _this.tabParams[tabKey];
         };
-        api.setTabParams = function(tabKey, params) { //子页面的Key和params对象传进来
+        api.setTabParams = function (tabKey, params) {
+            //子页面的Key和params对象传进来
             _this.tabParams[tabKey] = params;
         };
         // 4.tabs操作
-        api.jumpTab = function(key, title, url, icon) {
+        api.jumpTab = function (key, title, url, icon) {
             var activeName = _this.tabActive;
             if (key !== activeName) {
-                var tabs = _this.tabItems.filter(function(tab) {
+                var tabs = _this.tabItems.filter(function (tab) {
                     return tab.name === key;
                 });
 
@@ -172,7 +203,7 @@ new Vue({
                 _this.tabActive = activeName;
             }
         };
-        api.closeTab = function(tab) {
+        api.closeTab = function (tab) {
             if (tab) {
                 var cType = typeof tab;
                 var targetName;
@@ -201,7 +232,7 @@ new Vue({
             }
         };
         // 5.全屏loading遮罩
-        api.openLoading = function(time) {
+        api.openLoading = function (time) {
             _this.loading = _this.$loading({
                 lock: true,
                 text: 'Loading',
@@ -209,18 +240,18 @@ new Vue({
                 background: 'rgba(0, 0, 0, 0.7)'
             });
             if (time)
-                setTimeout(function() {
+                setTimeout(function () {
                     _this.loading.close();
                 }, time);
         };
-        api.closeLoading = function() {
+        api.closeLoading = function () {
             _this.loading.close();
         };
         // 6.检查是否拥有资源，本质上是从menuArr中查找出来
-        api.cr = function(key) { // Check Resource 的简写
+        api.cr = function (key) { // Check Resource 的简写
             return _this.findMenuObj(key, _this.menuArr);
         };
-        api.getCurrTabRes = function(iframWindow) { // 获取当前tab页对应的资源
+        api.getCurrTabRes = function (iframWindow) { // 获取当前tab页对应的资源
             var name = iframWindow.name;
             if (name) {
                 // iframe_name_xxxx
@@ -231,22 +262,22 @@ new Vue({
         };
     },
     watch: {},
-    updated: function() {
+    updated: function () {
         var _this = this;
-        _this.$nextTick(function() {
+        _this.$nextTick(function () {
             _this.bindTabTilesOncontextmenu();
         });
     },
     methods: {
-        hasShowItem: function(arr) {
+        hasShowItem: function (arr) {
             if (arr && arr.length > 0) {
-                return arr.filter(function(e) {
+                return arr.filter(function (e) {
                     return e.show;
                 });
             }
             return [];
         },
-        findMenuObj: function(key, arr) {
+        findMenuObj: function (key, arr) {
             if (arr && arr.length > 0) {
                 for (var i = 0; i < arr.length; i++) {
                     if (key === arr[i].key) {
@@ -261,7 +292,7 @@ new Vue({
             }
             return false;
         },
-        findTab: function(name, arr) {
+        findTab: function (name, arr) {
             if (arr && arr.length > 0) {
                 for (var i = 0; i < arr.length; i++) {
                     if (name === arr[i].name) {
@@ -271,7 +302,7 @@ new Vue({
             }
             return false;
         },
-        findMenuParent: function(key, arr) {
+        findMenuParent: function (key, arr) {
             if (arr && arr.length > 0) {
                 for (var i = 0; i < arr.length; i++) {
                     if (key === arr[i].key) {
@@ -288,25 +319,25 @@ new Vue({
             }
             return false;
         },
-        handleSelect: function(key) {
+        handleSelect: function (key) {
             var curr = this.findMenuObj(key, this.menuArr);
             // console.log(curr);
             if (curr !== false) {
                 api.jumpTab(curr.key, curr.title, curr.url, curr.icon);
             }
         },
-        bindTabTilesOncontextmenu: function() {
+        bindTabTilesOncontextmenu: function () {
             // 绑定tabs右键菜单
             var _this = this;
             var tabTiles = gobal.utils.getDoms(/^tab-.*/);
-            document.onmousedown = function(e) {
+            document.onmousedown = function (e) {
                 if (e.button === 2 || e.button === 0 || e.button === 1) {
                     _this.tabsPopper.isShow = false;
                 }
             };
             for (var i = 0; i < tabTiles.length; i++) {
                 var obj = tabTiles[i];
-                obj.oncontextmenu = function(e) {
+                obj.oncontextmenu = function (e) {
                     _this.tabsPopper.isShow = true;
                     _this.tabsPopper.id = this.getAttribute('id').replace("tab-", "");
                     _this.tabsPopper.top = (e.y - 6) + 'px';
@@ -316,20 +347,20 @@ new Vue({
                     // console.log(_this.tabsPopper);
                     e.preventDefault();
                 };
-                obj.onblur = function() {
+                obj.onblur = function () {
                     _this.tabsPopper.isShow = false;
                 }
             }
         },
-        tabRefresh: function() {
+        tabRefresh: function () {
             this.tabActive = this.tabsPopper.id;
             document.getElementById('iframe_' + this.tabsPopper.id)
                 .contentWindow.location.reload(true);
         },
-        tabClose: function(targetName) {
+        tabClose: function (targetName) {
             api.tabCloseOrCallBack(this.findTab(targetName, this.tabItems));
         },
-        tabCloseRight: function() {
+        tabCloseRight: function () {
             if (this.tabsPopper.id === homeTab.key) {
                 this.tabCloseAll();
             } else {
@@ -343,7 +374,7 @@ new Vue({
                     }
                     items.push(tabs[size]);
                 }
-                var chain = new SalChain(items, function(tab, index, chain) {
+                var chain = new SalChain(items, function (tab, index, chain) {
                     api.tabCloseOrCallBack(tab, chain);
                     // chain.next();
                 });
@@ -351,14 +382,14 @@ new Vue({
                 //this.tabItems = newTabs;
             }
         },
-        tabCloseAll: function() {
+        tabCloseAll: function () {
             var tabs = this.tabItems,
                 items = [],
                 size = tabs.length;
             while (--size > 0) { // 倒叙
                 items.push(tabs[size]);
             }
-            var chain = new SalChain(items, function(tab, index, chain) {
+            var chain = new SalChain(items, function (tab, index, chain) {
                 api.tabCloseOrCallBack(tab, chain);
                 // chain.next();
             });
@@ -366,7 +397,7 @@ new Vue({
             // this.tabItems = [homeTab];
             // this.tabActive = homeTab.key;
         },
-        tabPosition: function() {
+        tabPosition: function () {
             if (this.menuDefaultActive === this.tabsPopper.id) {
                 var curr = this.findMenuParent(this.tabsPopper.id, this.menuArr);
                 if (curr !== false) {
@@ -377,7 +408,7 @@ new Vue({
             }
         }
     },
-	mounted: function () {
+    mounted: function () {
         this.$nextTick(function () {
             // Code that will run only after the
             // entire view has been rendered

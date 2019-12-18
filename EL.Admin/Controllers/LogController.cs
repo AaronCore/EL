@@ -19,6 +19,10 @@ namespace EL.Admin.Controllers
         {
             return View();
         }
+        public IActionResult Details()
+        {
+            return View();
+        }
 
         [HttpPost]
         public IActionResult GetLogListJson(int pageIndex, int pageSize, string searchKey = null)
@@ -27,20 +31,37 @@ namespace EL.Admin.Controllers
             var list = _logService.GetLogList(pageIndex, pageSize, out total, searchKey);
             var obj = new
             {
-                code = 0,
-                message = "OK",
-                result = new
+                pageIndex,
+                pageSize,
+                total,
+                data = list.Select(p => new
                 {
-                    pageIndex,
-                    pageSize,
-                    total,
-                    data = list.Select(p => new
-                    {
-                        p.Id,
-                        p.Message,
-                        CreateTime = p.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")
-                    })
-                }
+                    p.Id,
+                    p.Message,
+                    CreateTime = p.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                })
+            };
+            return Json(obj);
+        }
+
+        [HttpPost]
+        public IActionResult Del(int[] ids)
+        {
+            var status = _logService.DelEntity(ids);
+            return Json(new { code = status ? 0 : -2 });
+        }
+
+        [HttpGet]
+        public IActionResult GetLogJson(int id)
+        {
+            var entity = _logService.GetLog(id);
+            var obj = new
+            {
+                entity.Id,
+                entity.Message,
+                entity.Exception,
+                entity.StackTrace,
+                CreateTime = entity.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")
             };
             return Json(obj);
         }

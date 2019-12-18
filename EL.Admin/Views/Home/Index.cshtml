@@ -5,7 +5,6 @@
     <template>
         <div class="left_box" :class="{left_box_is_nollapse:isCollapse }">
             <h1 class="logo_box" :class="{is_not_nollapse:!isCollapse , is_collapse:isCollapse}" title="vue admin">
-                admin
             </h1>
             <el-menu ref="menu" :default-active="menuDefaultActive" class="el-menu-vertical-demo" v-on:select="handleSelect" :collapse="isCollapse" :unique-opened="true">
                 <template v-for="item in menuArr">
@@ -43,26 +42,23 @@
                     </template>
                 </template>
             </el-menu>
-
         </div>
         <div class="right_box" :class="{right_box_full:isCollapse}">
             <div class="nav_top">
                 <span class="left_item">
-                    <!-- <el-button title="展开/收起左侧导航" v-on:click="isCollapse = !isCollapse" size="small"><i class="el-icon-menu"></i></el-button> -->
                     <el-button title="展开/收起左侧导航" v-on:click="isCollapse = !isCollapse" size="small">
                         <i class="layui_icon" :class="{layui_icon_spread_left:isCollapse,layui_icon_shrink_right:!isCollapse}"></i>
                     </el-button>
                 </span>
-
                 <span class="right_item">
                     <el-dropdown>
                         <span class="el-dropdown-link">
                             Supalle<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>个人中心</el-dropdown-item>
-                            <el-dropdown-item>修改密码</el-dropdown-item>
-                            <el-dropdown-item divided>登出</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-fa-user"> 个人中心</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-fa-key"> 修改密码</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-fa-sign-out" divided> 登出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </span>
