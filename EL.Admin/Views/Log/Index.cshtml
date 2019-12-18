@@ -1,0 +1,172 @@
+﻿@{
+    ViewData["Title"] = "Logs";
+}
+<div id="log_app" v-clock>
+    <template>
+        <el-container>
+            <el-header style="padding-top:25px;">
+                <el-form ref="form" :inline="true" :model="search_form">
+                    <el-row :gutter="10">
+                        <el-col :span="6">
+                            <el-form-item label="搜索：">
+                                <el-input style="width:250px;" size="medium" v-model="search_form.search_key" placeholder="请输入关键字"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-button type="primary" size="medium" v-on:click="search" icon="el-icon-fa-search">查询</el-button>
+                            <el-button type="danger" size="medium" v-on:click="dels" icon="el-icon-delete">删除</el-button>
+                            <el-button type="primary" size="medium" v-on:click="reset" icon="el-icon-fa-recycle">重置</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-header>
+            <el-main>
+                <template>
+                    <el-table :data="tableData" border size="medium" style="width:100%" :max-height="maxHeight" v-on:selection-change="selectionChange">
+                        <el-table-column type="selection" width="40"></el-table-column>
+                        <el-table-column header-align="center" align="center" prop="id" v-if="true" label="Id" width="80">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="message" label="Message">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="createTime" label="CreateTime" width="200">
+                        </el-table-column>
+                        <el-table-column header-align="center" label="操作" width="100">
+                            <template slot-scope="scope">
+                                <el-button v-on:click="details(scope.row)" type="primary" plain size="mini">详情</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-row :gutter="20">
+                        <el-col :span="8" :offset="8">
+                            <el-pagination v-on:size-change="handleSizeChange"
+                                           v-on:current-change="handleCurrentChange"
+                                           :page-sizes="pageSizes"
+                                           :page-size="pageSize"
+                                           :current-page="1"
+                                           layout="total, sizes, prev, pager, next, jumper"
+                                           :total="total">
+                            </el-pagination>
+                        </el-col>
+                    </el-row>
+                </template>
+            </el-main>
+        </el-container>
+    </template>
+</div>
+@section script {
+    <script>
+        new Vue({
+            el: "#log_app",
+            data: {
+                maxHeight: gobal.params.tableMaxHeight,
+                pageSizes: [30, 50, 100, 300],
+                pageSize: 30,
+                pageIndex: 1,
+                total: 0,
+                search_form: {
+                    search_key: null,
+                },
+                tableData: [],
+                ids: []
+            },
+            methods: {
+                //查询
+                search: function () {
+                    this.pageReset();
+                    this.getTableData();
+                },
+                //重置
+                reset: function () {
+                    this.search_form.search_key = null;
+                    this.pageReset();
+                    this.getTableData();
+                },
+                dels: function () {
+                    var self = this;
+                    if (this.ids.length <= 0) {
+                        this.$message.error("请选择数据...");
+                        return false;
+                    }
+                    this.$msgbox({
+                        title: '提示',
+                        type: 'warning',
+                        message: '此操作将永久删除该数据, 是否继续?',
+                        showCancelButton: true,
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        beforeClose: function (action, instance, done) {
+                            if (action === 'confirm') {
+                                instance.confirmButtonLoading = true;
+                                instance.confirmButtonText = '执行中...';
+                                this.$http.post('/Log/Del', { ids: self.ids }, { emulateJSON: true }).then((response) => {
+                                    var resp = response.body;
+                                    console.log(resp.code);
+                                    if (resp.code == 0) {
+                                        this.$message({ type: "success", message: "删除成功..." });
+                                        self.getTableData();
+                                    } else {
+                                        this.$message.error("删除失败，详情请查看错误日志...");
+                                    }
+                                    done();
+                                    instance.confirmButtonLoading = false;
+                                }, (response) => {
+                                    //响应错误回调
+                                });
+                            } else {
+                                done();
+                            }
+                        }
+                    });
+                },
+                details: function (row) {
+                    parent.api.setTabParams('log_details_tab', { log_id: row.id });
+                    parent.api.jumpTab('log_details_tab', '日志详情', '/Log/Details', 'el-icon-fa-file-text-o');
+                },
+                handleClose: function () {
+                    this.dialogVisible = false;
+                },
+                pageReset: function () {
+                    this.pageSize = 30;
+                    this.pageIndex = 1;
+                    this.total = 0;
+                },
+                selectionChange: function (rows) {
+                    if (rows) {
+                        rows.forEach(row => {
+                            this.ids.push(row.id);
+                        });
+                    } else {
+                        this.$refs.multipleTable.clearSelection();
+                    }
+                },
+                getTableData: function () {
+                    var options = {
+                        pageIndex: this.pageIndex,
+                        pageSize: this.pageSize,
+                        searchKey: this.search_form.search_key
+                    };
+                    this.$http.post('/Log/GetLogListJson', options, { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        this.tableData = resp.data;
+                        this.pageIndex = resp.pageIndex;
+                        this.pageSize = resp.pageSize;
+                        this.total = resp.total;
+                    }, (response) => {
+                        //响应错误回调
+                    });
+                },
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.getTableData();
+                },
+                handleCurrentChange(val) {
+                    this.pageIndex = val;
+                    this.getTableData();
+                }
+            },
+            created: function () {
+                this.getTableData();
+            }
+        });
+    </script>
+}

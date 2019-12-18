@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Details";
+}
+
+@section css {
+    <style type="text/css">
+        p {
+            color: red;
+        }
+    </style>
+}
+<div id="log_details" v-clock>
+    <template>
+        <section style="margin-left:20px;">
+            <h4>创建时间：{{createTime}}</h4>
+
+            <h3>Message：</h3>
+            <p>{{message}}</p>
+            <el-divider></el-divider>
+
+            <h3>Exception：</h3>
+            <p>{{exception}}</p>
+            <el-divider></el-divider>
+
+            <h3>StackTrace：</h3>
+            <p>{{stackTrace}}</p>
+        </section>
+    </template>
+</div>
+@section script {
+    <script>
+        new Vue({
+            el: '#log_details',
+            data: {
+                id: null,
+                createTime: null,
+                message: null,
+                exception: null,
+                stackTrace: null
+            },
+            methods: {
+                details: function () {
+                    var url = '/Log/GetLogJson?id=' + this.id;
+                    this.$http.get(url, { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        this.createTime = resp.createTime;
+                        this.message = resp.message;
+                        this.exception = resp.exception;
+                        this.stackTrace = resp.stackTrace;
+                    }, (response) => {
+                        // 响应错误回调
+                    });
+                }
+            },
+            created: function () {
+                this.id = parent.api.getTabParams('log_details_tab').log_id;
+                this.details();
+            },
+        });
+    </script>
+}
