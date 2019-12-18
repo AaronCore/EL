@@ -3,14 +3,16 @@ using System;
 using EL.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EL.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(ELDbContext))]
-    partial class ELDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191218071456_1218")]
+    partial class _1218
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

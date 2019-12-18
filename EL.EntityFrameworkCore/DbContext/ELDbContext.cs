@@ -13,5 +13,8 @@ namespace EL.EntityFrameworkCore
             // Database.EnsureCreated();
         }
         public DbSet<LogEntity> Logs { get; set; }
+        public DbSet<AccountEntity> Accounts { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
+        public DbSet<MenuEntity> Menus { get; set; }
     }
 }
