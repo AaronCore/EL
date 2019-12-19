@@ -135,7 +135,7 @@ new Vue({
                     key: 'gerenzhongxin',
                     title: '个人中心',
                     show: true,
-                    url: '#',
+                    url: 'http://supalle.gitee.io/sal/layout.html',
                     icon: 'layui_icon layui_icon_friends'
                 }
             ],

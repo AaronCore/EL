@@ -32,7 +32,7 @@ namespace EL.EntityFrameworkCore.Migrations
                     b.Property<string>("Creater")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("EditTime")
+                    b.Property<DateTime?>("EditTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Editor")
@@ -47,7 +47,7 @@ namespace EL.EntityFrameworkCore.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("RoleId")
+                    b.Property<int?>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<int>("Sort")
@@ -98,7 +98,7 @@ namespace EL.EntityFrameworkCore.Migrations
                     b.Property<string>("Creater")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("EditTime")
+                    b.Property<DateTime?>("EditTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Editor")
@@ -113,17 +113,11 @@ namespace EL.EntityFrameworkCore.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("ParentId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ParentMenuId")
                         .HasColumnType("int");
 
                     b.Property<string>("Path")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<int?>("RoleEntityId")
-                        .HasColumnType("int");
 
                     b.Property<int>("Sort")
                         .HasColumnType("int");
@@ -131,8 +125,6 @@ namespace EL.EntityFrameworkCore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ParentMenuId");
-
-                    b.HasIndex("RoleEntityId");
 
                     b.ToTable("Menus");
                 });
@@ -149,7 +141,7 @@ namespace EL.EntityFrameworkCore.Migrations
                     b.Property<string>("Creater")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<DateTime>("EditTime")
+                    b.Property<DateTime?>("EditTime")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Editor")
@@ -169,13 +161,26 @@ namespace EL.EntityFrameworkCore.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("EL.Entity.RoleMenuEntity", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MenuId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoleId", "MenuId");
+
+                    b.HasIndex("MenuId");
+
+                    b.ToTable("RoleMenus");
+                });
+
             modelBuilder.Entity("EL.Entity.AccountEntity", b =>
                 {
                     b.HasOne("EL.Entity.RoleEntity", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Accounts")
+                        .HasForeignKey("RoleId");
                 });
 
             modelBuilder.Entity("EL.Entity.MenuEntity", b =>
@@ -183,10 +188,21 @@ namespace EL.EntityFrameworkCore.Migrations
                     b.HasOne("EL.Entity.MenuEntity", "ParentMenu")
                         .WithMany("Menus")
                         .HasForeignKey("ParentMenuId");
+                });
 
-                    b.HasOne("EL.Entity.RoleEntity", null)
-                        .WithMany("Menus")
-                        .HasForeignKey("RoleEntityId");
+            modelBuilder.Entity("EL.Entity.RoleMenuEntity", b =>
+                {
+                    b.HasOne("EL.Entity.MenuEntity", "Menu")
+                        .WithMany("RoleMenus")
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EL.Entity.RoleEntity", "Role")
+                        .WithMany("RoleMenus")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

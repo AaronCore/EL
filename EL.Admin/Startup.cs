@@ -33,6 +33,13 @@ namespace EL.Admin
             var connection = new JsonConfigManager().GetValue<string>("ELConnection");
             services.AddDbContext<ELDbContext>(options => options.UseMySql(connection));
             services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
             services.AddControllersWithViews();
         }
         public void ConfigureContainer(ContainerBuilder builder)
@@ -55,11 +62,9 @@ namespace EL.Admin
             }
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
