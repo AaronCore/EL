@@ -137,8 +137,10 @@
                 },
                 //表单重置
                 resetForm: function (formName) {
+                    if (this.$refs[formName] !== undefined) {
+                        this.$refs[formName].resetFields();
+                    }
                     this.menuForm.parentId = 0;
-                    this.$refs[formName].resetFields();
                 },
                 //状态修改
                 enableds: function () {
