@@ -31,8 +31,8 @@ namespace EL.Admin
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = new JsonConfigManager().GetValue<string>("ELConnection");
-            services.AddDbContext<ELDbContext>(options => options.UseMySql(connection));
-            services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            services.AddDbContext<ELDbContext>(options => options.UseLazyLoadingProxies().UseMySql(connection));
+            //services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
@@ -45,6 +45,7 @@ namespace EL.Admin
         public void ConfigureContainer(ContainerBuilder builder)
         {
             // 在这里添加服务注册
+            builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>)).InstancePerDependency();
             builder.RegisterAssemblyTypes(Assembly.Load("EL.Application")).Where(a => a.Name.EndsWith("Service")).AsImplementedInterfaces();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -8,8 +8,11 @@ namespace EL.Application
 {
     public interface IMenuService
     {
-        void Add(MenuEntity entity);
+        List<MenuTree_DTO> GetMenuTreeList();
+        List<MenuList_DTO> GetMenuList();
         MenuEntity GetMenu(int id);
-        List<Menu_DTO> GetMenuTreeList();
+        void Submit(Menu_DTO menuDto);
+        bool Deletes(int[] ids);
+        void Enableds(int[] ids);
     }
 }

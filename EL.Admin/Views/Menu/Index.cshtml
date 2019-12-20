@@ -7,47 +7,87 @@
             <el-header style="padding-top:25px;">
                 <el-row :gutter="10">
                     <el-col :span="18">
-                        <el-button type="success" size="medium" icon="el-icon-fa-plus">添加</el-button>
+                        <el-button type="success" size="medium" v-on:click="add" icon="el-icon-fa-plus">添加</el-button>
                         <el-button type="danger" size="medium" v-on:click="dels" icon="el-icon-delete">删除</el-button>
-                        <el-button type="warning" size="medium" icon="el-icon-fa-edit">状态修改</el-button>
+                        <el-button type="warning" size="medium" v-on:click="enableds" icon="el-icon-fa-edit">状态修改</el-button>
                     </el-col>
                 </el-row>
             </el-header>
             <el-main>
                 <template>
-                    <el-table :data="tableData" border row-key="id" size="medium" style="width: 100%;" :max-height="maxHeight" 
-                              :tree-props="{children: 'children', hasChildren: 'hasChildren'}" 
+                    <el-table :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                              border row-key="id" size="medium" style="width: 100%;" :max-height="maxHeight"
+                              :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
                               v-on:selection-change="selectionChange">
                         <el-table-column type="selection" width="40"></el-table-column>
                         <el-table-column header-align="center" align="center" prop="id" v-if="false" label="Id" width="100">
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" prop="date" label="date">
+                        <el-table-column header-align="center" prop="name" label="名称" width="300">
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" prop="name" label="name">
+                        <el-table-column header-align="center" prop="path" label="地址" show-overflow-tooltip="true">
                         </el-table-column>
-                        <el-table-column header-align="center" prop="address" label="address" width="200">
+                        <el-table-column header-align="center" prop="enabled" width="80" label="状态">
+                            <template slot-scope="scope">
+                                <el-button :type="scope.row.enabled ? 'success' : 'danger'" size="mini">{{scope.row.enabled?"启用":"禁用" }}</el-button>
+                            </template>
                         </el-table-column>
-                        <el-table-column header-align="center" label="操作" width="100">
+                        <el-table-column header-align="center" align="center" prop="sort" label="排序号" width="80">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="createTime" label="创建时间" width="200">
+                        </el-table-column>
+                        <el-table-column align="right" width="300">
+                            <template slot="header" slot-scope="scope">
+                                <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+                            </template>
                             <template slot-scope="scope">
                                 <el-button v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
-                    <el-row :gutter="20">
-                        <el-col :span="8" :offset="8">
-                            @*<el-pagination v-on:size-change="handleSizeChange"
-                                           v-on:current-change="handleCurrentChange"
-                                           :page-sizes="pageSizes"
-                                           :page-size="pageSize"
-                                           :current-page="1"
-                                           layout="total, sizes, prev, pager, next, jumper"
-                                           :total="total">
-                            </el-pagination>*@
-                        </el-col>
-                    </el-row>
                 </template>
             </el-main>
         </el-container>
+
+    </template>
+    <template>
+        <el-dialog title="菜单编辑" :visible.sync="menuFormVisible">
+            <el-form :model="menuForm" ref="menuForm" :rules="rules" label-position="right" label-width="100px">
+                <el-form-item label="上级菜单">
+                    <el-cascader style="width:250px;" v-model="menuForm.parentId"
+                                 :options="menuOptions" clearable="true"
+                                 :props="{ checkStrictly: true }">
+                    </el-cascader>
+                </el-form-item>
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model="menuForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="地址" prop="path">
+                    <el-input v-model="menuForm.path"></el-input>
+                </el-form-item>
+                <el-form-item label="Code" prop="code">
+                    <el-input v-model="menuForm.code"></el-input>
+                </el-form-item>
+                <el-form-item label="Icon">
+                    <el-input v-model="menuForm.icon"></el-input>
+                </el-form-item>
+                <el-form-item label="排序号">
+                    <el-input-number v-model="menuForm.sort" :min="1" :max="1000" label="排序号"></el-input-number>
+                </el-form-item>
+                <el-form-item label="状态">
+                    <el-switch style="display: block;margin-top:9px;"
+                               v-model="menuForm.enabled"
+                               active-color="#13ce66"
+                               inactive-color="#ff4949"
+                               active-text="启用"
+                               inactive-text="禁用">
+                    </el-switch>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button v-on:click="resetForm('menuForm')">重 置</el-button>
+                <el-button type="primary" v-on:click="submitForm('menuForm')" v-bind:loading="editLoading">确 定</el-button>
+            </div>
+        </el-dialog>
     </template>
 </div>
 @section script {
@@ -56,43 +96,166 @@
             el: "#menu_app",
             data: {
                 maxHeight: gobal.params.tableMaxHeight,
-                ids:[],
-                tableData: [{
-                    id: 1,
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    id: 2,
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄'
-                }, {
-                    id: 3,
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄',
-                    children: [{
-                        id: 31,
-                        date: '2016-05-01',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1519 弄'
-                    }, {
-                        id: 32,
-                        date: '2016-05-01',
-                        name: '王小虎',
-                        address: '上海市普陀区金沙江路 1519 弄'
-                    }]
-                }, {
-                    id: 4,
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄'
-                }],
+                search: null,
+                menuFormVisible: false,
+                editLoading: false,
+                menuForm: {
+                    id: 0,
+                    parentId: 0,
+                    name: null,
+                    path: null,
+                    code: null,
+                    icon: null,
+                    sort: 0,
+                    enabled: true
+                },
+                rules: {
+                    name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
+                    path: [{ required: true, message: '请输入菜单地址', trigger: 'blur' }],
+                    code: [{ required: true, message: '请输入菜单编码', trigger: 'blur' }]
+                },
+                ids: [],
+                tableData: [],
+                menuOptions: []
             },
             methods: {
-                dels: function () { },
-                reset: function () { },
+                //添加
+                add: function () {
+                    this.menuFormVisible = true;
+                    this.resetForm("menuForm");
+                },
+                //编辑
+                edit: function (row) {
+                    var url = "/Menu/GetMenuJson?id=" + row.id;
+                    this.$http.get(url, { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        this.menuForm = resp;
+                        this.menuFormVisible = true;
+                    }, (response) => {
+                        //响应错误回调
+                    });
+                },
+                //表单重置
+                resetForm: function (formName) {
+                    this.menuForm.parentId = 0;
+                    this.$refs[formName].resetFields();
+                },
+                //状态修改
+                enableds: function () {
+                    var self = this;
+                    if (this.ids.length <= 0) {
+                        this.$message.error("请选择数据...");
+                        return false;
+                    }
+                    this.$msgbox({
+                        title: '提示',
+                        type: 'warning',
+                        message: '此操作将修改数据状态, 是否继续?',
+                        showCancelButton: true,
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        beforeClose: function (action, instance, done) {
+                            if (action === 'confirm') {
+                                instance.confirmButtonLoading = true;
+                                instance.confirmButtonText = '执行中...';
+                                this.$http.post('/Menu/Enableds', { ids: self.ids }, { emulateJSON: true }).then((response) => {
+                                    var resp = response.body;
+                                    if (resp.code == 0) {
+                                        this.$message({ type: "success", message: "修改成功..." });
+                                        self.getTableData();
+                                    } else {
+                                        this.$message.error("修改失败，详情请查看错误日志...");
+                                    }
+                                    done();
+                                    instance.confirmButtonLoading = false;
+                                }, (response) => {
+                                    //响应错误回调
+                                });
+                            } else {
+                                done();
+                            }
+                        }
+                    });
+                },
+                //删除
+                dels: function () {
+                    var self = this;
+                    if (this.ids.length <= 0) {
+                        this.$message.error("请选择数据...");
+                        return false;
+                    }
+                    this.$msgbox({
+                        title: '提示',
+                        type: 'warning',
+                        message: '此操作将永久删除该数据, 是否继续?',
+                        showCancelButton: true,
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        beforeClose: function (action, instance, done) {
+                            if (action === 'confirm') {
+                                instance.confirmButtonLoading = true;
+                                instance.confirmButtonText = '执行中...';
+                                this.$http.post('/Menu/Deletes', { ids: self.ids }, { emulateJSON: true }).then((response) => {
+                                    var resp = response.body;
+                                    if (resp.code == 0) {
+                                        this.$message({ type: "success", message: "删除成功..." });
+                                        self.getTableData();
+                                    } else {
+                                        this.$message.error("删除失败，详情请查看错误日志...");
+                                    }
+                                    done();
+                                    instance.confirmButtonLoading = false;
+                                }, (response) => {
+                                    //响应错误回调
+                                });
+                            } else {
+                                done();
+                            }
+                        }
+                    });
+                },
+                //表单提交
+                submitForm: function (formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            this.editLoading = true;
+                            this.$http.post('/Menu/Submit', this.menuForm, { emulateJSON: true }).then((response) => {
+                                var resp = response.body;
+                                if (resp.code == 0) {
+                                    this.addLoading = false;
+                                    this.$message({ type: "success", message: "操作成功..." });
+                                    this.resetForm("menuForm");
+                                    this.menuFormVisible = false;
+                                } else {
+                                    this.$message.error("操作失败，详情请查看错误日志...");
+                                }
+                            }, (response) => {
+                                //响应错误回调
+                            });
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+                //获取列表
+                getTableData: function () {
+                    this.$http.get('/Menu/GetTreeListJson', { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        this.tableData = resp;
+                    }, (response) => {
+                        //响应错误回调
+                    });
+                },
+                getMenu: function () {
+                    this.$http.get('/Menu/GetMenuListJson', { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        this.menuOptions = resp;
+                    }, (response) => {
+                        //响应错误回调
+                    });
+                },
+                //获取选中行
                 selectionChange: function (rows) {
                     if (rows) {
                         rows.forEach(row => {
@@ -103,6 +266,10 @@
                     }
                 },
             },
+            created: function () {
+                this.getTableData();
+                this.getMenu();
+            }
         });
     </script>
 }

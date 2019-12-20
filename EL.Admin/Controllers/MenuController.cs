@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using EL.Application;
 using EL.Entity;
+using EL.Common;
 
 namespace EL.Admin.Controllers
 {
@@ -18,30 +19,60 @@ namespace EL.Admin.Controllers
 
         public IActionResult Index()
         {
-            //var model = new MenuEntity()
-            //{
-            //    Name = "A",
-            //    CreateTime = DateTime.Now
-            //};
-            //_menuService.Add(model);
-            //var model1 = new MenuEntity()
-            //{
-            //    Name = "A1",
-            //    ParentMenu = _menuService.GetMenu(1),
-            //    CreateTime = DateTime.Now
-            //};
-            //_menuService.Add(model1);
-            //var model2 = new MenuEntity()
-            //{
-            //    Name = "A1-A2",
-            //    ParentMenu = _menuService.GetMenu(2),
-            //    CreateTime = DateTime.Now
-            //};
-            //_menuService.Add(model2);
-            //var a = _menuService.GetMenu(1);
-            //var b = _menuService.GetMenu(2);
-            //var c = _menuService.GetMenu(3);
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetTreeListJson()
+        {
+            var list = _menuService.GetMenuTreeList();
+            return Json(list);
+        }
+
+        [HttpGet]
+        public IActionResult GetMenuListJson()
+        {
+            var list = _menuService.GetMenuList();
+            return Json(list);
+        }
+
+        [HttpGet]
+        public IActionResult GetMenuJson(int id)
+        {
+            var model = _menuService.GetMenu(id);
+            var obj = new
+            {
+                parentId = model.ParentMenu != null ? model.ParentMenu.Id : 0,
+                model.Id,
+                model.Name,
+                model.Path,
+                model.Code,
+                model.Icon,
+                model.Enabled,
+                model.Sort
+            };
+            return Json(obj);
+        }
+
+        [HttpPost]
+        public IActionResult Submit(Menu_DTO entity)
+        {
+            _menuService.Submit(entity);
+            return Json(new { code = 0 });
+        }
+
+        [HttpPost]
+        public IActionResult Deletes(int[] ids)
+        {
+            var status = _menuService.Deletes(ids);
+            return Json(new { code = status ? 0 : -2 });
+        }
+
+        [HttpPost]
+        public IActionResult Enableds(int[] ids)
+        {
+            _menuService.Enableds(ids);
+            return Json(new { code = 0 });
         }
     }
 }

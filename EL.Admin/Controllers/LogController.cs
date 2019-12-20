@@ -45,9 +45,9 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Del(int[] ids)
+        public IActionResult Deletes(int[] ids)
         {
-            var status = _logService.DelEntity(ids);
+            var status = _logService.Deletes(ids);
             return Json(new { code = status ? 0 : -2 });
         }
 

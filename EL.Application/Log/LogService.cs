@@ -53,7 +53,7 @@ namespace EL.Application
             };
             _dapperRepository.Execute(sql, param);
         }
-        public bool DelEntity(int[] ids)
+        public bool Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
             return _logRepository.DelEntity(p => idArrar.Contains(p.Id)) > 0;

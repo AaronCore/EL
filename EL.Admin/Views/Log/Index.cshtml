@@ -98,9 +98,8 @@
                             if (action === 'confirm') {
                                 instance.confirmButtonLoading = true;
                                 instance.confirmButtonText = '执行中...';
-                                this.$http.post('/Log/Del', { ids: self.ids }, { emulateJSON: true }).then((response) => {
+                                this.$http.post('/Log/Deletes', { ids: self.ids }, { emulateJSON: true }).then((response) => {
                                     var resp = response.body;
-                                    console.log(resp.code);
                                     if (resp.code == 0) {
                                         this.$message({ type: "success", message: "删除成功..." });
                                         self.getTableData();
