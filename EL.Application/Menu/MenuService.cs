@@ -91,6 +91,7 @@ namespace EL.Application.Menu
                 model.Path = menuDto.Path;
                 model.Code = menuDto.Code;
                 model.Icon = menuDto.Icon;
+                model.Sort = menuDto.Sort;
                 model.EditTime = DateTime.Now;
                 if (menuDto.ParentId > 0)
                 {

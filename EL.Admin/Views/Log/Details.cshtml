@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Details";
 }
-
 @section css {
     <style type="text/css">
         p {
@@ -9,19 +8,16 @@
         }
     </style>
 }
-<div id="log_details" v-clock>
+<div id="logDetails" v-clock>
     <template>
         <section style="margin-left:20px;">
             <h4>创建时间：{{createTime}}</h4>
-
             <h3>Message：</h3>
             <p>{{message}}</p>
             <el-divider></el-divider>
-
             <h3>Exception：</h3>
             <p>{{exception}}</p>
             <el-divider></el-divider>
-
             <h3>StackTrace：</h3>
             <p>{{stackTrace}}</p>
         </section>
@@ -30,7 +26,7 @@
 @section script {
     <script>
         new Vue({
-            el: '#log_details',
+            el: '#logDetails',
             data: {
                 id: null,
                 createTime: null,

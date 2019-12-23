@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Logs";
 }
-<div id="log_app" v-clock>
+<div id="logApp" v-clock>
     <template>
         <el-container>
             <el-header style="padding-top:25px;">
@@ -9,7 +9,7 @@
                     <el-row :gutter="10">
                         <el-col :span="6">
                             <el-form-item label="搜索：">
-                                <el-input style="width:250px;" size="medium" v-model="search_form.search_key" placeholder="请输入关键字"></el-input>
+                                <el-input style="width:300px;" size="medium" v-model="search_form.search_key" placeholder="请输入关键字"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">
@@ -56,7 +56,7 @@
 @section script {
     <script>
         new Vue({
-            el: "#log_app",
+            el: "#logApp",
             data: {
                 maxHeight: gobal.params.tableMaxHeight,
                 pageSizes: [30, 50, 100, 300],

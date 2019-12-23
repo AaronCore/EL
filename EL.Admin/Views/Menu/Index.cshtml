@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Index";
 }
-<div id="menu_app" v-clock>
+<div id="menuApp" v-clock>
     <template>
         <el-container>
             <el-header style="padding-top:25px;">
@@ -93,7 +93,7 @@
 @section script {
     <script>
         new Vue({
-            el: "#menu_app",
+            el: "#menuApp",
             data: {
                 maxHeight: gobal.params.tableMaxHeight,
                 search: null,
@@ -141,6 +141,32 @@
                         this.$refs[formName].resetFields();
                     }
                     this.menuForm.parentId = 0;
+                },
+                //表单提交
+                submitForm: function (formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            this.editLoading = true;
+                            this.$http.post('/Menu/Submit', this.menuForm, { emulateJSON: true }).then((response) => {
+                                var resp = response.body;
+                                if (resp.code == 0) {
+                                    this.editLoading = false;
+                                    this.$message({ type: "success", message: "操作成功..." });
+                                    this.resetForm("menuForm");
+                                    this.menuFormVisible = false;
+                                    this.getTableData();
+                                } else {
+                                    this.$message.error("操作失败，详情请查看错误日志...");
+                                }
+                            }, (response) => {
+                                //响应错误回调
+                            });
+                            
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
                 },
                 //状态修改
                 enableds: function () {
@@ -213,30 +239,6 @@
                             } else {
                                 done();
                             }
-                        }
-                    });
-                },
-                //表单提交
-                submitForm: function (formName) {
-                    this.$refs[formName].validate((valid) => {
-                        if (valid) {
-                            this.editLoading = true;
-                            this.$http.post('/Menu/Submit', this.menuForm, { emulateJSON: true }).then((response) => {
-                                var resp = response.body;
-                                if (resp.code == 0) {
-                                    this.addLoading = false;
-                                    this.$message({ type: "success", message: "操作成功..." });
-                                    this.resetForm("menuForm");
-                                    this.menuFormVisible = false;
-                                } else {
-                                    this.$message.error("操作失败，详情请查看错误日志...");
-                                }
-                            }, (response) => {
-                                //响应错误回调
-                            });
-                        } else {
-                            console.log('error submit!!');
-                            return false;
                         }
                     });
                 },

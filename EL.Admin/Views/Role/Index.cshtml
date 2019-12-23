@@ -1,0 +1,360 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<div id="roleApp" v-clock>
+    <template>
+        <el-container>
+            <el-header style="padding-top:25px;">
+                <el-form ref="form" :inline="true" :model="search_form">
+                    <el-row :gutter="10">
+                        <el-col :span="6">
+                            <el-form-item label="搜索：">
+                                <el-input style="width:300px;" size="medium" v-model="search_form.search_key" placeholder="请输入关键字"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-button type="primary" size="medium" v-on:click="search" icon="el-icon-fa-search">查询</el-button>
+                            <el-button type="success" size="medium" v-on:click="add" icon="el-icon-fa-plus">添加</el-button>
+                            <el-button type="danger" size="medium" v-on:click="dels" icon="el-icon-delete">删除</el-button>
+                            <el-button type="warning" size="medium" v-on:click="enableds" icon="el-icon-fa-edit">状态修改</el-button>
+                            <el-button type="primary" size="medium" v-on:click="reset" icon="el-icon-fa-recycle">重置</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-header>
+            <el-main>
+                <template>
+                    <el-table :data="tableData" border size="medium" style="width:100%" :max-height="maxHeight" v-on:selection-change="selectionChange">
+                        <el-table-column type="selection" width="40"></el-table-column>
+                        <el-table-column header-align="center" align="center" prop="id" v-if="false" label="Id" width="80">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="name" label="角色名称">
+                        </el-table-column>
+                        <el-table-column header-align="center" prop="enabled" width="80" label="状态">
+                            <template slot-scope="scope">
+                                <el-button :type="scope.row.enabled ? 'success' : 'danger'" size="mini">{{scope.row.enabled?"启用":"禁用" }}</el-button>
+                            </template>
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="sort" label="排序号" width="80">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="createTime" label="创建时间" width="200">
+                        </el-table-column>
+                        <el-table-column header-align="center" label="操作" width="200">
+                            <template slot-scope="scope">
+                                <el-button v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
+                                <el-button v-on:click="roleMenu(scope.row)" type="primary" plain size="mini">角色菜单</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <el-row :gutter="20">
+                        <el-col :span="8" :offset="8">
+                            <el-pagination v-on:size-change="handleSizeChange"
+                                           v-on:current-change="handleCurrentChange"
+                                           :page-sizes="pageSizes"
+                                           :page-size="pageSize"
+                                           :current-page="1"
+                                           layout="total, sizes, prev, pager, next, jumper"
+                                           :total="total">
+                            </el-pagination>
+                        </el-col>
+                    </el-row>
+                </template>
+            </el-main>
+        </el-container>
+
+    </template>
+    <template>
+        <el-dialog title="角色编辑" :visible.sync="roleFormVisible">
+            <el-form :model="roleForm" ref="roleForm" :rules="rules" label-position="right" label-width="100px">
+                <el-form-item label="名称" prop="name">
+                    <el-input v-model="roleForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="排序号">
+                    <el-input-number v-model="roleForm.sort" :min="1" :max="1000" label="排序号"></el-input-number>
+                </el-form-item>
+                <el-form-item label="状态">
+                    <el-switch style="display: block;margin-top:9px;"
+                               v-model="roleForm.enabled"
+                               active-color="#13ce66"
+                               inactive-color="#ff4949"
+                               active-text="启用"
+                               inactive-text="禁用">
+                    </el-switch>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button v-on:click="resetForm('roleForm')">重 置</el-button>
+                <el-button type="primary" v-on:click="submitForm('roleForm')" v-bind:loading="editLoading">确 定</el-button>
+            </div>
+        </el-dialog>
+    </template>
+    <template>
+        <el-dialog title="角色菜单" :visible.sync="roleMenuFormVisible">
+            <el-tree :data="menuOptions"
+                     show-checkbox
+                     default-expand-all
+                     node-key="value"
+                     ref="roleMenuTree"
+                     highlight-current>
+            </el-tree>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button v-on:click="roleMenuReset">重 置</el-button>
+                <el-button type="primary" v-on:click="roleMenuSubmit" v-bind:loading="roleMenuLoading">确 定</el-button>
+            </div>
+        </el-dialog>
+    </template>
+</div>
+@section script {
+    <script>
+        new Vue({
+            el: "#roleApp",
+            data: {
+                maxHeight: gobal.params.tableMaxHeight,
+                pageSizes: [30, 50, 100, 300],
+                pageSize: 30,
+                pageIndex: 1,
+                total: 0,
+                search_form: {
+                    search_key: null,
+                },
+                roleFormVisible: false,
+                roleMenuFormVisible: false,
+                editLoading: false,
+                roleMenuLoading: false,
+                roleForm: {
+                    id: 0,
+                    name: null,
+                    sort: 0,
+                    enabled: true
+                },
+                rules: {
+                    name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
+                },
+                ids: [],
+                roleId: null,
+                tableData: [],
+                menuOptions: []
+            },
+            methods: {
+                //查询
+                search: function () {
+                    this.pageReset();
+                    this.getTableData();
+                },
+                //添加
+                add: function () {
+                    this.roleFormVisible = true;
+                    this.resetForm("roleForm");
+                },
+                //重置
+                reset: function () {
+                    this.search_form.search_key = null;
+                    this.pageReset();
+                    this.getTableData();
+                },
+                getMenu: function () {
+                    this.$http.get('/Menu/GetMenuListJson', { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        this.menuOptions = resp;
+                    }, (response) => {
+                        //响应错误回调
+                    });
+                },
+                roleMenu: function (row) {
+                    this.roleId = row.id;
+                    this.roleMenuFormVisible = true;
+                    this.getMenu();
+                    this.$http.get("/Role/GetRoleMenuJson?id=" + row.id, { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        if (resp.code == 0) {
+                            console.log(resp.menuIds);
+                            this.$refs.roleMenuTree.setCheckedKeys(resp.menuIds);
+                        }
+                    }, (response) => {
+                        //响应错误回调
+                    });
+                },
+                roleMenuReset: function () {
+                    this.$refs.roleMenuTree.setCheckedKeys([]);
+                },
+                roleMenuSubmit: function () {
+                    this.roleMenuLoading = true;
+                    var menuIds = this.$refs.roleMenuTree.getCheckedKeys().concat(this.$refs.roleMenuTree.getHalfCheckedKeys());
+                    this.$http.post('/Role/RoleMenuSubmit', { roleId: this.roleId, menuIds: menuIds }, { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        if (resp.code == 0) {
+                            this.$message({ type: "success", message: "操作成功..." });
+                            this.roleMenuLoading = false;
+                            this.roleMenuFormVisible = false;
+                        } else {
+                            this.$message.error("操作失败，详情请查看错误日志...");
+                        }
+                    }, (response) => {
+                        //响应错误回调
+                    });
+                },
+                //编辑
+                edit: function (row) {
+                    var url = "/Role/GetRoleJson?id=" + row.id;
+                    this.$http.get(url, { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        this.roleForm = resp;
+                        this.roleFormVisible = true;
+                    }, (response) => {
+                        //响应错误回调
+                    });
+                },
+                //表单提交
+                submitForm: function (formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            this.editLoading = true;
+                            this.$http.post('/Role/Submit', this.roleForm, { emulateJSON: true }).then((response) => {
+                                var resp = response.body;
+                                if (resp.code == 0) {
+                                    this.editLoading = false;
+                                    this.$message({ type: "success", message: "操作成功..." });
+                                    this.resetForm("menuForm");
+                                    this.roleFormVisible = false;
+                                    this.getTableData();
+                                } else {
+                                    this.$message.error("操作失败，详情请查看错误日志...");
+                                }
+                            }, (response) => {
+                                //响应错误回调
+                            });
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+                //表单重置
+                resetForm: function (formName) {
+                    if (this.$refs[formName] !== undefined) {
+                        this.$refs[formName].resetFields();
+                    }
+                },
+                //状态修改
+                enableds: function () {
+                    var self = this;
+                    if (this.ids.length <= 0) {
+                        this.$message.error("请选择数据...");
+                        return false;
+                    }
+                    this.$msgbox({
+                        title: '提示',
+                        type: 'warning',
+                        message: '此操作将修改数据状态, 是否继续?',
+                        showCancelButton: true,
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        beforeClose: function (action, instance, done) {
+                            if (action === 'confirm') {
+                                instance.confirmButtonLoading = true;
+                                instance.confirmButtonText = '执行中...';
+                                this.$http.post('/Role/Enableds', { ids: self.ids }, { emulateJSON: true }).then((response) => {
+                                    var resp = response.body;
+                                    if (resp.code == 0) {
+                                        this.$message({ type: "success", message: "修改成功..." });
+                                        self.getTableData();
+                                    } else {
+                                        this.$message.error("修改失败，详情请查看错误日志...");
+                                    }
+                                    done();
+                                    instance.confirmButtonLoading = false;
+                                }, (response) => {
+                                    //响应错误回调
+                                });
+                            } else {
+                                done();
+                            }
+                        }
+                    });
+                },
+                //删除
+                dels: function () {
+                    var self = this;
+                    if (this.ids.length <= 0) {
+                        this.$message.error("请选择数据...");
+                        return false;
+                    }
+                    this.$msgbox({
+                        title: '提示',
+                        type: 'warning',
+                        message: '此操作将永久删除该数据, 是否继续?',
+                        showCancelButton: true,
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        beforeClose: function (action, instance, done) {
+                            if (action === 'confirm') {
+                                instance.confirmButtonLoading = true;
+                                instance.confirmButtonText = '执行中...';
+                                this.$http.post('/Role/Deletes', { ids: self.ids }, { emulateJSON: true }).then((response) => {
+                                    var resp = response.body;
+                                    if (resp.code == 0) {
+                                        this.$message({ type: "success", message: "删除成功..." });
+                                        self.getTableData();
+                                    } else {
+                                        this.$message.error("删除失败，详情请查看错误日志...");
+                                    }
+                                    done();
+                                    instance.confirmButtonLoading = false;
+                                }, (response) => {
+                                    //响应错误回调
+                                });
+                            } else {
+                                done();
+                            }
+                        }
+                    });
+                },
+                //获取列表
+                getTableData: function () {
+                    var options = {
+                        pageIndex: this.pageIndex,
+                        pageSize: this.pageSize,
+                        searchKey: this.search_form.search_key
+                    };
+                    this.$http.post('/Role/GetRoleListJson', options, { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        this.tableData = resp.data;
+                        this.pageIndex = resp.pageIndex;
+                        this.pageSize = resp.pageSize;
+                        this.total = resp.total;
+                    }, (response) => {
+                        //响应错误回调
+                    });
+                },
+                //获取选中行
+                selectionChange: function (rows) {
+                    if (rows) {
+                        rows.forEach(row => {
+                            this.ids.push(row.id);
+                        });
+                    } else {
+                        this.$refs.multipleTable.clearSelection();
+                    }
+                },
+                pageReset: function () {
+                    this.pageSize = 30;
+                    this.pageIndex = 1;
+                    this.total = 0;
+                },
+                handleSizeChange(val) {
+                    this.pageSize = val;
+                    this.getTableData();
+                },
+                handleCurrentChange(val) {
+                    this.pageIndex = val;
+                    this.getTableData();
+                }
+            },
+            created: function () {
+                this.getTableData();
+            }
+        });
+    </script>
+}
+

@@ -77,7 +77,7 @@ var homeTab = {
     notClosable: true
 };
 new Vue({
-    el: '#home_app',
+    el: '#homeApp',
     data: function () {
         return {
             isCollapse: false,
@@ -119,7 +119,7 @@ new Vue({
                             key: 'role_list',
                             title: '角色列表',
                             show: true,
-                            url: '',
+                            url: '/Role/Index',
                             icon: 'el-icon-fa-list',
                         },
                         {
