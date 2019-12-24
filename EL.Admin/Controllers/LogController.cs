@@ -25,10 +25,10 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetLogListJson(int pageIndex, int pageSize, string searchKey = null)
+        public IActionResult GetLogPageList(int pageIndex, int pageSize, string searchKey = null)
         {
             int total = 0;
-            var list = _logService.GetLogList(pageIndex, pageSize, out total, searchKey);
+            var list = _logService.GetLogPageList(pageIndex, pageSize, out total, searchKey);
             var obj = new
             {
                 pageIndex,
@@ -52,7 +52,7 @@ namespace EL.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetLogJson(int id)
+        public IActionResult GetLog(int id)
         {
             var entity = _logService.GetLog(id);
             var obj = new

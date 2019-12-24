@@ -96,6 +96,7 @@ namespace EL.Repository
         {
             _dbContext.Entry<T>(entity).State = EntityState.Modified;
         }
+
         /// <summary>
         /// 批量修改实体
         /// </summary>
@@ -168,7 +169,6 @@ namespace EL.Repository
             return await _dbContext.Set<T>().AsNoTracking().Where(where).ToListAsync();
         }
 
-
         /// <summary>
         /// 根据条件查询实体
         /// </summary>
@@ -188,7 +188,6 @@ namespace EL.Repository
         {
             return await _dbContext.Set<T>().SingleOrDefaultAsync(where);
         }
-
 
         /// <summary>
         /// 根据条件查询实体不跟踪
@@ -250,7 +249,6 @@ namespace EL.Repository
             return await _dbContext.Set<T>().AnyAsync(where);
         }
 
-
         #region 分页排序查询
         /// <summary>
         /// 加载自己定义排序分页实体列表
@@ -267,7 +265,7 @@ namespace EL.Repository
 
             if (asc.Equals(nameof(asc)))
                 return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
-            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
         }
         public virtual IEnumerable<T> LoadEntityEnumerable(Expression<Func<T, bool>> where, Expression<Func<T, int?>> orderby, string asc, int pageIndex, int pageSize)
         {
@@ -275,7 +273,7 @@ namespace EL.Repository
 
             if (asc.Equals(nameof(asc)))
                 return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
-            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
 
         }
         public virtual IEnumerable<T> LoadEntityEnumerable(Expression<Func<T, bool>> where, Expression<Func<T, DateTime?>> orderby, string asc, int pageIndex, int pageSize)
@@ -284,7 +282,7 @@ namespace EL.Repository
 
             if (asc.Equals(nameof(asc)))
                 return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
-            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
         }
         public virtual IEnumerable<T> LoadEntityEnumerable(Expression<Func<T, bool>> where, Expression<Func<T, decimal?>> orderby, string asc, int pageIndex, int pageSize)
         {
@@ -292,7 +290,7 @@ namespace EL.Repository
 
             if (asc.Equals(nameof(asc)))
                 return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
-            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
 
         }
         public virtual IEnumerable<T> LoadEntityEnumerable(Expression<Func<T, bool>> where, Expression<Func<T, bool?>> orderby, string asc, int pageIndex, int pageSize)
@@ -301,7 +299,7 @@ namespace EL.Repository
 
             if (asc.Equals(nameof(asc)))
                 return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, bool?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
-            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, bool?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, bool?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
 
         }
         #endregion
@@ -321,17 +319,16 @@ namespace EL.Repository
             --pageIndex;
 
             if (asc.Equals(nameof(asc)))
-                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
-            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
-
+                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).ToListAsync();
+            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).ToListAsync();
         }
         public virtual async Task<List<T>> LoadEntityListAsync(Expression<Func<T, bool>> where, Expression<Func<T, int?>> orderby, string asc, int pageIndex, int pageSize)
         {
             --pageIndex;
 
             if (asc.Equals(nameof(asc)))
-                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
-            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).ToListAsync();
+            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).ToListAsync();
 
         }
         public virtual async Task<List<T>> LoadEntityListAsync(Expression<Func<T, bool>> where, Expression<Func<T, DateTime?>> orderby, string asc, int pageIndex, int pageSize)
@@ -339,8 +336,8 @@ namespace EL.Repository
             --pageIndex;
 
             if (asc.Equals(nameof(asc)))
-                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
-            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).ToListAsync();
+            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).ToListAsync();
 
         }
         public virtual async Task<List<T>> LoadEntityListAsync(Expression<Func<T, bool>> where, Expression<Func<T, decimal?>> orderby, string asc, int pageIndex, int pageSize)
@@ -348,9 +345,8 @@ namespace EL.Repository
             --pageIndex;
 
             if (asc.Equals(nameof(asc)))
-                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
-            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
-
+                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).ToListAsync();
+            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).ToListAsync();
         }
 
         #endregion

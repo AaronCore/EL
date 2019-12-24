@@ -23,21 +23,21 @@ namespace EL.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTreeListJson()
+        public IActionResult GetTreeList()
         {
             var list = _menuService.GetMenuTreeList();
             return Json(list);
         }
 
         [HttpGet]
-        public IActionResult GetMenuListJson()
+        public IActionResult GetMenuList()
         {
             var list = _menuService.GetMenuList();
             return Json(list);
         }
 
         [HttpGet]
-        public IActionResult GetMenuJson(int id)
+        public IActionResult GetMenu(int id)
         {
             var model = _menuService.GetMenu(id);
             var obj = new

@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using EL.Application;
 using EL.Entity;
-using EL.Common;
-using System.Collections;
 
 namespace EL.Admin.Controllers
 {
-    public class RoleController : BaseController
+    public class AccountController : BaseController
     {
+        private readonly IAccountService _accountService;
         private readonly IRoleService _roleService;
-        public RoleController(IRoleService roleService)
+        public AccountController(IAccountService accountService, IRoleService roleService)
         {
+            _accountService = accountService;
             _roleService = roleService;
         }
 
@@ -24,50 +24,45 @@ namespace EL.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetRoleMenu(int id)
+        public IActionResult GetAccount(int id)
         {
-            var model = _roleService.GetRole(id);
-            ArrayList array = new ArrayList();
-            foreach (var item in model.RoleMenus)
-            {
-                array.Add(item.MenuId);
-            }
-            return Json(new { code = 0, menuIds = array });
-        }
-
-        [HttpPost]
-        public IActionResult RoleMenuSubmit(int roleId, int[] menuIds)
-        {
-            _roleService.RoleMenuSubmit(roleId, menuIds);
-            return Json(new { code = 0 });
-        }
-
-        [HttpGet]
-        public IActionResult GetRole(int id)
-        {
-            var model = _roleService.GetRole(id);
+            var model = _accountService.GetAccount(id);
             var obj = new
             {
                 model.Id,
                 model.Name,
+                model.Account,
+                RoleId = model.Role != null ? model.Role.Id : 0,
                 model.Enabled,
                 model.Sort
             };
             return Json(obj);
         }
 
-        [HttpPost]
-        public IActionResult Submit(RoleEntity entity)
+        [HttpGet]
+        public IActionResult GetRoleList(AccountEntity entity)
         {
-            _roleService.Submit(entity);
+            var list = _roleService.GetRoleList();
+            var obj = list != null ? list.OrderBy(p => p.Name).Select(p => new
+            {
+                text = p.Name,
+                value = p.Id,
+            }) : null;
+            return Json(obj);
+        }
+
+        [HttpPost]
+        public IActionResult Submit(Account_DTO entity)
+        {
+            _accountService.Submit(entity);
             return Json(new { code = 0 });
         }
 
         [HttpPost]
-        public IActionResult GetRolePageList(int pageIndex, int pageSize, string searchKey = null)
+        public IActionResult GetAccountPageList(int pageIndex, int pageSize, string searchKey = null)
         {
             int total = 0;
-            var list = _roleService.GetRolePageList(pageIndex, pageSize, out total, searchKey);
+            var list = _accountService.GetAccountPageList(pageIndex, pageSize, out total, searchKey).ToList();
             var obj = new
             {
                 pageIndex,
@@ -77,10 +72,11 @@ namespace EL.Admin.Controllers
                 {
                     p.Id,
                     p.Name,
+                    RoleName = p.Role != null ? p.Role.Name : null,
                     p.Enabled,
                     p.Sort,
                     CreateTime = p.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")
-                })
+                }).ToList()
             };
             return Json(obj);
         }
@@ -88,14 +84,14 @@ namespace EL.Admin.Controllers
         [HttpPost]
         public IActionResult Deletes(int[] ids)
         {
-            var status = _roleService.Deletes(ids);
+            var status = _accountService.Deletes(ids);
             return Json(new { code = status ? 0 : -2 });
         }
 
         [HttpPost]
         public IActionResult Enableds(int[] ids)
         {
-            _roleService.Enableds(ids);
+            _accountService.Enableds(ids);
             return Json(new { code = 0 });
         }
     }

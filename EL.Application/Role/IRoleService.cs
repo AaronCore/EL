@@ -9,9 +9,10 @@ namespace EL.Application
     {
         bool Deletes(int[] ids);
         void Enableds(int[] ids);
-        List<RoleEntity> GetRoleList(int pageIndex, int pageSize, out int total, string searchKey);
+        List<RoleEntity> GetRolePageList(int pageIndex, int pageSize, out int total, string searchKey);
         void Submit(RoleEntity entity);
         RoleEntity GetRole(int id);
         void RoleMenuSubmit(int roleId, int[] menuIds);
+        List<RoleEntity> GetRoleList();
     }
 }

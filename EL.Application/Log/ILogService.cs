@@ -11,6 +11,6 @@ namespace EL.Application
         void SaveException(Exception ex);
         bool Deletes(int[] ids);
         LogEntity GetLog(int id);
-        List<LogEntity> GetLogList(int pageIndex, int pageSize, out int total, string searchKey);
+        List<LogEntity> GetLogPageList(int pageIndex, int pageSize, out int total, string searchKey);
     }
 }

@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="Logs\**" />
+    <Compile Remove="wwwroot\fonts\**" />
     <Content Remove="Logs\**" />
+    <Content Remove="wwwroot\fonts\**" />
     <EmbeddedResource Remove="Logs\**" />
+    <EmbeddedResource Remove="wwwroot\fonts\**" />
     <None Remove="Logs\**" />
+    <None Remove="wwwroot\fonts\**" />
   </ItemGroup>
 
   <ItemGroup>

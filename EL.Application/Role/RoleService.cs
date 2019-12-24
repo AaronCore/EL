@@ -20,6 +20,10 @@ namespace EL.Application
             _menuRepository = menuRepository;
         }
 
+        public List<RoleEntity> GetRoleList()
+        {
+            return _roleRepository.WhereLoadEntityEnumerable(p => p.Enabled).ToList();
+        }
         public void RoleMenuSubmit(int roleId, int[] menuIds)
         {
             var roleModel = _roleRepository.WhereLoadEntity(p => p.Id == roleId);
@@ -61,7 +65,7 @@ namespace EL.Application
                 _roleRepository.Commit();
             }
         }
-        public List<RoleEntity> GetRoleList(int pageIndex, int pageSize, out int total, string searchKey)
+        public List<RoleEntity> GetRolePageList(int pageIndex, int pageSize, out int total, string searchKey)
         {
             Expression<Func<RoleEntity, bool>> where = e => true;
             if (!string.IsNullOrWhiteSpace(searchKey))

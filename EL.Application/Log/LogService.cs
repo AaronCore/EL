@@ -23,7 +23,7 @@ namespace EL.Application
         {
             _logRepository = logRepository;
         }
-        public List<LogEntity> GetLogList(int pageIndex, int pageSize, out int total, string searchKey)
+        public List<LogEntity> GetLogPageList(int pageIndex, int pageSize, out int total, string searchKey)
         {
             Expression<Func<LogEntity, bool>> where = e => true;
             if (!string.IsNullOrWhiteSpace(searchKey))

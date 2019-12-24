@@ -1,7 +1,7 @@
 ﻿@{
-    ViewData["Title"] = "Role";
+    ViewData["Title"] = "Account";
 }
-<div id="roleApp" v-clock>
+<div id="accountApp" v-clock>
     <template>
         <el-container>
             <el-header style="padding-top:25px;">
@@ -28,7 +28,9 @@
                         <el-table-column type="selection" width="40"></el-table-column>
                         <el-table-column header-align="center" align="center" prop="id" v-if="false" label="Id" width="80">
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" prop="name" label="角色名称">
+                        <el-table-column header-align="center" align="center" prop="name" label="名称">
+                        </el-table-column>
+                        <el-table-column header-align="center" align="center" prop="roleName" label="角色名称">
                         </el-table-column>
                         <el-table-column header-align="center" prop="enabled" width="80" label="状态">
                             <template slot-scope="scope">
@@ -39,10 +41,9 @@
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="createTime" label="创建时间" width="200">
                         </el-table-column>
-                        <el-table-column header-align="center" label="操作" width="200">
+                        <el-table-column header-align="center" label="操作" width="100">
                             <template slot-scope="scope">
                                 <el-button v-on:click="edit(scope.row)" type="primary" plain size="mini">编辑</el-button>
-                                <el-button v-on:click="roleMenu(scope.row)" type="primary" plain size="mini">角色菜单</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -64,17 +65,32 @@
 
     </template>
     <template>
-        <el-dialog title="角色编辑" :visible.sync="roleFormVisible">
-            <el-form :model="roleForm" ref="roleForm" :rules="rules" label-position="right" label-width="100px">
+        <el-dialog title="账号编辑" :visible.sync="accountFormVisible">
+            <el-form :model="accountForm" ref="accountForm" :rules="rules" label-position="right" label-width="100px">
+                <el-form-item label="角色" prop="roleId">
+                    <el-select v-model="accountForm.roleId" filterable clearable placeholder="请选择">
+                        <el-option v-for="item in roleOptions"
+                                   :key="item.value"
+                                   :label="item.text"
+                                   :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="名称" prop="name">
-                    <el-input v-model="roleForm.name"></el-input>
+                    <el-input v-model="accountForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="账号" prop="account">
+                    <el-input v-model="accountForm.account"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" v-show="passwordShow" prop="password" v-bind:required="required">
+                    <el-input type="password" v-model="accountForm.password"></el-input>
                 </el-form-item>
                 <el-form-item label="排序号">
-                    <el-input-number v-model="roleForm.sort" :min="1" :max="1000" label="排序号"></el-input-number>
+                    <el-input-number v-model="accountForm.sort" :min="1" :max="1000" label="排序号"></el-input-number>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-switch style="display: block;margin-top:9px;"
-                               v-model="roleForm.enabled"
+                               v-model="accountForm.enabled"
                                active-color="#13ce66"
                                inactive-color="#ff4949"
                                active-text="启用"
@@ -83,24 +99,8 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button v-on:click="resetForm('roleForm')">重 置</el-button>
-                <el-button type="primary" v-on:click="submitForm('roleForm')" v-bind:loading="editLoading">确 定</el-button>
-            </div>
-        </el-dialog>
-    </template>
-    <template>
-        <el-dialog title="角色菜单" :visible.sync="roleMenuFormVisible">
-            <el-tree :data="menuOptions"
-                     show-checkbox
-                     default-expand-all
-                     node-key="value"
-                     ref="roleMenuTree"
-                     highlight-current>
-            </el-tree>
-
-            <div slot="footer" class="dialog-footer">
-                <el-button v-on:click="roleMenuReset">重 置</el-button>
-                <el-button type="primary" v-on:click="roleMenuSubmit" v-bind:loading="roleMenuLoading">确 定</el-button>
+                <el-button v-on:click="resetForm('accountForm')">重 置</el-button>
+                <el-button type="primary" v-on:click="submitForm('accountForm')" v-bind:loading="editLoading">确 定</el-button>
             </div>
         </el-dialog>
     </template>
@@ -108,7 +108,7 @@
 @section script {
     <script>
         new Vue({
-            el: "#roleApp",
+            el: "#accountApp",
             data: {
                 maxHeight: gobal.params.tableMaxHeight,
                 pageSizes: [30, 50, 100, 300],
@@ -118,23 +118,27 @@
                 search_form: {
                     search_key: null,
                 },
-                roleFormVisible: false,
-                roleMenuFormVisible: false,
+                accountFormVisible: false,
                 editLoading: false,
-                roleMenuLoading: false,
-                roleForm: {
+                passwordShow: true,
+                accountForm: {
                     id: 0,
+                    roleId: null,
                     name: null,
+                    account: null,
+                    password: null,
                     sort: 0,
                     enabled: true
                 },
                 rules: {
-                    name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
+                    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+                    account: [{ required: true, message: '请输入登录账号', trigger: 'blur' }],
+                    roleId: [{ required: true, message: '请选择一个角色', trigger: 'blur' }],
                 },
                 ids: [],
-                roleId: null,
                 tableData: [],
-                menuOptions: []
+                roleOptions: [],
+                required: false,
             },
             methods: {
                 //查询
@@ -144,8 +148,8 @@
                 },
                 //添加
                 add: function () {
-                    this.roleFormVisible = true;
-                    this.resetForm("roleForm");
+                    this.accountFormVisible = true;
+                    this.resetForm("accountForm");
                 },
                 //重置
                 reset: function () {
@@ -153,70 +157,39 @@
                     this.pageReset();
                     this.getTableData();
                 },
-                getMenu: function () {
-                    this.$http.get('/Menu/GetMenuListJson', { emulateJSON: true }).then((response) => {
+                getRole: function (row) {
+                    this.$http.get("/Account/GetRoleList", { emulateJSON: true }).then((response) => {
                         var resp = response.body;
-                        this.menuOptions = resp;
-                    }, (response) => {
-                        //响应错误回调
-                    });
-                },
-                roleMenu: function (row) {
-                    this.roleId = row.id;
-                    this.roleMenuFormVisible = true;
-                    this.getMenu();
-                    this.$http.get("/Role/GetRoleMenu?id=" + row.id, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
-                        if (resp.code == 0) {
-                            console.log(resp.menuIds);
-                            this.$refs.roleMenuTree.setCheckedKeys(resp.menuIds);
-                        }
-                    }, (response) => {
-                        //响应错误回调
-                    });
-                },
-                roleMenuReset: function () {
-                    this.$refs.roleMenuTree.setCheckedKeys([]);
-                },
-                roleMenuSubmit: function () {
-                    this.roleMenuLoading = true;
-                    var menuIds = this.$refs.roleMenuTree.getCheckedKeys().concat(this.$refs.roleMenuTree.getHalfCheckedKeys());
-                    this.$http.post('/Role/RoleMenuSubmit', { roleId: this.roleId, menuIds: menuIds }, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
-                        if (resp.code == 0) {
-                            api.showMsg("操作成功...", "success");
-                            this.roleMenuLoading = false;
-                            this.roleMenuFormVisible = false;
-                        } else {
-                            api.showMsg("操作失败，详情请查看错误日志...", "error");
-                        }
+                        this.roleOptions = resp;
                     }, (response) => {
                         //响应错误回调
                     });
                 },
                 //编辑
                 edit: function (row) {
-                    var url = "/Role/GetRole?id=" + row.id;
-                    this.$http.get(url, { emulateJSON: true }).then((response) => {
+                    this.passwordShow = false;
+                    this.$http.get("/Account/GetAccount?id=" + row.id, { emulateJSON: true }).then((response) => {
                         var resp = response.body;
-                        this.roleForm = resp;
-                        this.roleFormVisible = true;
+                        this.accountForm = resp;
+                        this.accountFormVisible = true;
                     }, (response) => {
                         //响应错误回调
                     });
                 },
                 //表单提交
                 submitForm: function (formName) {
+                    this.required = true;
+                    this.rules.password = [{ required: true, message: '请输入密码' }, { min: 6, max: 15, message: '长度在 6 到 15 个字符' }];
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.editLoading = true;
-                            this.$http.post('/Role/Submit', this.roleForm, { emulateJSON: true }).then((response) => {
+                            this.$http.post('/Account/Submit', this.accountForm, { emulateJSON: true }).then((response) => {
                                 var resp = response.body;
                                 if (resp.code == 0) {
                                     this.editLoading = false;
                                     api.showMsg("操作成功...", "success");
-                                    this.resetForm("menuForm");
-                                    this.roleFormVisible = false;
+                                    this.resetForm("accountForm");
+                                    this.accountFormVisible = false;
                                     this.getTableData();
                                 } else {
                                     api.showMsg("操作失败，详情请查看错误日志...", "error");
@@ -254,7 +227,7 @@
                             if (action === 'confirm') {
                                 instance.confirmButtonLoading = true;
                                 instance.confirmButtonText = '执行中...';
-                                this.$http.post('/Role/Enableds', { ids: self.ids }, { emulateJSON: true }).then((response) => {
+                                this.$http.post('/Account/Enableds', { ids: self.ids }, { emulateJSON: true }).then((response) => {
                                     var resp = response.body;
                                     if (resp.code == 0) {
                                         api.showMsg("修改成功...", "success");
@@ -264,9 +237,7 @@
                                     }
                                     done();
                                     instance.confirmButtonLoading = false;
-                                }, (response) => {
-                                    //响应错误回调
-                                });
+                                }, (response) => { });
                             } else {
                                 done();
                             }
@@ -291,7 +262,7 @@
                             if (action === 'confirm') {
                                 instance.confirmButtonLoading = true;
                                 instance.confirmButtonText = '执行中...';
-                                this.$http.post('/Role/Deletes', { ids: self.ids }, { emulateJSON: true }).then((response) => {
+                                this.$http.post('/Account/Deletes', { ids: self.ids }, { emulateJSON: true }).then((response) => {
                                     var resp = response.body;
                                     if (resp.code == 0) {
                                         api.showMsg("删除成功...", "success");
@@ -301,9 +272,7 @@
                                     }
                                     done();
                                     instance.confirmButtonLoading = false;
-                                }, (response) => {
-                                    //响应错误回调
-                                });
+                                }, (error) => { });
                             } else {
                                 done();
                             }
@@ -317,15 +286,13 @@
                         pageSize: this.pageSize,
                         searchKey: this.search_form.search_key
                     };
-                    this.$http.post('/Role/GetRolePageList', options, { emulateJSON: true }).then((response) => {
+                    this.$http.get('/Account/GetAccountPageList', options, { emulateJSON: true }).then((response) => {
                         var resp = response.body;
                         this.tableData = resp.data;
                         this.pageIndex = resp.pageIndex;
                         this.pageSize = resp.pageSize;
                         this.total = resp.total;
-                    }, (response) => {
-                        //响应错误回调
-                    });
+                    }, (error) => { });
                 },
                 //获取选中行
                 selectionChange: function (rows) {
@@ -353,6 +320,7 @@
             },
             created: function () {
                 this.getTableData();
+                this.getRole();
             }
         });
     </script>

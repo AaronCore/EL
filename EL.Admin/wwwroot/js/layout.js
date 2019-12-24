@@ -6,9 +6,9 @@ var api = {
         msg
     }) {
         // 传入对象提示消息
-        this.showMsg(type, code, msg);
+        this.showMsg(msg, type);
     },
-    showMsg: function (type, code, msg) {
+    showMsg: function (msg, type) {
         // 传入参数显示消息
     },
     showMsgByHtml: function (title, html) {
@@ -16,11 +16,11 @@ var api = {
     },
     // 2.弹出窗
     // 3.子页面参数
-    getTabParams: function (tabKey) { // 子页面的Key传进来
-
+    getTabParams: function (tabKey) {
+        // 子页面的Key传进来
     },
-    setTabParams: function (tabKey, params) { // 子页面的Key和params对象传进来
-
+    setTabParams: function (tabKey, params) {
+        // 子页面的Key和params对象传进来
     },
     // 4.tabs操作
     jumpTabByObj: function ({
@@ -36,7 +36,8 @@ var api = {
     },
     tabCloseOrCallBack: function (tab, chain) {
         if (tab) {
-            if (typeof chain === 'undefined') { // 传个空的防止出现 undefined 
+            if (typeof chain === 'undefined') {
+                // 传个空的防止出现 undefined
                 chain = new SalChain([], null);
             }
             var cType = typeof tab.callback;
@@ -52,24 +53,24 @@ var api = {
 
     },
     // 5.全屏loading遮罩
-    openLoading: function (time) { // 打开遮罩,传入自动取消时间
-
+    openLoading: function (time) {
+        // 打开遮罩,传入自动取消时间
     },
-    closeLoading: function () { // 手动关闭遮罩
-
+    closeLoading: function () {
+        // 手动关闭遮罩
     },
     // 6.检查是否拥有资源，本质上是从menuArr中查找出来
-    cr: function (key) { // Check Resource 的简写
-
+    cr: function (key) {
+        // Check Resource 的简写
     },
-    getCurrTabRes: function (iframWindow) { // 获取当前tab页对应的资源
-
+    getCurrTabRes: function (iframWindow) {
+        // 获取当前tab页对应的资源
     }
 };
 
 var homeTab = {
-    key: 'HOME',
-    name: 'HOME',
+    key: 'home',
+    name: 'home',
     title: '',
     show: true,
     //url: 'aaa.html',
@@ -112,7 +113,7 @@ new Vue({
                             key: 'account_list',
                             title: '账号列表',
                             show: true,
-                            url: '',
+                            url: '/Account/Index',
                             icon: 'el-icon-fa-list',
                         },
                         {
@@ -155,14 +156,13 @@ new Vue({
         var _this = this;
         // 重写api
         // 1.提示框
-        api.showMsg = function (type, code, msg) {
-            _this.$notify({
-                title: (type === 'success' ? '成功' : type === 'warning' ? '警告' :
-                    type === 'info' ? '消息' : '错误') + ':' + code,
-                message: msg,
-                type: type,
-                position: 'bottom-right'
-            });
+        // type：成功(success),警告(warning),错误(error)
+        api.showMsg = function (msg, type = null) {
+            if (type == null) {
+                _this.$message({ showClose: true, message: msg });
+            } else {
+                _this.$message({ showClose: true, message: msg, type: type });
+            }
         };
         api.showMsgByHtml = function (title, html) {
             _this.$notify({
@@ -409,10 +409,10 @@ new Vue({
         }
     },
     mounted: function () {
-        this.$nextTick(function () {
-            // Code that will run only after the
-            // entire view has been rendered
-            //api.jumpTab('useDocTemplate','样板示例','useDocTemplate.html','layui_icon layui_icon_template');
-        });
+        //this.$nextTick(function () {
+        //    // Code that will run only after the
+        //    // entire view has been rendered
+        //    //api.jumpTab('useDocTemplate','样板示例','useDocTemplate.html','layui_icon layui_icon_template');
+        //});
     }
 });

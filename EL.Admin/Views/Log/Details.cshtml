@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "LogDetails";
 }
 @section css {
     <style type="text/css">
@@ -36,8 +36,7 @@
             },
             methods: {
                 details: function () {
-                    var url = '/Log/GetLogJson?id=' + this.id;
-                    this.$http.get(url, { emulateJSON: true }).then((response) => {
+                    this.$http.get('/Log/GetLog?id=' + this.id, { emulateJSON: true }).then((response) => {
                         var resp = response.body;
                         this.createTime = resp.createTime;
                         this.message = resp.message;
@@ -49,7 +48,7 @@
                 }
             },
             created: function () {
-                this.id = parent.api.getTabParams('log_details_tab').log_id;
+                this.id = parent.api.getTabParams('logDetailsTab').logId;
                 this.details();
             },
         });

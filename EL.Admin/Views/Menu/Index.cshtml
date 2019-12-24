@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Menu";
 }
 <div id="menuApp" v-clock>
     <template>
@@ -151,17 +151,17 @@
                                 var resp = response.body;
                                 if (resp.code == 0) {
                                     this.editLoading = false;
-                                    this.$message({ type: "success", message: "操作成功..." });
+                                    api.showMsg("操作成功...", "success");
                                     this.resetForm("menuForm");
                                     this.menuFormVisible = false;
                                     this.getTableData();
                                 } else {
-                                    this.$message.error("操作失败，详情请查看错误日志...");
+                                    api.showMsg("操作失败，详情请查看错误日志...", "error");
                                 }
                             }, (response) => {
                                 //响应错误回调
                             });
-                            
+
                         } else {
                             console.log('error submit!!');
                             return false;
@@ -172,7 +172,7 @@
                 enableds: function () {
                     var self = this;
                     if (this.ids.length <= 0) {
-                        this.$message.error("请选择数据...");
+                        api.showMsg("请选择数据...", "warning");
                         return false;
                     }
                     this.$msgbox({
@@ -189,10 +189,10 @@
                                 this.$http.post('/Menu/Enableds', { ids: self.ids }, { emulateJSON: true }).then((response) => {
                                     var resp = response.body;
                                     if (resp.code == 0) {
-                                        this.$message({ type: "success", message: "修改成功..." });
+                                        api.showMsg("修改成功...", "success");
                                         self.getTableData();
                                     } else {
-                                        this.$message.error("修改失败，详情请查看错误日志...");
+                                        api.showMsg("修改失败，详情请查看错误日志...", "error");
                                     }
                                     done();
                                     instance.confirmButtonLoading = false;
@@ -209,7 +209,7 @@
                 dels: function () {
                     var self = this;
                     if (this.ids.length <= 0) {
-                        this.$message.error("请选择数据...");
+                        api.showMsg("请选择数据...", "warning");
                         return false;
                     }
                     this.$msgbox({
@@ -226,10 +226,10 @@
                                 this.$http.post('/Menu/Deletes', { ids: self.ids }, { emulateJSON: true }).then((response) => {
                                     var resp = response.body;
                                     if (resp.code == 0) {
-                                        this.$message({ type: "success", message: "删除成功..." });
+                                        api.showMsg("删除成功...", "success");
                                         self.getTableData();
                                     } else {
-                                        this.$message.error("删除失败，详情请查看错误日志...");
+                                        api.showMsg("删除失败，详情请查看错误日志...", "error");
                                     }
                                     done();
                                     instance.confirmButtonLoading = false;
@@ -244,7 +244,7 @@
                 },
                 //获取列表
                 getTableData: function () {
-                    this.$http.get('/Menu/GetTreeListJson', { emulateJSON: true }).then((response) => {
+                    this.$http.get('/Menu/GetTreeList', { emulateJSON: true }).then((response) => {
                         var resp = response.body;
                         this.tableData = resp;
                     }, (response) => {
@@ -252,7 +252,7 @@
                     });
                 },
                 getMenu: function () {
-                    this.$http.get('/Menu/GetMenuListJson', { emulateJSON: true }).then((response) => {
+                    this.$http.get('/Menu/GetMenu', { emulateJSON: true }).then((response) => {
                         var resp = response.body;
                         this.menuOptions = resp;
                     }, (response) => {
