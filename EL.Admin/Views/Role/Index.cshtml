@@ -154,25 +154,19 @@
                     this.getTableData();
                 },
                 getMenu: function () {
-                    this.$http.get('/Menu/GetMenuListJson', { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.get('/Menu/GetMenuList').then((res) => {
                         this.menuOptions = resp;
-                    }, (response) => {
-                        //响应错误回调
                     });
                 },
                 roleMenu: function (row) {
                     this.roleId = row.id;
                     this.roleMenuFormVisible = true;
                     this.getMenu();
-                    this.$http.get("/Role/GetRoleMenu?id=" + row.id, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.get("/Role/GetRoleMenu?id=" + row.id).then((res) => {
                         if (resp.code == 0) {
                             console.log(resp.menuIds);
                             this.$refs.roleMenuTree.setCheckedKeys(resp.menuIds);
                         }
-                    }, (response) => {
-                        //响应错误回调
                     });
                 },
                 roleMenuReset: function () {
@@ -181,8 +175,7 @@
                 roleMenuSubmit: function () {
                     this.roleMenuLoading = true;
                     var menuIds = this.$refs.roleMenuTree.getCheckedKeys().concat(this.$refs.roleMenuTree.getHalfCheckedKeys());
-                    this.$http.post('/Role/RoleMenuSubmit', { roleId: this.roleId, menuIds: menuIds }, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.post('/Role/RoleMenuSubmit', { roleId: this.roleId, menuIds: menuIds }).then((res) => {
                         if (resp.code == 0) {
                             api.showMsg("操作成功...", "success");
                             this.roleMenuLoading = false;
@@ -190,19 +183,13 @@
                         } else {
                             api.showMsg("操作失败，详情请查看错误日志...", "error");
                         }
-                    }, (response) => {
-                        //响应错误回调
                     });
                 },
                 //编辑
                 edit: function (row) {
-                    var url = "/Role/GetRole?id=" + row.id;
-                    this.$http.get(url, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.get("/Role/GetRole?id=" + row.id).then((res) => {
                         this.roleForm = resp;
                         this.roleFormVisible = true;
-                    }, (response) => {
-                        //响应错误回调
                     });
                 },
                 //表单提交
@@ -210,8 +197,7 @@
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.editLoading = true;
-                            this.$http.post('/Role/Submit', this.roleForm, { emulateJSON: true }).then((response) => {
-                                var resp = response.body;
+                            ajax.post('/Role/Submit', this.roleForm).then((res) => {
                                 if (resp.code == 0) {
                                     this.editLoading = false;
                                     api.showMsg("操作成功...", "success");
@@ -221,8 +207,6 @@
                                 } else {
                                     api.showMsg("操作失败，详情请查看错误日志...", "error");
                                 }
-                            }, (response) => {
-                                //响应错误回调
                             });
                         } else {
                             console.log('error submit!!');
@@ -238,77 +222,19 @@
                 },
                 //状态修改
                 enableds: function () {
-                    var self = this;
                     if (this.ids.length <= 0) {
                         api.showMsg("请选择数据...", "warning");
                         return false;
                     }
-                    this.$msgbox({
-                        title: '提示',
-                        type: 'warning',
-                        message: '此操作将修改数据状态, 是否继续?',
-                        showCancelButton: true,
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        beforeClose: function (action, instance, done) {
-                            if (action === 'confirm') {
-                                instance.confirmButtonLoading = true;
-                                instance.confirmButtonText = '执行中...';
-                                this.$http.post('/Role/Enableds', { ids: self.ids }, { emulateJSON: true }).then((response) => {
-                                    var resp = response.body;
-                                    if (resp.code == 0) {
-                                        api.showMsg("修改成功...", "success");
-                                        self.getTableData();
-                                    } else {
-                                        api.showMsg("修改失败，详情请查看错误日志...", "error");
-                                    }
-                                    done();
-                                    instance.confirmButtonLoading = false;
-                                }, (response) => {
-                                    //响应错误回调
-                                });
-                            } else {
-                                done();
-                            }
-                        }
-                    });
+                    common.enableds(this, '/Role/Enableds', { ids: this.ids });
                 },
                 //删除
                 dels: function () {
-                    var self = this;
                     if (this.ids.length <= 0) {
                         api.showMsg("请选择数据...", "warning");
                         return false;
                     }
-                    this.$msgbox({
-                        title: '提示',
-                        type: 'warning',
-                        message: '此操作将永久删除该数据, 是否继续?',
-                        showCancelButton: true,
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        beforeClose: function (action, instance, done) {
-                            if (action === 'confirm') {
-                                instance.confirmButtonLoading = true;
-                                instance.confirmButtonText = '执行中...';
-                                this.$http.post('/Role/Deletes', { ids: self.ids }, { emulateJSON: true }).then((response) => {
-                                    var resp = response.body;
-                                    if (resp.code == 0) {
-                                        api.showMsg("删除成功...", "success");
-                                        self.getTableData();
-                                    } else {
-                                        api.showMsg("删除失败，详情请查看错误日志...", "error");
-                                    }
-                                    done();
-                                    instance.confirmButtonLoading = false;
-                                }, (response) => {
-                                    //响应错误回调
-                                });
-                            } else {
-                                done();
-                            }
-                        }
-                    });
+                    common.deletes(this, '/Role/Deletes', { ids: this.ids });
                 },
                 //获取列表
                 getTableData: function () {
@@ -317,24 +243,20 @@
                         pageSize: this.pageSize,
                         searchKey: this.search_form.search_key
                     };
-                    this.$http.post('/Role/GetRolePageList', options, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.post('/Role/GetRolePageList', options).then((res) => {
                         this.tableData = resp.data;
                         this.pageIndex = resp.pageIndex;
                         this.pageSize = resp.pageSize;
                         this.total = resp.total;
-                    }, (response) => {
-                        //响应错误回调
                     });
                 },
-                //获取选中行
                 selectionChange: function (rows) {
+                    var idArr = [];
                     if (rows) {
                         rows.forEach(row => {
-                            this.ids.push(row.id);
+                            idArr.push(row.id);
                         });
-                    } else {
-                        this.$refs.multipleTable.clearSelection();
+                        this.ids = idArr;
                     }
                 },
                 pageReset: function () {

@@ -82,40 +82,11 @@
                     this.getTableData();
                 },
                 dels: function () {
-                    var self = this;
                     if (this.ids.length <= 0) {
                         api.showMsg("请选择数据...", "warning");
                         return false;
                     }
-                    this.$msgbox({
-                        title: '提示',
-                        type: 'warning',
-                        message: '此操作将永久删除该数据, 是否继续?',
-                        showCancelButton: true,
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        beforeClose: function (action, instance, done) {
-                            if (action === 'confirm') {
-                                instance.confirmButtonLoading = true;
-                                instance.confirmButtonText = '执行中...';
-                                this.$http.post('/Log/Deletes', { ids: self.ids }, { emulateJSON: true }).then((response) => {
-                                    var resp = response.body;
-                                    if (resp.code == 0) {
-                                        api.showMsg("删除成功...", "success");
-                                        self.getTableData();
-                                    } else {
-                                        api.showMsg("删除失败，详情请查看错误日志...", "error");
-                                    }
-                                    done();
-                                    instance.confirmButtonLoading = false;
-                                }, (response) => {
-                                    //响应错误回调
-                                });
-                            } else {
-                                done();
-                            }
-                        }
-                    });
+                    common.deletes(this, '/Log/Deletes', { ids: this.ids });
                 },
                 details: function (row) {
                     api.setTabParams('logDetailsTab', { logId: row.id });
@@ -130,12 +101,12 @@
                     this.total = 0;
                 },
                 selectionChange: function (rows) {
+                    var idArr = [];
                     if (rows) {
                         rows.forEach(row => {
-                            this.ids.push(row.id);
+                            idArr.push(row.id);
                         });
-                    } else {
-                        this.$refs.multipleTable.clearSelection();
+                        this.ids = idArr;
                     }
                 },
                 getTableData: function () {
@@ -144,14 +115,11 @@
                         pageSize: this.pageSize,
                         searchKey: this.search_form.search_key
                     };
-                    this.$http.post('/Log/GetLogPageList', options, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.post('/Log/GetLogPageList', options).then((res) => {
                         this.tableData = resp.data;
                         this.pageIndex = resp.pageIndex;
                         this.pageSize = resp.pageSize;
                         this.total = resp.total;
-                    }, (response) => {
-                        //响应错误回调
                     });
                 },
                 handleSizeChange(val) {

@@ -21,6 +21,7 @@ namespace EL.Admin.Controllers
 
         public IActionResult Index()
         {
+            //var a = Convert.ToInt32("a");
             return View();
         }
     }

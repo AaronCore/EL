@@ -158,22 +158,16 @@
                     this.getTableData();
                 },
                 getRole: function (row) {
-                    this.$http.get("/Account/GetRoleList", { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.get("/Account/GetRoleList").then((res) => {
                         this.roleOptions = resp;
-                    }, (response) => {
-                        //响应错误回调
                     });
                 },
                 //编辑
                 edit: function (row) {
                     this.passwordShow = false;
-                    this.$http.get("/Account/GetAccount?id=" + row.id, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.get("/Account/GetAccount?id=" + row.id).then((res) => {
                         this.accountForm = resp;
                         this.accountFormVisible = true;
-                    }, (response) => {
-                        //响应错误回调
                     });
                 },
                 //表单提交
@@ -183,8 +177,7 @@
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.editLoading = true;
-                            this.$http.post('/Account/Submit', this.accountForm, { emulateJSON: true }).then((response) => {
-                                var resp = response.body;
+                            ajax.post('/Account/Submit', this.accountForm).then((res) => {
                                 if (resp.code == 0) {
                                     this.editLoading = false;
                                     api.showMsg("操作成功...", "success");
@@ -194,8 +187,6 @@
                                 } else {
                                     api.showMsg("操作失败，详情请查看错误日志...", "error");
                                 }
-                            }, (response) => {
-                                //响应错误回调
                             });
                         } else {
                             console.log('error submit!!');
@@ -211,73 +202,19 @@
                 },
                 //状态修改
                 enableds: function () {
-                    var self = this;
                     if (this.ids.length <= 0) {
                         api.showMsg("请选择数据...", "warning");
                         return false;
                     }
-                    this.$msgbox({
-                        title: '提示',
-                        type: 'warning',
-                        message: '此操作将修改数据状态, 是否继续?',
-                        showCancelButton: true,
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        beforeClose: function (action, instance, done) {
-                            if (action === 'confirm') {
-                                instance.confirmButtonLoading = true;
-                                instance.confirmButtonText = '执行中...';
-                                this.$http.post('/Account/Enableds', { ids: self.ids }, { emulateJSON: true }).then((response) => {
-                                    var resp = response.body;
-                                    if (resp.code == 0) {
-                                        api.showMsg("修改成功...", "success");
-                                        self.getTableData();
-                                    } else {
-                                        api.showMsg("修改失败，详情请查看错误日志...", "error");
-                                    }
-                                    done();
-                                    instance.confirmButtonLoading = false;
-                                }, (response) => { });
-                            } else {
-                                done();
-                            }
-                        }
-                    });
+                    common.enableds(this, '/Account/Enableds', { ids: this.ids });
                 },
                 //删除
                 dels: function () {
-                    var self = this;
                     if (this.ids.length <= 0) {
                         api.showMsg("请选择数据...", "warning");
                         return false;
                     }
-                    this.$msgbox({
-                        title: '提示',
-                        type: 'warning',
-                        message: '此操作将永久删除该数据, 是否继续?',
-                        showCancelButton: true,
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        beforeClose: function (action, instance, done) {
-                            if (action === 'confirm') {
-                                instance.confirmButtonLoading = true;
-                                instance.confirmButtonText = '执行中...';
-                                this.$http.post('/Account/Deletes', { ids: self.ids }, { emulateJSON: true }).then((response) => {
-                                    var resp = response.body;
-                                    if (resp.code == 0) {
-                                        api.showMsg("删除成功...", "success");
-                                        self.getTableData();
-                                    } else {
-                                        api.showMsg("删除失败，详情请查看错误日志...", "error");
-                                    }
-                                    done();
-                                    instance.confirmButtonLoading = false;
-                                }, (error) => { });
-                            } else {
-                                done();
-                            }
-                        }
-                    });
+                    common.deletes(this, '/Account/Deletes', { ids: this.ids });
                 },
                 //获取列表
                 getTableData: function () {
@@ -286,22 +223,21 @@
                         pageSize: this.pageSize,
                         searchKey: this.search_form.search_key
                     };
-                    this.$http.get('/Account/GetAccountPageList', options, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.post("/Account/GetAccountPageList", options).then((res) => {
                         this.tableData = resp.data;
                         this.pageIndex = resp.pageIndex;
                         this.pageSize = resp.pageSize;
                         this.total = resp.total;
-                    }, (error) => { });
+                    });
                 },
                 //获取选中行
                 selectionChange: function (rows) {
+                    var idArr = [];
                     if (rows) {
                         rows.forEach(row => {
-                            this.ids.push(row.id);
+                            idArr.push(row.id);
                         });
-                    } else {
-                        this.$refs.multipleTable.clearSelection();
+                        this.ids = idArr;
                     }
                 },
                 pageReset: function () {

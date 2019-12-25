@@ -36,14 +36,11 @@
             },
             methods: {
                 details: function () {
-                    this.$http.get('/Log/GetLog?id=' + this.id, { emulateJSON: true }).then((response) => {
-                        var resp = response.body;
+                    ajax.get('/Log/GetLog?id=' + this.id).then((res) => {
                         this.createTime = resp.createTime;
                         this.message = resp.message;
                         this.exception = resp.exception;
                         this.stackTrace = resp.stackTrace;
-                    }, (response) => {
-                        // 响应错误回调
                     });
                 }
             },
