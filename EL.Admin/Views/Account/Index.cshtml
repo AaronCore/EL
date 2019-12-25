@@ -178,7 +178,10 @@
                 submitForm: function (formName) {
                     if (this.accountForm.id <= 0) {
                         this.required = true;
-                        this.rules.password = [{ required: true, message: '请输入密码' }, { min: 6, max: 15, message: '长度在 6 到 15 个字符' }];
+                        this.rules.password = [
+                            { required: true, message: '请输入密码' },
+                            { min: 6, max: 15, message: '长度在 6 到 15 个字符' }
+                        ];
                     }
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
