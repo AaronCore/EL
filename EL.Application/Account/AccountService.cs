@@ -21,6 +21,11 @@ namespace EL.Application
 
         public void Submit(Account_DTO entity)
         {
+            object roleEntity = null;
+            if (entity.RoleId > 0)
+            {
+                roleEntity = _roleRepository.WhereLoadEntity(p => p.Id == entity.RoleId);
+            }
             if (entity.Id > 0)
             {
                 var model = _accountRepository.WhereLoadEntity(p => p.Id == entity.Id);
@@ -29,11 +34,9 @@ namespace EL.Application
                 model.EditTime = DateTime.Now;
                 if (entity.RoleId > 0)
                 {
-                    var role = _roleRepository.WhereLoadEntity(p => p.Id == entity.RoleId);
-                    model.Role = role;
+                    model.Role = (RoleEntity)roleEntity;
                 }
                 _accountRepository.UpdateEntity(model);
-                _accountRepository.Commit();
             }
             else
             {
@@ -42,12 +45,11 @@ namespace EL.Application
                 model.CreateTime = DateTime.Now;
                 if (entity.RoleId > 0)
                 {
-                    var role = _roleRepository.WhereLoadEntity(p => p.Id == entity.RoleId);
-                    model.Role = role;
+                    model.Role = (RoleEntity)roleEntity;
                 }
                 _accountRepository.AddEntity(model);
-                _accountRepository.Commit();
             }
+            _accountRepository.Commit();
         }
         public List<AccountEntity> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey)
         {

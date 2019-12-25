@@ -56,14 +56,13 @@ namespace EL.Application
                 model.Sort = entity.Sort;
                 model.EditTime = DateTime.Now;
                 _roleRepository.UpdateEntity(model);
-                _roleRepository.Commit();
             }
             else
             {
                 entity.CreateTime = DateTime.Now;
                 _roleRepository.AddEntity(entity);
-                _roleRepository.Commit();
             }
+            _roleRepository.Commit();
         }
         public List<RoleEntity> GetRolePageList(int pageIndex, int pageSize, out int total, string searchKey)
         {

@@ -84,6 +84,11 @@ namespace EL.Application.Menu
         }
         public void Submit(Menu_DTO menuDto)
         {
+            object parentEntity = null;
+            if (menuDto.ParentId > 0)
+            {
+                parentEntity = _menuRepository.WhereLoadEntity(p => p.Id == menuDto.ParentId);
+            }
             if (menuDto.Id > 0)
             {
                 var model = _menuRepository.WhereLoadEntity(p => p.Id == menuDto.Id);
@@ -95,11 +100,9 @@ namespace EL.Application.Menu
                 model.EditTime = DateTime.Now;
                 if (menuDto.ParentId > 0)
                 {
-                    var parentModel = _menuRepository.WhereLoadEntity(p => p.Id == menuDto.ParentId);
-                    model.ParentMenu = parentModel;
+                    model.ParentMenu = (MenuEntity)parentEntity;
                 }
                 _menuRepository.UpdateEntity(model);
-                _menuRepository.Commit();
             }
             else
             {
@@ -107,12 +110,11 @@ namespace EL.Application.Menu
                 model.CreateTime = DateTime.Now;
                 if (menuDto.ParentId > 0)
                 {
-                    var parentModel = _menuRepository.WhereLoadEntity(p => p.Id == menuDto.ParentId);
-                    model.ParentMenu = parentModel;
+                    model.ParentMenu = (MenuEntity)parentEntity;
                 }
                 _menuRepository.AddEntity(model);
-                _menuRepository.Commit();
             }
+            _menuRepository.Commit();
         }
         public bool Deletes(int[] ids)
         {

@@ -54,24 +54,24 @@
             <el-form :model="menuForm" ref="menuForm" :rules="rules" label-position="right" label-width="100px">
                 <el-form-item label="上级菜单">
                     <el-cascader style="width:250px;" v-model="menuForm.parentId"
-                                 :options="menuOptions" clearable="true"
+                                 :options="menuOptions" clearable="true" placeholder="请选择"
                                  :props="{ checkStrictly: true }">
                     </el-cascader>
                 </el-form-item>
                 <el-form-item label="名称" prop="name">
-                    <el-input v-model="menuForm.name"></el-input>
+                    <el-input v-model="menuForm.name" placeholder="请输入菜单名称"></el-input>
                 </el-form-item>
                 <el-form-item label="地址" prop="path">
-                    <el-input v-model="menuForm.path"></el-input>
+                    <el-input v-model="menuForm.path" placeholder="请输入菜单地址"></el-input>
                 </el-form-item>
                 <el-form-item label="Code" prop="code">
-                    <el-input v-model="menuForm.code"></el-input>
+                    <el-input v-model="menuForm.code" placeholder="请输入菜单代码"></el-input>
                 </el-form-item>
                 <el-form-item label="Icon">
-                    <el-input v-model="menuForm.icon"></el-input>
+                    <el-input v-model="menuForm.icon" placeholder="Icon"></el-input>
                 </el-form-item>
                 <el-form-item label="排序号">
-                    <el-input-number v-model="menuForm.sort" :min="1" :max="1000" label="排序号"></el-input-number>
+                    <el-input-number v-model="menuForm.sort" :min="1" :max="1000" placeholder="排序号"></el-input-number>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-switch style="display: block;margin-top:9px;"
@@ -127,7 +127,7 @@
                 //编辑
                 edit: function (row) {
                     ajax.get("/Menu/GetMenu?id=" + row.id).then((res) => {
-                        this.menuForm = resp;
+                        this.menuForm = res;
                         this.menuFormVisible = true;
                     });
                 },
@@ -144,7 +144,7 @@
                         if (valid) {
                             this.editLoading = true;
                             ajax.post('/Menu/Submit', this.menuForm).then((res) => {
-                                if (resp.code == 0) {
+                                if (res.code == 0) {
                                     this.editLoading = false;
                                     api.showMsg("操作成功...", "success");
                                     this.resetForm("menuForm");
@@ -179,12 +179,12 @@
                 //获取列表
                 getTableData: function () {
                     ajax.get('/Menu/GetTreeList').then((res) => {
-                        this.tableData = resp;
+                        this.tableData = res;
                     });
                 },
                 getMenu: function () {
                     ajax.get('/Menu/GetMenuList').then((res) => {
-                        this.menuOptions = resp;
+                        this.menuOptions = res;
                     });
                 },
                 //获取选中行

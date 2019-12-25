@@ -67,10 +67,10 @@
         <el-dialog title="角色编辑" :visible.sync="roleFormVisible">
             <el-form :model="roleForm" ref="roleForm" :rules="rules" label-position="right" label-width="100px">
                 <el-form-item label="名称" prop="name">
-                    <el-input v-model="roleForm.name"></el-input>
+                    <el-input v-model="roleForm.name" placeholder="请输入角色名称"></el-input>
                 </el-form-item>
                 <el-form-item label="排序号">
-                    <el-input-number v-model="roleForm.sort" :min="1" :max="1000" label="排序号"></el-input-number>
+                    <el-input-number v-model="roleForm.sort" :min="1" :max="1000" placeholder="排序号"></el-input-number>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-switch style="display: block;margin-top:9px;"
@@ -95,9 +95,9 @@
                      default-expand-all
                      node-key="value"
                      ref="roleMenuTree"
+                     placeholder="请选择"
                      highlight-current>
             </el-tree>
-
             <div slot="footer" class="dialog-footer">
                 <el-button v-on:click="roleMenuReset">重 置</el-button>
                 <el-button type="primary" v-on:click="roleMenuSubmit" v-bind:loading="roleMenuLoading">确 定</el-button>
@@ -155,7 +155,7 @@
                 },
                 getMenu: function () {
                     ajax.get('/Menu/GetMenuList').then((res) => {
-                        this.menuOptions = resp;
+                        this.menuOptions = res;
                     });
                 },
                 roleMenu: function (row) {
@@ -163,9 +163,8 @@
                     this.roleMenuFormVisible = true;
                     this.getMenu();
                     ajax.get("/Role/GetRoleMenu?id=" + row.id).then((res) => {
-                        if (resp.code == 0) {
-                            console.log(resp.menuIds);
-                            this.$refs.roleMenuTree.setCheckedKeys(resp.menuIds);
+                        if (res.code == 0) {
+                            this.$refs.roleMenuTree.setCheckedKeys(res.menuIds);
                         }
                     });
                 },
@@ -176,7 +175,7 @@
                     this.roleMenuLoading = true;
                     var menuIds = this.$refs.roleMenuTree.getCheckedKeys().concat(this.$refs.roleMenuTree.getHalfCheckedKeys());
                     ajax.post('/Role/RoleMenuSubmit', { roleId: this.roleId, menuIds: menuIds }).then((res) => {
-                        if (resp.code == 0) {
+                        if (res.code == 0) {
                             api.showMsg("操作成功...", "success");
                             this.roleMenuLoading = false;
                             this.roleMenuFormVisible = false;
@@ -188,7 +187,7 @@
                 //编辑
                 edit: function (row) {
                     ajax.get("/Role/GetRole?id=" + row.id).then((res) => {
-                        this.roleForm = resp;
+                        this.roleForm = res;
                         this.roleFormVisible = true;
                     });
                 },
@@ -198,7 +197,7 @@
                         if (valid) {
                             this.editLoading = true;
                             ajax.post('/Role/Submit', this.roleForm).then((res) => {
-                                if (resp.code == 0) {
+                                if (res.code == 0) {
                                     this.editLoading = false;
                                     api.showMsg("操作成功...", "success");
                                     this.resetForm("menuForm");
@@ -244,10 +243,10 @@
                         searchKey: this.search_form.search_key
                     };
                     ajax.post('/Role/GetRolePageList', options).then((res) => {
-                        this.tableData = resp.data;
-                        this.pageIndex = resp.pageIndex;
-                        this.pageSize = resp.pageSize;
-                        this.total = resp.total;
+                        this.tableData = res.data;
+                        this.pageIndex = res.pageIndex;
+                        this.pageSize = res.pageSize;
+                        this.total = res.total;
                     });
                 },
                 selectionChange: function (rows) {

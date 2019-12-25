@@ -77,16 +77,16 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="名称" prop="name">
-                    <el-input v-model="accountForm.name"></el-input>
+                    <el-input v-model="accountForm.name" placeholder="请输入账号名称"></el-input>
                 </el-form-item>
                 <el-form-item label="账号" prop="account">
-                    <el-input v-model="accountForm.account"></el-input>
+                    <el-input v-model="accountForm.account" placeholder="请输入登录账号名称"></el-input>
                 </el-form-item>
                 <el-form-item label="密码" v-show="passwordShow" prop="password" v-bind:required="required">
-                    <el-input type="password" v-model="accountForm.password"></el-input>
+                    <el-input type="password" v-model="accountForm.password" placeholder="请输入登录账号密码"></el-input>
                 </el-form-item>
                 <el-form-item label="排序号">
-                    <el-input-number v-model="accountForm.sort" :min="1" :max="1000" label="排序号"></el-input-number>
+                    <el-input-number v-model="accountForm.sort" :min="1" :max="1000" placeholder="排序号"></el-input-number>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-switch style="display: block;margin-top:9px;"
@@ -132,7 +132,11 @@
                 },
                 rules: {
                     name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-                    account: [{ required: true, message: '请输入登录账号', trigger: 'blur' }],
+                    account: [
+                        { required: true, message: '请输入登录账号名称', trigger: 'blur' },
+                        { min: 3, max: 10, message: '长度在 3 到 10 个字符' },
+                        { pattern: /^[0-9a-zA-Z_]+$/, message: '登录账号名必须是英文数字组合' }
+                    ],
                     roleId: [{ required: true, message: '请选择一个角色', trigger: 'blur' }],
                 },
                 ids: [],
@@ -159,26 +163,28 @@
                 },
                 getRole: function (row) {
                     ajax.get("/Account/GetRoleList").then((res) => {
-                        this.roleOptions = resp;
+                        this.roleOptions = res;
                     });
                 },
                 //编辑
                 edit: function (row) {
                     this.passwordShow = false;
                     ajax.get("/Account/GetAccount?id=" + row.id).then((res) => {
-                        this.accountForm = resp;
+                        this.accountForm = res;
                         this.accountFormVisible = true;
                     });
                 },
                 //表单提交
                 submitForm: function (formName) {
-                    this.required = true;
-                    this.rules.password = [{ required: true, message: '请输入密码' }, { min: 6, max: 15, message: '长度在 6 到 15 个字符' }];
+                    if (this.accountForm.id <= 0) {
+                        this.required = true;
+                        this.rules.password = [{ required: true, message: '请输入密码' }, { min: 6, max: 15, message: '长度在 6 到 15 个字符' }];
+                    }
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.editLoading = true;
                             ajax.post('/Account/Submit', this.accountForm).then((res) => {
-                                if (resp.code == 0) {
+                                if (res.code == 0) {
                                     this.editLoading = false;
                                     api.showMsg("操作成功...", "success");
                                     this.resetForm("accountForm");
@@ -224,10 +230,10 @@
                         searchKey: this.search_form.search_key
                     };
                     ajax.post("/Account/GetAccountPageList", options).then((res) => {
-                        this.tableData = resp.data;
-                        this.pageIndex = resp.pageIndex;
-                        this.pageSize = resp.pageSize;
-                        this.total = resp.total;
+                        this.tableData = res.data;
+                        this.pageIndex = res.pageIndex;
+                        this.pageSize = res.pageSize;
+                        this.total = res.total;
                     });
                 },
                 //获取选中行
