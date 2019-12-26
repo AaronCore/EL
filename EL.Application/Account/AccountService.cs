@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Text;
 using System.Linq;
 using System.Linq.Expressions;
@@ -19,18 +20,19 @@ namespace EL.Application
             _roleRepository = roleRepository;
         }
 
-        public void Submit(Account_DTO entity)
+        public async Task Submit(Account_DTO entity)
         {
             object roleEntity = null;
             if (entity.RoleId > 0)
             {
-                roleEntity = _roleRepository.WhereLoadEntity(p => p.Id == entity.RoleId);
+                roleEntity = await _roleRepository.WhereLoadEntityAsync(p => p.Id == entity.RoleId);
             }
             if (entity.Id > 0)
             {
-                var model = _accountRepository.WhereLoadEntity(p => p.Id == entity.Id);
+                var model = await _accountRepository.WhereLoadEntityAsync(p => p.Id == entity.Id);
                 model.Name = entity.Name;
                 model.Sort = entity.Sort;
+                model.Enabled = entity.Enabled;
                 model.EditTime = DateTime.Now;
                 if (entity.RoleId > 0)
                 {
@@ -47,9 +49,9 @@ namespace EL.Application
                 {
                     model.Role = (RoleEntity)roleEntity;
                 }
-                _accountRepository.AddEntity(model);
+                await _accountRepository.AddEntityAsync(model);
             }
-            _accountRepository.Commit();
+            await _accountRepository.CommitAsync();
         }
         public List<AccountEntity> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey)
         {
@@ -62,16 +64,16 @@ namespace EL.Application
             total = _accountRepository.GetEntitiesCount(where);
             return roleList;
         }
-        public AccountEntity GetAccount(int id)
+        public async Task<AccountEntity> GetAccount(int id)
         {
-            return _accountRepository.WhereLoadEntity(p => p.Id == id);
+            return await _accountRepository.WhereLoadEntityAsync(p => p.Id == id);
         }
-        public bool Deletes(int[] ids)
+        public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            return _accountRepository.DelEntity(p => idArrar.Contains(p.Id)) > 0;
+            return await _accountRepository.DelEntityAsync(p => idArrar.Contains(p.Id)) > 0;
         }
-        public void Enableds(int[] ids)
+        public async Task Enableds(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
             var list = _accountRepository.WhereLoadEntityEnumerable(p => idArrar.Contains(p.Id)).ToList();
@@ -79,9 +81,8 @@ namespace EL.Application
             {
                 item.Enabled = item.Enabled ? false : true;
                 _accountRepository.UpdateEntity(item);
-                _accountRepository.Commit();
+                await _accountRepository.CommitAsync();
             }
         }
-
     }
 }

@@ -24,9 +24,9 @@ namespace EL.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAccount(int id)
+        public async Task<IActionResult> GetAccount(int id)
         {
-            var model = _accountService.GetAccount(id);
+            var model = await _accountService.GetAccount(id);
             var obj = new
             {
                 model.Id,
@@ -40,9 +40,9 @@ namespace EL.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetRoleList(AccountEntity entity)
+        public async Task<IActionResult> GetRoleList(AccountEntity entity)
         {
-            var list = _roleService.GetRoleList();
+            var list = await _roleService.GetRoleList();
             var obj = list != null ? list.OrderBy(p => p.Name).Select(p => new
             {
                 text = p.Name,
@@ -52,9 +52,9 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Submit(Account_DTO entity)
+        public async Task<IActionResult> Submit(Account_DTO entity)
         {
-            _accountService.Submit(entity);
+            await _accountService.Submit(entity);
             return Json(new { code = 0 });
         }
 
@@ -62,7 +62,7 @@ namespace EL.Admin.Controllers
         public IActionResult GetAccountPageList(int pageIndex, int pageSize, string searchKey = null)
         {
             int total = 0;
-            var list = _accountService.GetAccountPageList(pageIndex, pageSize, out total, searchKey).ToList();
+            var list = _accountService.GetAccountPageList(pageIndex, pageSize, out total, searchKey);
             var obj = new
             {
                 pageIndex,
@@ -82,16 +82,16 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Deletes(int[] ids)
+        public async Task<IActionResult> Deletes(int[] ids)
         {
-            var status = _accountService.Deletes(ids);
+            var status = await _accountService.Deletes(ids);
             return Json(new { code = status ? 0 : -2 });
         }
 
         [HttpPost]
-        public IActionResult Enableds(int[] ids)
+        public async Task<IActionResult> Enableds(int[] ids)
         {
-            _accountService.Enableds(ids);
+            await _accountService.Enableds(ids);
             return Json(new { code = 0 });
         }
     }

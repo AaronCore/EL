@@ -23,23 +23,23 @@ namespace EL.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetTreeList()
+        public async Task<IActionResult> GetTreeList()
         {
-            var list = _menuService.GetMenuTreeList();
+            var list = await _menuService.GetMenuTreeList();
             return Json(list);
         }
 
         [HttpGet]
-        public IActionResult GetMenuList()
+        public async Task<IActionResult> GetMenuList()
         {
-            var list = _menuService.GetMenuList();
+            var list = await _menuService.GetMenuList();
             return Json(list);
         }
 
         [HttpGet]
-        public IActionResult GetMenu(int id)
+        public async Task<IActionResult> GetMenu(int id)
         {
-            var model = _menuService.GetMenu(id);
+            var model = await _menuService.GetMenu(id);
             var obj = new
             {
                 parentId = model.ParentMenu != null ? model.ParentMenu.Id : 0,
@@ -55,23 +55,23 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Submit(Menu_DTO entity)
+        public async Task<IActionResult> Submit(Menu_DTO entity)
         {
-            _menuService.Submit(entity);
+            await _menuService.Submit(entity);
             return Json(new { code = 0 });
         }
 
         [HttpPost]
-        public IActionResult Deletes(int[] ids)
+        public async Task<IActionResult> Deletes(int[] ids)
         {
-            var status = _menuService.Deletes(ids);
+            var status = await _menuService.Deletes(ids);
             return Json(new { code = status ? 0 : -2 });
         }
 
         [HttpPost]
-        public IActionResult Enableds(int[] ids)
+        public async Task<IActionResult> Enableds(int[] ids)
         {
-            _menuService.Enableds(ids);
+            await _menuService.Enableds(ids);
             return Json(new { code = 0 });
         }
     }

@@ -45,16 +45,16 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Deletes(int[] ids)
+        public async Task<IActionResult> Deletes(int[] ids)
         {
-            var status = _logService.Deletes(ids);
+            var status = await _logService.Deletes(ids);
             return Json(new { code = status ? 0 : -2 });
         }
 
         [HttpGet]
-        public IActionResult GetLog(int id)
+        public async Task<IActionResult> GetLog(int id)
         {
-            var entity = _logService.GetLog(id);
+            var entity = await _logService.GetLog(id);
             var obj = new
             {
                 entity.Id,

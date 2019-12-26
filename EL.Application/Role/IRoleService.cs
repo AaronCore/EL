@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using EL.Entity;
 
 namespace EL.Application
 {
     public interface IRoleService
     {
-        bool Deletes(int[] ids);
-        void Enableds(int[] ids);
+        Task<bool> Deletes(int[] ids);
+        Task Enableds(int[] ids);
         List<RoleEntity> GetRolePageList(int pageIndex, int pageSize, out int total, string searchKey);
-        void Submit(RoleEntity entity);
-        RoleEntity GetRole(int id);
-        void RoleMenuSubmit(int roleId, int[] menuIds);
-        List<RoleEntity> GetRoleList();
+        Task Submit(RoleEntity entity);
+        Task<RoleEntity> GetRole(int id);
+        Task RoleMenuSubmit(int roleId, int[] menuIds);
+        Task<List<RoleEntity>> GetRoleList();
     }
 }

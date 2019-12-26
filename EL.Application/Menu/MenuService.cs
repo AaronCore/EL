@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 using EL.Common;
 using EL.Entity;
 using EL.Repository;
@@ -16,10 +17,10 @@ namespace EL.Application.Menu
         {
             _menuRepository = menuRepository;
         }
-        public List<MenuTree_DTO> GetMenuTreeList()
+        public async Task<List<MenuTree_DTO>> GetMenuTreeList()
         {
             var resultList = new List<MenuTree_DTO>();
-            var oneList = _menuRepository.WhereLoadEntityEnumerable(p => p.ParentMenu == null).ToList();
+            var oneList = await _menuRepository.WhereLoadEntityEnumerableAsync(p => p.ParentMenu == null);
             foreach (var oneItem in oneList)
             {
                 var oneModel = oneItem.MapTo<MenuTree_DTO>();
@@ -50,10 +51,10 @@ namespace EL.Application.Menu
             }
             return resultList;
         }
-        public List<MenuList_DTO> GetMenuList()
+        public async Task<List<MenuList_DTO>> GetMenuList()
         {
             var resultList = new List<MenuList_DTO>();
-            var oneList = _menuRepository.WhereLoadEntityEnumerable(p => p.Enabled && p.ParentMenu == null).ToList();
+            var oneList = await _menuRepository.WhereLoadEntityEnumerableAsync(p => p.Enabled && p.ParentMenu == null);
             foreach (var oneItem in oneList)
             {
                 var oneModel = new MenuList_DTO()
@@ -78,25 +79,26 @@ namespace EL.Application.Menu
             }
             return resultList;
         }
-        public MenuEntity GetMenu(int id)
+        public async Task<MenuEntity> GetMenu(int id)
         {
-            return _menuRepository.WhereLoadEntity(p => p.Id == id);
+            return await _menuRepository.WhereLoadEntityAsync(p => p.Id == id);
         }
-        public void Submit(Menu_DTO menuDto)
+        public async Task Submit(Menu_DTO menuDto)
         {
             object parentEntity = null;
             if (menuDto.ParentId > 0)
             {
-                parentEntity = _menuRepository.WhereLoadEntity(p => p.Id == menuDto.ParentId);
+                parentEntity = await _menuRepository.WhereLoadEntityAsync(p => p.Id == menuDto.ParentId);
             }
             if (menuDto.Id > 0)
             {
-                var model = _menuRepository.WhereLoadEntity(p => p.Id == menuDto.Id);
+                var model = await _menuRepository.WhereLoadEntityAsync(p => p.Id == menuDto.Id);
                 model.Name = menuDto.Name;
                 model.Path = menuDto.Path;
                 model.Code = menuDto.Code;
                 model.Icon = menuDto.Icon;
                 model.Sort = menuDto.Sort;
+                model.Enabled = menuDto.Enabled;
                 model.EditTime = DateTime.Now;
                 if (menuDto.ParentId > 0)
                 {
@@ -112,24 +114,24 @@ namespace EL.Application.Menu
                 {
                     model.ParentMenu = (MenuEntity)parentEntity;
                 }
-                _menuRepository.AddEntity(model);
+                await _menuRepository.AddEntityAsync(model);
             }
-            _menuRepository.Commit();
+            await _menuRepository.CommitAsync();
         }
-        public bool Deletes(int[] ids)
+        public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            return _menuRepository.DelEntity(p => idArrar.Contains(p.Id)) > 0;
+            return await _menuRepository.DelEntityAsync(p => idArrar.Contains(p.Id)) > 0;
         }
-        public void Enableds(int[] ids)
+        public async Task Enableds(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            var list = _menuRepository.WhereLoadEntityEnumerable(p => idArrar.Contains(p.Id)).ToList();
+            var list = await _menuRepository.WhereLoadEntityEnumerableAsync(p => idArrar.Contains(p.Id));
             foreach (var item in list)
             {
                 item.Enabled = item.Enabled ? false : true;
                 _menuRepository.UpdateEntity(item);
-                _menuRepository.Commit();
+                await _menuRepository.CommitAsync();
             }
         }
     }

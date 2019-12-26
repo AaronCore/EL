@@ -24,9 +24,9 @@ namespace EL.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetRoleMenu(int id)
+        public async Task<IActionResult> GetRoleMenu(int id)
         {
-            var model = _roleService.GetRole(id);
+            var model = await _roleService.GetRole(id);
             ArrayList array = new ArrayList();
             foreach (var item in model.RoleMenus)
             {
@@ -36,16 +36,16 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult RoleMenuSubmit(int roleId, int[] menuIds)
+        public async Task<IActionResult> RoleMenuSubmit(int roleId, int[] menuIds)
         {
-            _roleService.RoleMenuSubmit(roleId, menuIds);
+            await _roleService.RoleMenuSubmit(roleId, menuIds);
             return Json(new { code = 0 });
         }
 
         [HttpGet]
-        public IActionResult GetRole(int id)
+        public async Task<IActionResult> GetRole(int id)
         {
-            var model = _roleService.GetRole(id);
+            var model = await _roleService.GetRole(id);
             var obj = new
             {
                 model.Id,
@@ -57,9 +57,9 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Submit(RoleEntity entity)
+        public async Task<IActionResult> Submit(RoleEntity entity)
         {
-            _roleService.Submit(entity);
+            await _roleService.Submit(entity);
             return Json(new { code = 0 });
         }
 
@@ -86,16 +86,16 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public IActionResult Deletes(int[] ids)
+        public async Task<IActionResult> Deletes(int[] ids)
         {
-            var status = _roleService.Deletes(ids);
+            var status = await _roleService.Deletes(ids);
             return Json(new { code = status ? 0 : -2 });
         }
 
         [HttpPost]
-        public IActionResult Enableds(int[] ids)
+        public async Task<IActionResult> Enableds(int[] ids)
         {
-            _roleService.Enableds(ids);
+            await _roleService.Enableds(ids);
             return Json(new { code = 0 });
         }
     }

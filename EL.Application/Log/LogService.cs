@@ -23,6 +23,7 @@ namespace EL.Application
         {
             _logRepository = logRepository;
         }
+
         public List<LogEntity> GetLogPageList(int pageIndex, int pageSize, out int total, string searchKey)
         {
             Expression<Func<LogEntity, bool>> where = e => true;
@@ -34,7 +35,7 @@ namespace EL.Application
             total = _logRepository.GetEntitiesCount(where);
             return logList;
         }
-        public void SaveException(Exception ex)
+        public async Task SaveException(Exception ex)
         {
             var entity = new LogEntity
             {
@@ -51,16 +52,16 @@ namespace EL.Application
                 stacktrace = entity.StackTrace,
                 createtime = entity.CreateTime
             };
-            _dapperRepository.Execute(sql, param);
+            await _dapperRepository.ExecuteAsync(sql, param);
         }
-        public bool Deletes(int[] ids)
+        public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            return _logRepository.DelEntity(p => idArrar.Contains(p.Id)) > 0;
+            return await _logRepository.DelEntityAsync(p => idArrar.Contains(p.Id)) > 0;
         }
-        public LogEntity GetLog(int id)
+        public async Task<LogEntity> GetLog(int id)
         {
-            return _logRepository.WhereLoadEntity(p => p.Id == id);
+            return await _logRepository.WhereLoadEntityAsync(p => p.Id == id);
         }
     }
 }

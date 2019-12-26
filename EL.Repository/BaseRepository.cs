@@ -150,6 +150,16 @@ namespace EL.Repository
         }
 
         /// <summary>
+        /// 异步根据条件查询实体列表
+        /// </summary>
+        /// <param name="where"></param>
+        /// <returns></returns>
+        public async Task<List<T>> WhereLoadEntityEnumerableAsync(Expression<Func<T, bool>> where)
+        {
+            return await _dbContext.Set<T>().Where(where).ToListAsync();
+        }
+
+        /// <summary>
         /// 根据条件查询实体列表不跟踪
         /// </summary>
         /// <param name="where"></param>
@@ -250,6 +260,7 @@ namespace EL.Repository
         }
 
         #region 分页排序查询
+
         /// <summary>
         /// 加载自己定义排序分页实体列表
         /// </summary>
@@ -302,9 +313,64 @@ namespace EL.Repository
             return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, bool?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize);
 
         }
+
+        /// <summary>
+        /// 加载自己定义排序分页实体列表不跟踪
+        /// </summary>
+        /// <param name="where"></param>
+        /// <param name="orderby"></param>
+        /// <param name="asc">asc/desc</param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public virtual IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, string>> orderby, string asc, int pageIndex, int pageSize)
+        {
+            --pageIndex;
+
+            if (asc.Equals(nameof(asc)))
+                return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+        }
+        public virtual IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, int?>> orderby, string asc, int pageIndex, int pageSize)
+        {
+            --pageIndex;
+
+            if (asc.Equals(nameof(asc)))
+                return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+
+        }
+        public virtual IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, DateTime?>> orderby, string asc, int pageIndex, int pageSize)
+        {
+            --pageIndex;
+
+            if (asc.Equals(nameof(asc)))
+                return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+        }
+        public virtual IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, decimal?>> orderby, string asc, int pageIndex, int pageSize)
+        {
+            --pageIndex;
+
+            if (asc.Equals(nameof(asc)))
+                return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+
+        }
+        public virtual IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, bool?>> orderby, string asc, int pageIndex, int pageSize)
+        {
+            --pageIndex;
+
+            if (asc.Equals(nameof(asc)))
+                return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderBy<T, bool?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+            return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, bool?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
+
+        }
+        
         #endregion
 
         #region 异步分页排序查询
+        
         /// <summary>
         /// 加载自己定义排序分页实体列表
         /// </summary>
@@ -349,9 +415,54 @@ namespace EL.Repository
             return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).ToListAsync();
         }
 
+        /// <summary>
+        /// 加载自己定义排序分页实体列表不跟踪
+        /// </summary>
+        /// <param name="where"></param>
+        /// <param name="orderby"></param>
+        /// <param name="asc">asc/desc</param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public virtual async Task<List<T>> LoadEntityListAsNoTrackingAsync(Expression<Func<T, bool>> where, Expression<Func<T, string>> orderby, string asc, int pageIndex, int pageSize)
+        {
+            --pageIndex;
+
+            if (asc.Equals(nameof(asc)))
+                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, string>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+        }
+        public virtual async Task<List<T>> LoadEntityListAsNoTrackingAsync(Expression<Func<T, bool>> where, Expression<Func<T, int?>> orderby, string asc, int pageIndex, int pageSize)
+        {
+            --pageIndex;
+
+            if (asc.Equals(nameof(asc)))
+                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, int?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+
+        }
+        public virtual async Task<List<T>> LoadEntityListAsNoTrackingAsync(Expression<Func<T, bool>> where, Expression<Func<T, DateTime?>> orderby, string asc, int pageIndex, int pageSize)
+        {
+            --pageIndex;
+
+            if (asc.Equals(nameof(asc)))
+                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, DateTime?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+
+        }
+        public virtual async Task<List<T>> LoadEntityListAsNoTrackingAsync(Expression<Func<T, bool>> where, Expression<Func<T, decimal?>> orderby, string asc, int pageIndex, int pageSize)
+        {
+            --pageIndex;
+
+            if (asc.Equals(nameof(asc)))
+                return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+            return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
+        }
+        
         #endregion
 
         #region 求平均，求总计
+
         public virtual int? GetSum(Expression<Func<T, bool>> where, Expression<Func<T, int?>> sum)
         {
             return _dbContext.Set<T>().Where<T>(where).Sum<T>(sum);
@@ -385,10 +496,10 @@ namespace EL.Repository
             return _dbContext.Set<T>().Where<T>(where).Average<T>(avg);
         }
 
-
         #endregion
 
         #region 查最大
+
         /// <summary>
         /// 查最大
         /// </summary>
@@ -425,6 +536,7 @@ namespace EL.Repository
         {
             return _dbContext.Set<T>().Max<T, DateTime?>(max);
         }
+
         #endregion
 
         /// <summary>
@@ -447,6 +559,10 @@ namespace EL.Repository
             return await _dbContext.Set<T>().CountAsync<T>(where);
         }
 
+        #endregion
+
+        #region SQL执行
+
         /// <summary>
         /// 使用sql脚本查询实体列表
         /// </summary>
@@ -456,7 +572,10 @@ namespace EL.Repository
         public virtual List<T> GetModeListlBySql(string sql)
         {
             return _dbContext.Set<T>().FromSqlRaw<T>(sql).ToList();
-
+        }
+        public virtual List<T> GetModeListlBySql(string sql, object parameters)
+        {
+            return _dbContext.Set<T>().FromSqlRaw<T>(sql, parameters).ToList();
         }
 
         /// <summary>
@@ -469,6 +588,10 @@ namespace EL.Repository
         {
             return await _dbContext.Set<T>().FromSqlRaw<T>(sql).ToListAsync();
         }
+        public virtual async Task<List<T>> GetModeListlBySqlAsync(string sql, object parameters)
+        {
+            return await _dbContext.Set<T>().FromSqlRaw<T>(sql, parameters).ToListAsync();
+        }
 
         /// <summary>
         /// 执行sql语句
@@ -476,6 +599,22 @@ namespace EL.Repository
         public virtual void ExecFromSql(string sql)
         {
             _dbContext.Database.ExecuteSqlRaw(sql);
+        }
+        public virtual void ExecFromSql(string sql, object parameters)
+        {
+            _dbContext.Database.ExecuteSqlRaw(sql, parameters);
+        }
+
+        /// <summary>
+        /// 异步执行sql语句
+        /// </summary>
+        public virtual async Task ExecFromSqlAsync(string sql)
+        {
+            await _dbContext.Database.ExecuteSqlRawAsync(sql);
+        }
+        public virtual async Task ExecFromSqlAsync(string sql, object parameters)
+        {
+            await _dbContext.Database.ExecuteSqlRawAsync(sql, parameters);
         }
 
         #endregion

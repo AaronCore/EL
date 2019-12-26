@@ -7,6 +7,7 @@ using EL.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace EL.Application
 {
@@ -20,14 +21,14 @@ namespace EL.Application
             _menuRepository = menuRepository;
         }
 
-        public List<RoleEntity> GetRoleList()
+        public async Task<List<RoleEntity>> GetRoleList()
         {
-            return _roleRepository.WhereLoadEntityEnumerable(p => p.Enabled).ToList();
+            return await _roleRepository.WhereLoadEntityEnumerableAsync(p => p.Enabled);
         }
-        public void RoleMenuSubmit(int roleId, int[] menuIds)
+        public async Task RoleMenuSubmit(int roleId, int[] menuIds)
         {
-            var roleModel = _roleRepository.WhereLoadEntity(p => p.Id == roleId);
-            var menuList = _menuRepository.WhereLoadEntityEnumerable(p => menuIds.Contains(p.Id));
+            var roleModel = await _roleRepository.WhereLoadEntityAsync(p => p.Id == roleId);
+            var menuList = await _menuRepository.WhereLoadEntityEnumerableAsync(p => menuIds.Contains(p.Id));
             roleModel.RoleMenus.Clear();
             foreach (var item in menuList)
             {
@@ -41,19 +42,20 @@ namespace EL.Application
                 roleModel.RoleMenus.Add(model);
             }
             _roleRepository.UpdateEntity(roleModel);
-            _roleRepository.Commit();
+            await _roleRepository.CommitAsync();
         }
-        public RoleEntity GetRole(int id)
+        public async Task<RoleEntity> GetRole(int id)
         {
-            return _roleRepository.WhereLoadEntity(p => p.Id == id);
+            return await _roleRepository.WhereLoadEntityAsync(p => p.Id == id);
         }
-        public void Submit(RoleEntity entity)
+        public async Task Submit(RoleEntity entity)
         {
             if (entity.Id > 0)
             {
-                var model = _roleRepository.WhereLoadEntity(p => p.Id == entity.Id);
+                var model = await _roleRepository.WhereLoadEntityAsync(p => p.Id == entity.Id);
                 model.Name = entity.Name;
                 model.Sort = entity.Sort;
+                model.Enabled = entity.Enabled;
                 model.EditTime = DateTime.Now;
                 _roleRepository.UpdateEntity(model);
             }
@@ -62,7 +64,7 @@ namespace EL.Application
                 entity.CreateTime = DateTime.Now;
                 _roleRepository.AddEntity(entity);
             }
-            _roleRepository.Commit();
+            await _roleRepository.CommitAsync();
         }
         public List<RoleEntity> GetRolePageList(int pageIndex, int pageSize, out int total, string searchKey)
         {
@@ -75,20 +77,20 @@ namespace EL.Application
             total = _roleRepository.GetEntitiesCount(where);
             return roleList;
         }
-        public bool Deletes(int[] ids)
+        public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            return _roleRepository.DelEntity(p => idArrar.Contains(p.Id)) > 0;
+            return await _roleRepository.DelEntityAsync(p => idArrar.Contains(p.Id)) > 0;
         }
-        public void Enableds(int[] ids)
+        public async Task Enableds(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            var list = _roleRepository.WhereLoadEntityEnumerable(p => idArrar.Contains(p.Id)).ToList();
+            var list = await _roleRepository.WhereLoadEntityEnumerableAsync(p => idArrar.Contains(p.Id));
             foreach (var item in list)
             {
                 item.Enabled = item.Enabled ? false : true;
                 _roleRepository.UpdateEntity(item);
-                _roleRepository.Commit();
+                await _roleRepository.CommitAsync();
             }
         }
     }

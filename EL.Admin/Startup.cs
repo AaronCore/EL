@@ -30,16 +30,18 @@ namespace EL.Admin
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //redis×¢²á
+            RedisExt.Init();
             var connection = new JsonConfigManager().GetValue<string>("ELConnection");
             services.AddDbContext<ELDbContext>(options => options.UseLazyLoadingProxies().UseMySql(connection));
             //services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-            services.AddDistributedMemoryCache();
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
+            services.AddDistributedMemoryCache()
+                    .AddSession(options =>
+                    {
+                        options.IdleTimeout = TimeSpan.FromSeconds(10);
+                        options.Cookie.HttpOnly = true;
+                        options.Cookie.IsEssential = true;
+                    });
             services.AddControllersWithViews();
         }
         public void ConfigureContainer(ContainerBuilder builder)
@@ -51,6 +53,7 @@ namespace EL.Admin
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSession();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -58,14 +61,12 @@ namespace EL.Admin
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthorization();
-            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

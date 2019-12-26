@@ -100,6 +100,13 @@ namespace EL.Repository
         IEnumerable<T> WhereLoadEntityEnumerable(Expression<Func<T, bool>> where);
 
         /// <summary>
+        /// 异步根据条件查询实体列表
+        /// </summary>
+        /// <param name="where"></param>
+        /// <returns></returns>
+        Task<List<T>> WhereLoadEntityEnumerableAsync(Expression<Func<T, bool>> where);
+
+        /// <summary>
         /// 根据条件查询实体列表不跟踪
         /// </summary>
         /// <param name="where"></param>
@@ -146,6 +153,7 @@ namespace EL.Repository
         /// <param name="order"></param>
         /// <returns></returns>
         T LoadEntityMaxSort(Expression<Func<T, int>> order);
+
         /// <summary>
         /// 异步获取最大的一条数据
         /// </summary>
@@ -182,6 +190,20 @@ namespace EL.Repository
         IEnumerable<T> LoadEntityEnumerable(Expression<Func<T, bool>> where, Expression<Func<T, decimal?>> orderby, string asc, int pageIndex, int pageSize);
         IEnumerable<T> LoadEntityEnumerable(Expression<Func<T, bool>> where, Expression<Func<T, bool?>> orderby, string asc, int pageIndex, int pageSize);
 
+        /// <summary>
+        /// 加载自己定义排序分页实体列表不跟踪
+        /// </summary>
+        /// <param name="where">条件</param>
+        /// <param name="orderby">排序</param>
+        /// <param name="asc">asc/desc</param>
+        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageSize">分页的条数</param>      
+        /// <returns></returns>
+        IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, string>> orderby, string asc, int pageIndex, int pageSize);
+        IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, int?>> orderby, string asc, int pageIndex, int pageSize);
+        IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, DateTime?>> orderby, string asc, int pageIndex, int pageSize);
+        IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, decimal?>> orderby, string asc, int pageIndex, int pageSize);
+        IEnumerable<T> LoadEntityEnumerableAsNoTracking(Expression<Func<T, bool>> where, Expression<Func<T, bool?>> orderby, string asc, int pageIndex, int pageSize);
 
         /// <summary>
         /// 加载自己定义排序分页实体列表
@@ -197,8 +219,22 @@ namespace EL.Repository
         Task<List<T>> LoadEntityListAsync(Expression<Func<T, bool>> where, Expression<Func<T, DateTime?>> orderby, string asc, int pageIndex, int pageSize);
         Task<List<T>> LoadEntityListAsync(Expression<Func<T, bool>> where, Expression<Func<T, decimal?>> orderby, string asc, int pageIndex, int pageSize);
 
+        /// <summary>
+        /// 加载自己定义排序分页实体列表不跟踪
+        /// </summary>
+        /// <param name="where">条件</param>
+        /// <param name="orderby">排序</param>
+        /// <param name="asc">asc/desc</param>
+        /// <param name="pageIndex">当前页</param>
+        /// <param name="pageSize">分页的条数</param>      
+        /// <returns></returns>
+        Task<List<T>> LoadEntityListAsNoTrackingAsync(Expression<Func<T, bool>> where, Expression<Func<T, string>> orderby, string asc, int pageIndex, int pageSize);
+        Task<List<T>> LoadEntityListAsNoTrackingAsync(Expression<Func<T, bool>> where, Expression<Func<T, int?>> orderby, string asc, int pageIndex, int pageSize);
+        Task<List<T>> LoadEntityListAsNoTrackingAsync(Expression<Func<T, bool>> where, Expression<Func<T, DateTime?>> orderby, string asc, int pageIndex, int pageSize);
+        Task<List<T>> LoadEntityListAsNoTrackingAsync(Expression<Func<T, bool>> where, Expression<Func<T, decimal?>> orderby, string asc, int pageIndex, int pageSize);
 
         #region 求平均，求总计
+
         int? GetSum(Expression<Func<T, bool>> where, Expression<Func<T, int?>> sum);
         double? GetSum(Expression<Func<T, bool>> where, Expression<Func<T, double?>> sum);
         float? GetSum(Expression<Func<T, bool>> where, Expression<Func<T, float?>> sum);
@@ -211,6 +247,7 @@ namespace EL.Repository
         #endregion
 
         #region 查最大
+
         /// <summary>
         /// 获取最大
         /// </summary>
@@ -237,18 +274,25 @@ namespace EL.Repository
         DateTime? GetMax(Expression<Func<T, DateTime?>> max);
 
         #endregion
+
         /// <summary>
         /// 查询实体数量
         /// </summary>
         /// <param name="where"></param>
         /// <returns></returns>
         int GetEntitiesCount(Expression<Func<T, bool>> where);
+
         /// <summary>
         /// 异步查询实体数量
         /// </summary>
         /// <param name="where"></param>
         /// <returns></returns>
         Task<int> GetEntitiesCountAsync(Expression<Func<T, bool>> where);
+
+        #endregion
+
+        #region SQL执行
+
         /// <summary>
         /// 使用sql脚本查询实体列表
         /// </summary>
@@ -256,6 +300,7 @@ namespace EL.Repository
         /// <param name="sql"></param>
         /// <returns></returns>
         List<T> GetModeListlBySql(string sql);
+        List<T> GetModeListlBySql(string sql, object parameters);
 
         /// <summary>
         /// 使用sql脚本异步查询实体列表
@@ -264,12 +309,21 @@ namespace EL.Repository
         /// <param name="sql"></param>
         /// <returns></returns>
         Task<List<T>> GetModeListlBySqlAsync(string sql);
+        Task<List<T>> GetModeListlBySqlAsync(string sql, object parameters);
 
         /// <summary>
         /// 执行sql
         /// </summary>
         /// <param name="sql"></param>
         void ExecFromSql(string sql);
+        void ExecFromSql(string sql, object parameters);
+
+        /// <summary>
+        /// 异步执行sql
+        /// </summary>
+        /// <param name="sql"></param>
+        Task ExecFromSqlAsync(string sql);
+        Task ExecFromSqlAsync(string sql, object parameters);
 
         #endregion
     }
