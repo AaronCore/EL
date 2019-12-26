@@ -598,6 +598,11 @@ namespace EL.Common
         {
             return RedisHelper.ZAdd(key, scoreMembers);
         }
+        public static async Task<long> ZAddAsync(string key, params (decimal, object)[] scoreMembers)
+        {
+            return await RedisHelper.ZAddAsync(key, scoreMembers);
+        }
+
         /// <summary>
         /// 获取有序集合的成员数量
         /// </summary>
@@ -607,6 +612,11 @@ namespace EL.Common
         {
             return RedisHelper.ZCard(key);
         }
+        public static async Task<long> ZCardAsync(string key)
+        {
+            return await RedisHelper.ZCardAsync(key);
+        }
+
         /// <summary>
         /// 计算在有序集合中指定区间分数的成员数量
         /// </summary>
@@ -618,18 +628,19 @@ namespace EL.Common
         {
             return RedisHelper.ZCount(key, min, max);
         }
-
-        /// <summary>
-        /// 计算在有序集合中指定区间分数的成员数量
-        /// </summary>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="min">分数最小值 -inf (1 1</param>
-        /// <param name="max">分数最大值 +inf (10 10</param>
-        /// <returns></returns>
+        public static async Task<long> ZCountAsync(string key, decimal min, decimal max)
+        {
+            return await RedisHelper.ZCountAsync(key, min, max);
+        }
         public static long ZCount(string key, string min, string max)
         {
             return RedisHelper.ZCount(key, min, max);
         }
+        public static async Task<long> ZCountAsync(string key, string min, string max)
+        {
+            return await RedisHelper.ZCountAsync(key, min, max);
+        }
+
         /// <summary>
         /// 有序集合中对指定成员的分数加上增量 increment
         /// </summary>
@@ -640,6 +651,10 @@ namespace EL.Common
         public static decimal ZIncrBy(string key, string member, decimal increment = 1)
         {
             return RedisHelper.ZIncrBy(key, member, increment);
+        }
+        public static async Task<decimal> ZIncrByAsync(string key, string member, decimal increment = 1)
+        {
+            return await RedisHelper.ZIncrByAsync(key, member, increment);
         }
 
         /// <summary>
@@ -654,6 +669,10 @@ namespace EL.Common
         {
             return RedisHelper.ZInterStore(destination, weights, aggregate, keys);
         }
+        public static async Task<long> ZInterStoreAsync(string destination, decimal[] weights, RedisAggregate aggregate, params string[] keys)
+        {
+            return await RedisHelper.ZInterStoreAsync(destination, weights, aggregate, keys);
+        }
 
         /// <summary>
         /// 通过索引区间返回有序集合成指定区间内的成员
@@ -666,18 +685,19 @@ namespace EL.Common
         {
             return RedisHelper.ZRange(key, start, stop);
         }
-        /// <summary>
-        /// 通过索引区间返回有序集合成指定区间内的成员
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="start">开始位置，0表示第一个元素，-1表示最后一个元素</param>
-        /// <param name="stop">结束位置，0表示第一个元素，-1表示最后一个元素</param>
-        /// <returns></returns>
+        public static async Task<string[]> ZRangeAsync(string key, long start, long stop)
+        {
+            return await RedisHelper.ZRangeAsync(key, start, stop);
+        }
         public static T[] ZRange<T>(string key, long start, long stop)
         {
             return RedisHelper.ZRange<T>(key, start, stop);
         }
+        public static async Task<T[]> ZRangeAsync<T>(string key, long start, long stop)
+        {
+            return await RedisHelper.ZRangeAsync<T>(key, start, stop);
+        }
+
         /// <summary>
         /// 通过索引区间返回有序集合成指定区间内的成员和分数
         /// </summary>
@@ -689,17 +709,17 @@ namespace EL.Common
         {
             return RedisHelper.ZRangeWithScores(key, start, stop);
         }
-        /// <summary>
-        /// 通过索引区间返回有序集合成指定区间内的成员和分数
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="start">开始位置，0表示第一个元素，-1表示最后一个元素</param>
-        /// <param name="stop">结束位置，0表示第一个元素，-1表示最后一个元素</param>
-        /// <returns></returns>
+        public static async Task<(string member, decimal score)[]> ZRangeWithScoresAsync(string key, long start, long stop)
+        {
+            return await RedisHelper.ZRangeWithScoresAsync(key, start, stop);
+        }
         public static (T member, decimal score)[] ZRangeWithScores<T>(string key, long start, long stop)
         {
             return RedisHelper.ZRangeWithScores<T>(key, start, stop);
+        }
+        public static async Task<(T member, decimal score)[]> ZRangeWithScoresAsync<T>(string key, long start, long stop)
+        {
+            return await RedisHelper.ZRangeWithScoresAsync<T>(key, start, stop);
         }
 
         /// <summary>
@@ -715,20 +735,17 @@ namespace EL.Common
         {
             return RedisHelper.ZRangeByScore(key, min, max, limit, offset);
         }
-
-        /// <summary>
-        /// 通过分数返回有序集合指定区间内的成员
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="min">分数最小值 decimal.MinValue 1</param>
-        /// <param name="max">分数最大值 decimal.MaxValue 10</param>
-        /// <param name="limit">返回多少成员</param>
-        /// <param name="offset">返回条件偏移位置</param>
-        /// <returns></returns>
+        public static async Task<string[]> ZRangeByScoreAsync(string key, decimal min, decimal max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByScoreAsync(key, min, max, limit, offset);
+        }
         public static T[] ZRangeByScore<T>(string key, decimal min, decimal max, long? limit = null, long offset = 0)
         {
             return RedisHelper.ZRangeByScore<T>(key, min, max, limit, offset);
+        }
+        public static async Task<T[]> ZRangeByScoreAsync<T>(string key, decimal min, decimal max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByScoreAsync<T>(key, min, max, limit, offset);
         }
 
         /// <summary>
@@ -744,22 +761,18 @@ namespace EL.Common
         {
             return RedisHelper.ZRangeByScore(key, min, max, limit, offset);
         }
-
-        /// <summary>
-        /// 通过分数返回有序集合指定区间内的成员
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="min">分数最小值 -inf (1 1</param>
-        /// <param name="max">分数最大值 +inf (10 10</param>
-        /// <param name="limit">返回多少成员</param>
-        /// <param name="offset">返回条件偏移位置</param>
-        /// <returns></returns>
+        public static async Task<string[]> ZRangeByScoreAsync(string key, string min, string max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByScoreAsync(key, min, max, limit, offset);
+        }
         public static T[] ZRangeByScore<T>(string key, string min, string max, long? limit = null, long offset = 0)
         {
             return RedisHelper.ZRangeByScore<T>(key, min, max, limit, offset);
         }
-
+        public static async Task<T[]> ZRangeByScoreAsync<T>(string key, string min, string max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByScoreAsync<T>(key, min, max, limit, offset);
+        }
 
         /// <summary>
         /// 通过分数返回有序集合指定区间内的成员和分数
@@ -774,20 +787,17 @@ namespace EL.Common
         {
             return RedisHelper.ZRangeByScoreWithScores(key, min, max, limit, offset);
         }
-
-        /// <summary>
-        /// 通过分数返回有序集合指定区间内的成员和分数
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="min">分数最小值 decimal.MinValue 1</param>
-        /// <param name="max">分数最大值 decimal.MaxValue 10</param>
-        /// <param name="limit">返回多少成员</param>
-        /// <param name="offset">返回条件偏移位置</param>
-        /// <returns></returns>
+        public static async Task<(string member, decimal score)[]> ZRangeByScoreWithScoresAsync(string key, decimal min, decimal max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByScoreWithScoresAsync(key, min, max, limit, offset);
+        }
         public static (T member, decimal score)[] ZRangeByScoreWithScores<T>(string key, decimal min, decimal max, long? limit = null, long offset = 0)
         {
             return RedisHelper.ZRangeByScoreWithScores<T>(key, min, max, limit, offset);
+        }
+        public static async Task<(T member, decimal score)[]> ZRangeByScoreWithScoresAsync<T>(string key, decimal min, decimal max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByScoreWithScoresAsync<T>(key, min, max, limit, offset);
         }
 
         /// <summary>
@@ -803,20 +813,17 @@ namespace EL.Common
         {
             return RedisHelper.ZRangeByScoreWithScores(key, min, max, limit, offset);
         }
-
-        /// <summary>
-        /// 通过分数返回有序集合指定区间内的成员和分数
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="min">分数最小值 -inf (1 1</param>
-        /// <param name="max">分数最大值 +inf (10 10</param>
-        /// <param name="limit">返回多少成员</param>
-        /// <param name="offset">返回条件偏移位置</param>
-        /// <returns></returns>
+        public static async Task<(string member, decimal score)[]> ZRangeByScoreWithScoresAsync(string key, string min, string max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByScoreWithScoresAsync(key, min, max, limit, offset);
+        }
         public static (T member, decimal score)[] ZRangeByScoreWithScores<T>(string key, string min, string max, long? limit = null, long offset = 0)
         {
             return RedisHelper.ZRangeByScoreWithScores<T>(key, min, max, limit, offset);
+        }
+        public static async Task<(T member, decimal score)[]> ZRangeByScoreWithScoresAsync<T>(string key, string min, string max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByScoreWithScoresAsync<T>(key, min, max, limit, offset);
         }
 
         /// <summary>
@@ -829,6 +836,11 @@ namespace EL.Common
         {
             return RedisHelper.ZRank(key, member);
         }
+        public static async Task<long?> ZRankAsync(string key, object member)
+        {
+            return await RedisHelper.ZRankAsync(key, member);
+        }
+
         /// <summary>
         /// 移除有序集合中的一个或多个成员
         /// </summary>
@@ -839,6 +851,11 @@ namespace EL.Common
         {
             return RedisHelper.ZRem(key, member);
         }
+        public static async Task<long> ZRemAsync<T>(string key, params T[] member)
+        {
+            return await RedisHelper.ZRemAsync(key, member);
+        }
+
         /// <summary>
         /// 移除有序集合中给定的排名区间的所有成员
         /// </summary>
@@ -849,6 +866,10 @@ namespace EL.Common
         public static long ZRemRangeByRank(string key, long start, long stop)
         {
             return RedisHelper.ZRemRangeByRank(key, start, stop);
+        }
+        public static async Task<long> ZRemRangeByRankAsync(string key, long start, long stop)
+        {
+            return await RedisHelper.ZRemRangeByRankAsync(key, start, stop);
         }
 
         /// <summary>
@@ -862,19 +883,18 @@ namespace EL.Common
         {
             return RedisHelper.ZRemRangeByScore(key, min, max);
         }
-
-        /// <summary>
-        /// 移除有序集合中给定的分数区间的所有成员
-        /// </summary>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="min">分数最小值 -inf (1 1</param>
-        /// <param name="max">分数最大值 +inf (10 10</param>
-        /// <returns></returns>
+        public static async Task<long> ZRemRangeByScoreAsync(string key, decimal min, decimal max)
+        {
+            return await RedisHelper.ZRemRangeByScoreAsync(key, min, max);
+        }
         public static long ZRemRangeByScore(string key, string min, string max)
         {
             return RedisHelper.ZRemRangeByScore(key, min, max);
         }
-
+        public static async Task<long> ZRemRangeByScoreAsync(string key, string min, string max)
+        {
+            return await RedisHelper.ZRemRangeByScoreAsync(key, min, max);
+        }
 
         /// <summary>
         /// 返回有序集中指定区间内的成员，通过索引，分数从高到底
@@ -887,18 +907,19 @@ namespace EL.Common
         {
             return RedisHelper.ZRevRange(key, start, stop);
         }
-        /// <summary>
-        /// 返回有序集中指定区间内的成员，通过索引，分数从高到底
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="start">开始位置，0表示第一个元素，-1表示最后一个元素</param>
-        /// <param name="stop">结束位置，0表示第一个元素，-1表示最后一个元素</param>
-        /// <returns></returns>
+        public static async Task<string[]> ZRevRangeAsync(string key, long start, long stop)
+        {
+            return await RedisHelper.ZRevRangeAsync(key, start, stop);
+        }
         public static T[] ZRevRange<T>(string key, long start, long stop)
         {
             return RedisHelper.ZRevRange<T>(key, start, stop);
         }
+        public static async Task<T[]> ZRevRangeAsync<T>(string key, long start, long stop)
+        {
+            return await RedisHelper.ZRevRangeAsync<T>(key, start, stop);
+        }
+
         /// <summary>
         /// 返回有序集中指定区间内的成员和分数，通过索引，分数从高到底
         /// </summary>
@@ -910,18 +931,17 @@ namespace EL.Common
         {
             return RedisHelper.ZRevRangeWithScores(key, start, stop);
         }
-
-        /// <summary>
-        /// 返回有序集中指定区间内的成员和分数，通过索引，分数从高到底
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="start">开始位置，0表示第一个元素，-1表示最后一个元素</param>
-        /// <param name="stop">结束位置，0表示第一个元素，-1表示最后一个元素</param>
-        /// <returns></returns>
+        public static async Task<(string member, decimal score)[]> ZRevRangeWithScoresAsync(string key, long start, long stop)
+        {
+            return await RedisHelper.ZRevRangeWithScoresAsync(key, start, stop);
+        }
         public static (T member, decimal score)[] ZRevRangeWithScores<T>(string key, long start, long stop)
         {
             return RedisHelper.ZRevRangeWithScores<T>(key, start, stop);
+        }
+        public static async Task<(T member, decimal score)[]> ZRevRangeWithScoresAsync<T>(string key, long start, long stop)
+        {
+            return await RedisHelper.ZRevRangeWithScoresAsync<T>(key, start, stop);
         }
 
         /// <summary>
@@ -937,20 +957,17 @@ namespace EL.Common
         {
             return RedisHelper.ZRevRangeByScore(key, max, min, limit, offset);
         }
-
-        /// <summary>
-        /// 返回有序集中指定分数区间内的成员，分数从高到低排序
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="max">分数最大值 decimal.MaxValue 10</param>
-        /// <param name="min">分数最小值 decimal.MinValue 1</param>
-        /// <param name="limit">返回多少成员</param>
-        /// <param name="offset">返回条件偏移位置</param>
-        /// <returns></returns>
+        public static async Task<string[]> ZRevRangeByScoreAsync(string key, decimal max, decimal min, long? limit = null, long? offset = 0)
+        {
+            return await RedisHelper.ZRevRangeByScoreAsync(key, max, min, limit, offset);
+        }
         public static T[] ZRevRangeByScore<T>(string key, decimal max, decimal min, long? limit = null, long offset = 0)
         {
             return RedisHelper.ZRevRangeByScore<T>(key, max, min, limit, offset);
+        }
+        public static async Task<T[]> ZRevRangeByScoreAsync<T>(string key, decimal max, decimal min, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRevRangeByScoreAsync<T>(key, max, min, limit, offset);
         }
 
         /// <summary>
@@ -966,21 +983,18 @@ namespace EL.Common
         {
             return RedisHelper.ZRevRangeByScore(key, max, min, limit, offset);
         }
-        /// <summary>
-        /// 返回有序集中指定分数区间内的成员，分数从高到低排序
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="max">分数最大值 +inf (10 10</param>
-        /// <param name="min">分数最小值 -inf (1 1</param>
-        /// <param name="limit">返回多少成员</param>
-        /// <param name="offset">返回条件偏移位置</param>
-        /// <returns></returns>
+        public static async Task<string[]> ZRevRangeByScoreAsync(string key, string max, string min, long? limit = null, long? offset = 0)
+        {
+            return await RedisHelper.ZRevRangeByScoreAsync(key, max, min, limit, offset);
+        }
         public static T[] ZRevRangeByScore<T>(string key, string max, string min, long? limit = null, long offset = 0)
         {
             return RedisHelper.ZRevRangeByScore<T>(key, max, min, limit, offset);
         }
-
+        public static async Task<T[]> ZRevRangeByScoreAsync<T>(string key, string max, string min, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRevRangeByScoreAsync<T>(key, max, min, limit, offset);
+        }
 
         /// <summary>
         /// 返回有序集中指定分数区间内的成员和分数，分数从高到低排序
@@ -995,20 +1009,17 @@ namespace EL.Common
         {
             return RedisHelper.ZRevRangeByScoreWithScores(key, max, min, limit, offset);
         }
-
-        /// <summary>
-        /// 返回有序集中指定分数区间内的成员和分数，分数从高到低排序
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="max">分数最大值 decimal.MaxValue 10</param>
-        /// <param name="min">分数最小值 decimal.MinValue 1</param>
-        /// <param name="limit">返回多少成员</param>
-        /// <param name="offset">返回条件偏移位置</param>
-        /// <returns></returns>
+        public static async Task<(string member, decimal score)[]> ZRevRangeByScoreWithScoresAsync(string key, decimal max, decimal min, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRevRangeByScoreWithScoresAsync(key, max, min, limit, offset);
+        }
         public static (T member, decimal score)[] ZRevRangeByScoreWithScores<T>(string key, decimal max, decimal min, long? limit = null, long offset = 0)
         {
             return RedisHelper.ZRevRangeByScoreWithScores<T>(key, max, min, limit, offset);
+        }
+        public static async Task<(T member, decimal score)[]> ZRevRangeByScoreWithScoresAsync<T>(string key, decimal max, decimal min, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRevRangeByScoreWithScoresAsync<T>(key, max, min, limit, offset);
         }
 
         /// <summary>
@@ -1024,22 +1035,18 @@ namespace EL.Common
         {
             return RedisHelper.ZRevRangeByScoreWithScores(key, max, min, limit, offset);
         }
-
-        /// <summary>
-        /// 返回有序集中指定分数区间内的成员和分数，分数从高到低排序
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="max">分数最大值 +inf (10 10</param>
-        /// <param name="min">分数最小值 -inf (1 1</param>
-        /// <param name="limit">返回多少成员</param>
-        /// <param name="offset">返回条件偏移位置</param>
-        /// <returns></returns>
+        public static async Task<(string member, decimal score)[]> ZRevRangeByScoreWithScoresAsync(string key, string max, string min, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRevRangeByScoreWithScoresAsync(key, max, min, limit, offset);
+        }
         public static (T member, decimal score)[] ZRevRangeByScoreWithScores<T>(string key, string max, string min, long? limit = null, long offset = 0)
         {
             return RedisHelper.ZRevRangeByScoreWithScores<T>(key, max, min, limit, offset);
         }
-
+        public static async Task<(T member, decimal score)[]> ZRevRangeByScoreWithScoresAsync<T>(string key, string max, string min, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRevRangeByScoreWithScoresAsync<T>(key, max, min, limit, offset);
+        }
 
         /// <summary>
         /// 返回有序集合中指定成员的排名，有序集成员按分数值递减(从大到小)排序
@@ -1051,6 +1058,11 @@ namespace EL.Common
         {
             return RedisHelper.ZRevRank(key, member);
         }
+        public static async Task<long?> ZRevRankAsync(string key, object member)
+        {
+            return await RedisHelper.ZRevRankAsync(key, member);
+        }
+
         /// <summary>
         /// 返回有序集中，成员的分数值
         /// </summary>
@@ -1060,6 +1072,10 @@ namespace EL.Common
         public static decimal? ZScore(string key, object member)
         {
             return RedisHelper.ZScore(key, member);
+        }
+        public static async Task<decimal?> ZScoreAsync(string key, object member)
+        {
+            return await RedisHelper.ZScoreAsync(key, member);
         }
 
         /// <summary>
@@ -1074,6 +1090,10 @@ namespace EL.Common
         {
             return RedisHelper.ZUnionStore(destination, weights, aggregate, keys);
         }
+        public static async Task<long> ZUnionStoreAsync(string destination, decimal[] weights, RedisAggregate aggregate, params string[] keys)
+        {
+            return await RedisHelper.ZUnionStoreAsync(destination, weights, aggregate, keys);
+        }
 
         /// <summary>
         /// 迭代有序集合中的元素
@@ -1087,21 +1107,18 @@ namespace EL.Common
         {
             return RedisHelper.ZScan(key, cursor, pattern, count);
         }
-
-        /// <summary>
-        /// 迭代有序集合中的元素
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="cursor">位置</param>
-        /// <param name="pattern">模式</param>
-        /// <param name="count">数量</param>
-        /// <returns></returns>
+        public static async Task<RedisScan<(string member, decimal score)>> ZScanAsync(string key, long cursor, string pattern = null, long? count = null)
+        {
+            return await RedisHelper.ZScanAsync(key, cursor, pattern, count);
+        }
         public static RedisScan<(T member, decimal score)> ZScan<T>(string key, long cursor, string pattern = null, long? count = null)
         {
             return RedisHelper.ZScan<T>(key, cursor, pattern, count);
         }
-
+        public static async Task<RedisScan<(T member, decimal score)>> ZScanAsync<T>(string key, long cursor, string pattern = null, long? count = null)
+        {
+            return await RedisHelper.ZScanAsync<T>(key, cursor, pattern, count);
+        }
 
         /// <summary>
         /// 当有序集合的所有成员都具有相同的分值时，有序集合的元素会根据成员的字典序来进行排序，这个命令可以返回给定的有序集合键 key 中，值介于 min 和 max 之间的成员。
@@ -1116,22 +1133,18 @@ namespace EL.Common
         {
             return RedisHelper.ZRangeByLex(key, min, max, limit, offset);
         }
-
-        /// <summary>
-        /// 当有序集合的所有成员都具有相同的分值时，有序集合的元素会根据成员的字典序来进行排序，这个命令可以返回给定的有序集合键 key 中，值介于 min 和 max 之间的成员。
-        /// </summary>
-        /// <typeparam name="T">byte[] 或其他类型</typeparam>
-        /// <param name="key">不含prefix前辍</param>
-        /// <param name="min">'(' 表示包含在范围，'[' 表示不包含在范围，'+' 正无穷大，'-' 负无限。 ZRANGEBYLEX zset - + ，命令将返回有序集合中的所有元素</param>
-        /// <param name="max">'(' 表示包含在范围，'[' 表示不包含在范围，'+' 正无穷大，'-' 负无限。 ZRANGEBYLEX zset - + ，命令将返回有序集合中的所有元素</param>
-        /// <param name="limit">返回多少成员</param>
-        /// <param name="offset">返回条件偏移位置</param>
-        /// <returns></returns>
+        public static async Task<string[]> ZRangeByLexAsync(string key, string min, string max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByLexAsync(key, min, max, limit, offset);
+        }
         public static T[] ZRangeByLex<T>(string key, string min, string max, long? limit = null, long offset = 0)
         {
             return RedisHelper.ZRangeByLex<T>(key, min, max, limit, offset);
         }
-
+        public static async Task<T[]> ZRangeByLexAsync<T>(string key, string min, string max, long? limit = null, long offset = 0)
+        {
+            return await RedisHelper.ZRangeByLexAsync<T>(key, min, max, limit, offset);
+        }
 
         /// <summary>
         /// 当有序集合的所有成员都具有相同的分值时，有序集合的元素会根据成员的字典序来进行排序，这个命令可以返回给定的有序集合键 key 中，值介于 min 和 max 之间的成员。
@@ -1144,6 +1157,10 @@ namespace EL.Common
         {
             return RedisHelper.ZRemRangeByLex(key, min, max);
         }
+        public static async Task<long> ZRemRangeByLexAsync(string key, string min, string max)
+        {
+            return await RedisHelper.ZRemRangeByLexAsync(key, min, max);
+        }
 
         /// <summary>
         /// 当有序集合的所有成员都具有相同的分值时，有序集合的元素会根据成员的字典序来进行排序，这个命令可以返回给定的有序集合键 key 中，值介于 min 和 max 之间的成员。
@@ -1155,6 +1172,10 @@ namespace EL.Common
         public static long ZLexCount(string key, string min, string max)
         {
             return RedisHelper.ZLexCount(key, min, max);
+        }
+        public static async Task<long> ZLexCountAsync(string key, string min, string max)
+        {
+            return await RedisHelper.ZLexCountAsync(key, min, max);
         }
 
         #endregion
