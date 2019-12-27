@@ -10,11 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Autofac;
+using CSRedis;
 using EL.Common;
 using EL.EntityFrameworkCore;
 using EL.Repository;
-using Microsoft.Extensions.Logging;
 
 namespace EL.Admin
 {
@@ -30,11 +31,16 @@ namespace EL.Admin
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //redis×¢²á
-            RedisExt.Init();
-            var connection = new JsonConfigManager().GetValue<string>("ELConnection");
+            var jsonConfigManager = new JsonConfigManager();
+
+            // Redis×¢²á
+            // CsRedis£ºhttps://github.com/2881099/csredis
+            // RedisÃüÁî²Î¿¼£ºhttp://doc.redisfans.com/sorted_set/zadd.html
+            var redisConnection = jsonConfigManager.GetValue<string>("RedisConnection");
+            RedisHelper.Initialization(new CSRedisClient(redisConnection));
+            // Êý¾Ý¿âÁ¬½Ó×¢²á
+            var connection = jsonConfigManager.GetValue<string>("ELConnection");
             services.AddDbContext<ELDbContext>(options => options.UseLazyLoadingProxies().UseMySql(connection));
-            //services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddDistributedMemoryCache()
                     .AddSession(options =>
                     {
