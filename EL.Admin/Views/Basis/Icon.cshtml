@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Icon";
+}
+<div id="iconApp">
+    <template>
+        <el-container>
+            <el-main>
+                <div>
+                    Font Awesome图标库：
+                    <a href="http://www.fontawesome.com.cn/faicons" style="text-decoration:none;-webkit-tap-highlight-color: rgba(255, 255, 255, 0);-webkit-user-select: none;-moz-user-focus: none;-moz-user-select: none;">http://www.fontawesome.com.cn/faicons</a>
+                </div>
+                <br />
+                <div style="font-size:20px;color:red;">
+                    <p>使用示例：</p>
+                    <p>
+                        如果Icon图标样式为“fa fa-book”，那么在本项目中应以“el-icon-”加“fa-book”拼接，
+                        例："el-icon-fa-book",提示：去掉多余“fa”。
+                    </p>
+                </div>
+            </el-main>
+        </el-container>
+    </template>
+</div>
+@section script {
+    <script>
+        new Vue({
+            el: "#iconApp"
+        });
+    </script>
+}

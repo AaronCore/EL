@@ -87,11 +87,27 @@ new Vue({
             menuDefaultActive: 'useDocTemplate',
             menuArr: [
                 {
+                    key: 'base_manage',
+                    title: '基础管理',
+                    show: true,
+                    //url: '',
+                    icon: 'el-icon-fa-cubes',
+                    children: [
+                        {
+                            key: 'icon_list',
+                            title: 'Icon列表',
+                            show: true,
+                            url: '/Basis/Icon',
+                            icon: 'el-icon-fa-list',
+                        }
+                    ]
+                },
+                {
                     key: 'log_manage',
                     title: '日志管理',
                     show: true,
                     //url: '',
-                    icon: 'el-icon-fa-cubes',
+                    icon: 'el-icon-fa-file-text',
                     children: [
                         {
                             key: 'log_list',
