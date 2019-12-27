@@ -54,7 +54,9 @@ namespace EL.Admin
         {
             // 在这里添加服务注册
             builder.RegisterGeneric(typeof(BaseRepository<>)).As(typeof(IBaseRepository<>)).InstancePerDependency();
-            builder.RegisterAssemblyTypes(Assembly.Load("EL.Application")).Where(a => a.Name.EndsWith("Service")).AsImplementedInterfaces();
+            builder.RegisterAssemblyTypes(Assembly.Load("EL.Application"))
+                   .Where(a => a.Name.EndsWith("Service", StringComparison.OrdinalIgnoreCase))
+                   .AsImplementedInterfaces();
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
