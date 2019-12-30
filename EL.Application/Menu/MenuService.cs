@@ -18,20 +18,20 @@ namespace EL.Application.Menu
             _menuRepository = menuRepository;
         }
 
-        public async Task<List<MenuList_DTO>> GetSelectMenuList()
+        public async Task<List<MenuListDto>> GetSelectMenuList()
         {
             var list = await _menuRepository.WhereLoadEntityEnumerableAsync(p => p.Enabled);
             var resultList = SelectMenuTree(list, 0);
             return resultList;
         }
-        private List<MenuList_DTO> SelectMenuTree(List<MenuEntity> data, int parentId)
+        private List<MenuListDto> SelectMenuTree(List<MenuEntity> data, int parentId)
         {
-            List<MenuList_DTO> treeList = new List<MenuList_DTO>();
+            List<MenuListDto> treeList = new List<MenuListDto>();
             var list = data.Where(p => p.ParentId == parentId).ToList();
             foreach (var item in list)
             {
                 bool hasChildren = data.Count(p => p.ParentId == item.Id) > 0;
-                var model = new MenuList_DTO
+                var model = new MenuListDto
                 {
                     Label = item.Name,
                     Value = item.Id
@@ -41,44 +41,44 @@ namespace EL.Application.Menu
             }
             return treeList;
         }
-        public async Task<List<MenuTree_DTO>> GetMenuTreeList()
+        public async Task<List<MenuTreeDto>> GetMenuTreeList()
         {
             var list = await _menuRepository.LoadEntityAllAsync();
             var resultList = MenuTree(list, 0);
             return resultList;
         }
-        private List<MenuTree_DTO> MenuTree(List<MenuEntity> data, int parentId)
+        private List<MenuTreeDto> MenuTree(List<MenuEntity> data, int parentId)
         {
-            List<MenuTree_DTO> treeList = new List<MenuTree_DTO>();
+            List<MenuTreeDto> treeList = new List<MenuTreeDto>();
             var list = data.Where(p => p.ParentId == parentId).ToList();
             foreach (var item in list)
             {
                 bool hasChildren = data.Count(p => p.ParentId == item.Id) > 0;
-                var model = item.MapTo<MenuTree_DTO>();
+                var model = item.MapTo<MenuTreeDto>();
                 model.CreateTime = item.CreateTime.ToString("yyyy-MM-dd HH:mm:ss");
                 model.Children = hasChildren ? MenuTree(data, item.Id) : null;
                 treeList.Add(model);
             }
             return treeList;
         }
-        public async Task<List<MenuList_DTO>> GetMenuList()
+        public async Task<List<MenuListDto>> GetMenuList()
         {
-            var resultList = new List<MenuList_DTO>();
+            var resultList = new List<MenuListDto>();
             var list = await _menuRepository.WhereLoadEntityEnumerableAsync(p => p.Enabled);
             var oneList = list.Where(p => p.ParentId == 0);
             foreach (var oneItem in oneList)
             {
-                var oneModel = new MenuList_DTO()
+                var oneModel = new MenuListDto()
                 {
                     Label = oneItem.Name,
                     Value = oneItem.Id
                 };
-                var childrenList = new List<MenuList_DTO>();
+                var childrenList = new List<MenuListDto>();
 
                 var towList = list.Where(p => p.ParentId == oneItem.Id).ToList();
                 foreach (var towItem in towList)
                 {
-                    var towModel = new MenuList_DTO()
+                    var towModel = new MenuListDto()
                     {
                         Label = towItem.Name,
                         Value = towItem.Id

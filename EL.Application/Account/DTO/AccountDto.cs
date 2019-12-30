@@ -4,7 +4,7 @@ using System.Text;
 
 namespace EL.Application
 {
-    public class Account_DTO
+    public class AccountDto
     {
         /// <summary>
         /// 主键标识

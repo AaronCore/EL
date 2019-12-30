@@ -8,9 +8,9 @@ namespace EL.Application
 {
     public interface IMenuService
     {
-        Task<List<MenuTree_DTO>> GetMenuTreeList();
-        Task<List<MenuList_DTO>> GetMenuList();
-        Task<List<MenuList_DTO>> GetSelectMenuList();
+        Task<List<MenuTreeDto>> GetMenuTreeList();
+        Task<List<MenuListDto>> GetMenuList();
+        Task<List<MenuListDto>> GetSelectMenuList();
         Task<MenuEntity> GetMenu(int id);
         Task Submit(MenuEntity menuDto);
         Task<bool> Deletes(int[] ids);

@@ -41,7 +41,7 @@ namespace EL.Application
             }
             await _accountRepository.CommitAsync();
         }
-        public List<Account_DTO> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey)
+        public List<AccountDto> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey)
         {
             --pageIndex;
             var parameters = new DynamicParameters();
@@ -54,13 +54,13 @@ namespace EL.Application
                 parameters.Add("@searchKey", searchKey);
             }
 
-            total = _dapperRepository.Query<Account_DTO>(sb.ToString(), parameters).Count();
+            total = _dapperRepository.Query<AccountDto>(sb.ToString(), parameters).Count();
 
             sb.Append(" order by a.id desc limit @pageIndex,@pageSize");
             parameters.Add("@pageIndex", pageIndex * pageSize);
             parameters.Add("@pageSize", pageSize);
 
-            var roleList = _dapperRepository.Query<Account_DTO>(sb.ToString(), parameters).ToList();
+            var roleList = _dapperRepository.Query<AccountDto>(sb.ToString(), parameters).ToList();
             return roleList;
         }
         public async Task<AccountEntity> GetAccount(int id)
