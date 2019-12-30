@@ -19,19 +19,16 @@ namespace EL.EntityFrameworkCore
 
         public ELDbContext(DbContextOptions<ELDbContext> options) : base(options)
         {
-            // Database.EnsureCreated();
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //手动多对多映射
-            modelBuilder.Entity<RoleMenuEntity>().HasKey(p => new { p.RoleId, p.MenuId });
-            modelBuilder.Entity<RoleMenuEntity>().HasOne(pt => pt.Role).WithMany(p => p.RoleMenus).HasForeignKey(pt => pt.RoleId);
-            modelBuilder.Entity<RoleMenuEntity>().HasOne(pt => pt.Menu).WithMany(p => p.RoleMenus).HasForeignKey(pt => pt.MenuId);
+            //表别名映射
+            modelBuilder.Entity<LogEntity>().ToTable("sys_logs");
+            modelBuilder.Entity<AccountEntity>().ToTable("sys_accounts");
+            modelBuilder.Entity<RoleEntity>().ToTable("sys_roles");
+            modelBuilder.Entity<MenuEntity>().ToTable("sys_menus");
+            modelBuilder.Entity<RoleMenuEntity>().ToTable("sys_role_menus");
         }
-        public DbSet<LogEntity> Logs { get; set; }
-        public DbSet<AccountEntity> Accounts { get; set; }
-        public DbSet<RoleEntity> Roles { get; set; }
-        public DbSet<MenuEntity> Menus { get; set; }
-        public DbSet<RoleMenuEntity> RoleMenus { get; set; }
     }
 }

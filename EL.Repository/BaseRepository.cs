@@ -186,7 +186,7 @@ namespace EL.Repository
         /// <returns></returns>
         public T WhereLoadEntity(Expression<Func<T, bool>> where)
         {
-            return _dbContext.Set<T>().SingleOrDefault(where);
+            return _dbContext.Set<T>().FirstOrDefault(where);
         }
 
         /// <summary>
@@ -366,11 +366,11 @@ namespace EL.Repository
             return (IEnumerable<T>)_dbContext.Set<T>().Where<T>(where).OrderByDescending<T, bool?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking();
 
         }
-        
+
         #endregion
 
         #region 异步分页排序查询
-        
+
         /// <summary>
         /// 加载自己定义排序分页实体列表
         /// </summary>
@@ -458,7 +458,7 @@ namespace EL.Repository
                 return await _dbContext.Set<T>().Where<T>(where).OrderBy<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
             return await _dbContext.Set<T>().Where<T>(where).OrderByDescending<T, Decimal?>(orderby).Skip<T>(pageIndex * pageSize).Take<T>(pageSize).AsNoTracking().ToListAsync();
         }
-        
+
         #endregion
 
         #region 求平均，求总计

@@ -27,12 +27,12 @@ namespace EL.Application
         public int Sort { get; set; }
         public bool Enabled { get; set; }
         public string CreateTime { get; set; }
-        public List<MenuTree_DTO> children { get; set; }
+        public List<MenuTree_DTO> Children { get; set; }
     }
     public class MenuList_DTO
     {
-        public string label { get; set; }
-        public int value { get; set; }
-        public List<MenuList_DTO> children { get; set; }
+        public string Label { get; set; }
+        public int Value { get; set; }
+        public List<MenuList_DTO> Children { get; set; }
     }
 }

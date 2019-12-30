@@ -14,11 +14,8 @@ namespace EL.Application
     public class LogService : ILogService
     {
         private readonly IBaseRepository<LogEntity> _logRepository;
-        private readonly DapperRepository _dapperRepository;
-        public LogService()
-        {
-            _dapperRepository = new DapperRepository();
-        }
+        private readonly DapperRepository _dapperRepository = new DapperRepository();
+        public LogService() { }
         public LogService(IBaseRepository<LogEntity> logRepository)
         {
             _logRepository = logRepository;
@@ -44,7 +41,7 @@ namespace EL.Application
                 Exception = ex.ToString(),
                 CreateTime = DateTime.Now
             };
-            string sql = "insert into logs(message,exception,stacktrace,createtime) values(@message,@exception,@stacktrace,@createtime)";
+            string sql = "insert into sys_logs(message,exception,stacktrace,createtime) values(@message,@exception,@stacktrace,@createtime)";
             var param = new
             {
                 message = entity.Message,

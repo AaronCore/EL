@@ -30,9 +30,8 @@ namespace EL.Admin.Controllers
             var obj = new
             {
                 model.Id,
-                model.Name,
                 model.Account,
-                RoleId = model.Role != null ? model.Role.Id : 0,
+                model.RoleId,
                 model.Enabled,
                 model.Sort
             };
@@ -52,7 +51,7 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(Account_DTO entity)
+        public async Task<IActionResult> Submit(AccountEntity entity)
         {
             await _accountService.Submit(entity);
             return Json(new { code = 0 });
@@ -71,8 +70,9 @@ namespace EL.Admin.Controllers
                 data = list.Select(p => new
                 {
                     p.Id,
-                    p.Name,
-                    RoleName = p.Role != null ? p.Role.Name : null,
+                    p.Account,
+                    p.RoleId,
+                    p.RoleName,
                     p.Enabled,
                     p.Sort,
                     CreateTime = p.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")

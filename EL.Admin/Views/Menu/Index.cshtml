@@ -53,8 +53,8 @@
         <el-dialog title="菜单编辑" :visible.sync="menuFormVisible">
             <el-form :model="menuForm" ref="menuForm" :rules="rules" label-position="right" label-width="100px">
                 <el-form-item label="上级菜单">
-                    <el-cascader style="width:250px;" v-model="menuForm.parentId"
-                                 :options="menuOptions" clearable="true" placeholder="请选择"
+                    <el-cascader style="width:250px;" ref="menuRef" v-model="menuForm.parentId"
+                                 :options="menuOptions" clearable placeholder="请选择"
                                  :props="{ checkStrictly: true }">
                     </el-cascader>
                 </el-form-item>
@@ -124,11 +124,13 @@
             methods: {
                 //添加
                 add: function () {
+                    this.getMenu();
                     this.menuFormVisible = true;
                     this.resetForm("menuForm");
                 },
                 //编辑
                 edit: function (row) {
+                    this.getMenu();
                     ajax.get("/Menu/GetMenu?id=" + row.id).then((res) => {
                         this.menuForm = res;
                         this.menuFormVisible = true;
@@ -143,6 +145,10 @@
                 },
                 //表单提交
                 submitForm: function (formName) {
+                    if (this.$refs.menuRef.getCheckedNodes() != null && this.$refs.menuRef.getCheckedNodes().length > 1) {
+                        var parentArray = this.$refs.menuRef.getCheckedNodes()[0].path;
+                        this.menuForm.parentId = parentArray[parentArray.length - 1];
+                    }
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
                             this.editLoading = true;
@@ -203,7 +209,6 @@
             },
             created: function () {
                 this.getTableData();
-                this.getMenu();
             }
         });
     </script>

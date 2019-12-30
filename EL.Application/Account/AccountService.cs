@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text;
 using System.Linq;
-using System.Linq.Expressions;
 using EL.Repository;
 using EL.Common;
 using EL.Entity;
+using Dapper;
+using EL.DapperCore;
 
 namespace EL.Application
 {
@@ -14,54 +15,52 @@ namespace EL.Application
     {
         private readonly IBaseRepository<AccountEntity> _accountRepository;
         private readonly IBaseRepository<RoleEntity> _roleRepository;
+        private readonly DapperRepository _dapperRepository = new DapperRepository();
+
         public AccountService(IBaseRepository<AccountEntity> accountRepository, IBaseRepository<RoleEntity> roleRepository)
         {
             _accountRepository = accountRepository;
             _roleRepository = roleRepository;
         }
 
-        public async Task Submit(Account_DTO entity)
+        public async Task Submit(AccountEntity entity)
         {
-            object roleEntity = null;
-            if (entity.RoleId > 0)
-            {
-                roleEntity = await _roleRepository.WhereLoadEntityAsync(p => p.Id == entity.RoleId);
-            }
             if (entity.Id > 0)
             {
                 var model = await _accountRepository.WhereLoadEntityAsync(p => p.Id == entity.Id);
-                model.Name = entity.Name;
                 model.Sort = entity.Sort;
                 model.Enabled = entity.Enabled;
                 model.EditTime = DateTime.Now;
-                if (entity.RoleId > 0)
-                {
-                    model.Role = (RoleEntity)roleEntity;
-                }
                 _accountRepository.UpdateEntity(model);
             }
             else
             {
-                var model = entity.MapTo<AccountEntity>();
-                model.Password = Md5Helper.GetMD5_32(entity.Password);
-                model.CreateTime = DateTime.Now;
-                if (entity.RoleId > 0)
-                {
-                    model.Role = (RoleEntity)roleEntity;
-                }
-                await _accountRepository.AddEntityAsync(model);
+                entity.Password = Md5Helper.GetMD5_32(entity.Password);
+                entity.CreateTime = DateTime.Now;
+                await _accountRepository.AddEntityAsync(entity);
             }
             await _accountRepository.CommitAsync();
         }
-        public List<AccountEntity> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey)
+        public List<Account_DTO> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey)
         {
-            Expression<Func<AccountEntity, bool>> where = e => true;
+            --pageIndex;
+            var parameters = new DynamicParameters();
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append(@"select a.id,a.account,a.roleId,b.Name rolename,a.sort,a.enabled,a.editTime,a.editor,a.createTime,a.creater from sys_accounts a,sys_roles b where a.roleId=b.id and 1=1 ");
             if (!string.IsNullOrWhiteSpace(searchKey))
             {
-                where = where.And(p => p.Name.Contains(searchKey) || p.Role.Name.Contains(searchKey));
+                sb.Append(" a.account like concat('%',@searchKey,'%') or b.name like concat('%',@searchKey,'%')");
+                parameters.Add("@searchKey", searchKey);
             }
-            var roleList = _accountRepository.LoadEntityEnumerable(where, p => p.CreateTime, "desc", pageIndex, pageSize).ToList();
-            total = _accountRepository.GetEntitiesCount(where);
+
+            total = _dapperRepository.Query<Account_DTO>(sb.ToString(), parameters).Count();
+
+            sb.Append(" order by a.id desc limit @pageIndex,@pageSize");
+            parameters.Add("@pageIndex", pageIndex * pageSize);
+            parameters.Add("@pageSize", pageSize);
+
+            var roleList = _dapperRepository.Query<Account_DTO>(sb.ToString(), parameters).ToList();
             return roleList;
         }
         public async Task<AccountEntity> GetAccount(int id)

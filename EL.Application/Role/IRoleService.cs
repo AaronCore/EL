@@ -15,5 +15,6 @@ namespace EL.Application
         Task<RoleEntity> GetRole(int id);
         Task RoleMenuSubmit(int roleId, int[] menuIds);
         Task<List<RoleEntity>> GetRoleList();
+        Task<List<RoleMenuEntity>> GetRoleMenuList(int roleId);
     }
 }

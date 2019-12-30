@@ -15,34 +15,28 @@ namespace EL.Application
     {
         private readonly IBaseRepository<RoleEntity> _roleRepository;
         private readonly IBaseRepository<MenuEntity> _menuRepository;
-        public RoleService(IBaseRepository<RoleEntity> roleRepository, IBaseRepository<MenuEntity> menuRepository)
+        private readonly IBaseRepository<RoleMenuEntity> _roleMenuRepository;
+        public RoleService(IBaseRepository<RoleEntity> roleRepository, IBaseRepository<MenuEntity> menuRepository, IBaseRepository<RoleMenuEntity> roleMenuRepository)
         {
             _roleRepository = roleRepository;
             _menuRepository = menuRepository;
+            _roleMenuRepository = roleMenuRepository;
         }
 
+        public async Task<List<RoleMenuEntity>> GetRoleMenuList(int roleId)
+        {
+            return await _roleMenuRepository.WhereLoadEntityEnumerableAsync(p => p.RoleId == roleId);
+        }
         public async Task<List<RoleEntity>> GetRoleList()
         {
             return await _roleRepository.WhereLoadEntityEnumerableAsync(p => p.Enabled);
         }
         public async Task RoleMenuSubmit(int roleId, int[] menuIds)
         {
-            var roleModel = await _roleRepository.WhereLoadEntityAsync(p => p.Id == roleId);
-            var menuList = await _menuRepository.WhereLoadEntityEnumerableAsync(p => menuIds.Contains(p.Id));
-            roleModel.RoleMenus.Clear();
-            foreach (var item in menuList)
-            {
-                var model = new RoleMenuEntity()
-                {
-                    RoleId = roleId,
-                    Role = roleModel,
-                    MenuId = item.Id,
-                    Menu = item
-                };
-                roleModel.RoleMenus.Add(model);
-            }
-            _roleRepository.UpdateEntity(roleModel);
-            await _roleRepository.CommitAsync();
+            await _roleMenuRepository.DelEntityAsync(p => p.RoleId == roleId);
+            var listModel = menuIds.Select(p => new RoleMenuEntity { RoleId = roleId, MenuId = p }).ToList();
+            await _roleMenuRepository.AddRangeAsync(listModel);
+            await _roleMenuRepository.CommitAsync();
         }
         public async Task<RoleEntity> GetRole(int id)
         {
@@ -62,7 +56,7 @@ namespace EL.Application
             else
             {
                 entity.CreateTime = DateTime.Now;
-                _roleRepository.AddEntity(entity);
+                await _roleRepository.AddEntityAsync(entity);
             }
             await _roleRepository.CommitAsync();
         }

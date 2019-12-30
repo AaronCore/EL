@@ -1,11 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EL.Entity
 {
-    public class MenuEntity : DefaultEntity
+    /// <summary>
+    /// 菜单实体
+    /// </summary>
+    public class MenuEntity
     {
+        /// <summary>
+        /// 主键标识
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
+        /// 父级Id
+        /// </summary>
+        public int ParentId { set; get; }
         /// <summary>
         /// 菜单名称
         /// </summary>
@@ -22,11 +31,29 @@ namespace EL.Entity
         /// 图标
         /// </summary>
         public string Icon { get; set; }
-        public virtual MenuEntity ParentMenu { set; get; }
-        public virtual ICollection<MenuEntity> Menus { set; get; }
         /// <summary>
-        /// 角色菜单
+        /// 排序
         /// </summary>
-        public virtual ICollection<RoleMenuEntity> RoleMenus { set; get; }
+        public int Sort { get; set; }
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enabled { get; set; }
+        /// <summary>
+        /// 编辑时间
+        /// </summary>
+        public DateTime? EditTime { get; set; }
+        /// <summary>
+        /// 编辑人
+        /// </summary>
+        public string Editor { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public string Creater { get; set; }
     }
 }

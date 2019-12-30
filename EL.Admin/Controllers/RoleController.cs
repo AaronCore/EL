@@ -26,9 +26,9 @@ namespace EL.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRoleMenu(int id)
         {
-            var model = await _roleService.GetRole(id);
+            var list = await _roleService.GetRoleMenuList(id);
             ArrayList array = new ArrayList();
-            foreach (var item in model.RoleMenus)
+            foreach (var item in list)
             {
                 array.Add(item.MenuId);
             }

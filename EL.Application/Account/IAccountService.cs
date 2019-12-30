@@ -11,7 +11,7 @@ namespace EL.Application
         Task<bool> Deletes(int[] ids);
         Task Enableds(int[] ids);
         Task<AccountEntity> GetAccount(int id);
-        List<AccountEntity> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey);
-        Task Submit(Account_DTO entity);
+        List<Account_DTO> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey);
+        Task Submit(AccountEntity entity);
     }
 }

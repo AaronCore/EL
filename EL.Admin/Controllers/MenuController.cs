@@ -37,12 +37,19 @@ namespace EL.Admin.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetSelectMenuList()
+        {
+            var list = await _menuService.GetSelectMenuList();
+            return Json(list);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetMenu(int id)
         {
             var model = await _menuService.GetMenu(id);
             var obj = new
             {
-                parentId = model.ParentMenu != null ? model.ParentMenu.Id : 0,
+                model.ParentId,
                 model.Id,
                 model.Name,
                 model.Path,
@@ -55,7 +62,7 @@ namespace EL.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit(Menu_DTO entity)
+        public async Task<IActionResult> Submit(MenuEntity entity)
         {
             await _menuService.Submit(entity);
             return Json(new { code = 0 });

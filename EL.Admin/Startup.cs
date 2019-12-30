@@ -40,7 +40,7 @@ namespace EL.Admin
             RedisHelper.Initialization(new CSRedisClient(redisConnection));
             // 数据库连接注册
             var connection = jsonConfigManager.GetValue<string>("ELConnection");
-            services.AddDbContext<ELDbContext>(options => options.UseLazyLoadingProxies().UseMySql(connection));
+            services.AddDbContext<ELDbContext>(options => options.UseMySql(connection));
             services.AddDistributedMemoryCache()
                     .AddSession(options =>
                     {

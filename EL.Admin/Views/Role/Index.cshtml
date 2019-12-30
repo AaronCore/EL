@@ -134,7 +134,8 @@
                 ids: [],
                 roleId: null,
                 tableData: [],
-                menuOptions: []
+                menuOptions: [],
+
             },
             methods: {
                 //查询
@@ -154,7 +155,7 @@
                     this.getTableData();
                 },
                 getMenu: function () {
-                    ajax.get('/Menu/GetMenuList').then((res) => {
+                    ajax.get('/Menu/GetSelectMenuList').then((res) => {
                         this.menuOptions = res;
                     });
                 },
@@ -163,9 +164,13 @@
                     this.roleMenuFormVisible = true;
                     this.getMenu();
                     ajax.get("/Role/GetRoleMenu?id=" + row.id).then((res) => {
-                        if (res.code == 0) {
-                            this.$refs.roleMenuTree.setCheckedKeys(res.menuIds);
-                        }
+                        var menuIds = res.menuIds;
+                        menuIds.forEach((i, n) => {
+                            var node = this.$refs.roleMenuTree.getNode(i);
+                            if (node.isLeaf) {
+                                this.$refs.roleMenuTree.setChecked(node, true);
+                            }
+                        });
                     });
                 },
                 roleMenuReset: function () {

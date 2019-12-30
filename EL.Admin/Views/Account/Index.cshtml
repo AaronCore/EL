@@ -28,7 +28,7 @@
                         <el-table-column type="selection" width="40"></el-table-column>
                         <el-table-column header-align="center" align="center" prop="id" v-if="false" label="Id" width="80">
                         </el-table-column>
-                        <el-table-column header-align="center" align="center" prop="name" label="名称">
+                        <el-table-column header-align="center" align="center" prop="account" label="账号">
                         </el-table-column>
                         <el-table-column header-align="center" align="center" prop="roleName" label="角色名称">
                         </el-table-column>
@@ -76,9 +76,6 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="名称" prop="name">
-                    <el-input v-model="accountForm.name" placeholder="请输入账号名称"></el-input>
-                </el-form-item>
                 <el-form-item label="账号" prop="account">
                     <el-input v-model="accountForm.account" placeholder="请输入登录账号名称"></el-input>
                 </el-form-item>
@@ -124,7 +121,6 @@
                 accountForm: {
                     id: 0,
                     roleId: null,
-                    name: null,
                     account: null,
                     password: null,
                     sort: 0,

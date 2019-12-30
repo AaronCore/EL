@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
 
 namespace EL.Entity
 {
-    public class AccountEntity : DefaultEntity
+    /// <summary>
+    /// 账号实体
+    /// </summary>
+    public class AccountEntity
     {
         /// <summary>
-        /// 账号名称
+        /// 主键标识
         /// </summary>
-        public string Name { get; set; }
+        public int Id { get; set; }
         /// <summary>
         /// 登录账号
         /// </summary>
@@ -20,8 +20,32 @@ namespace EL.Entity
         /// </summary>
         public string Password { get; set; }
         /// <summary>
-        /// 角色信息
+        /// 角色Id
         /// </summary>
-        public virtual RoleEntity Role { set; get; }
+        public int RoleId { set; get; }
+        /// <summary>
+        /// 排序
+        /// </summary>
+        public int Sort { get; set; }
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enabled { get; set; }
+        /// <summary>
+        /// 编辑时间
+        /// </summary>
+        public DateTime? EditTime { get; set; }
+        /// <summary>
+        /// 编辑人
+        /// </summary>
+        public string Editor { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public string Creater { get; set; }
     }
 }
