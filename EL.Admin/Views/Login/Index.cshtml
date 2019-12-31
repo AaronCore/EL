@@ -1,0 +1,153 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    <link href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css" rel="stylesheet">
+    <link href="/css/login.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="loginApp">
+        <div class="mask"></div>
+        <div class="container">
+            <div class="login-wrapper">
+                <svg id="peak" viewBox="0 0 1024 1024">
+                    <path fill="#FFF" d="M424 233.6L574.4 592c4.8 11.2 16 19.2 28.8 19.2h1.6c12.8 0 24-6.4 28.8-17.6l57.6-118.4 168 337.6H163.2l260.8-579.2m0-57.6c-6.4 0-11.2 3.2-14.4 9.6L113.6 846.4H912L704 433.6c-3.2-6.4-8-8-14.4-8-4.8 0-11.2 3.2-14.4 8l-73.6 147.2-163.2-395.2c-3.2-6.4-8-9.6-14.4-9.6z"></path>
+                </svg>
+                <div class="form-control">
+                    <label>
+                        <input type="text" class="textfield" v-model="form.suId" id="suId" maxlength="32" />
+                        <span class="suIdlabel">账户</span>
+                    </label>
+                </div>
+                <div class="form-control">
+                    <label>
+                        <input type="password" class="textfield" v-model="form.suPwd" id="suPwd" maxlength="32" />
+                        <span class="passwordlabel">密码</span>
+                    </label>
+                </div>
+                <div class="form-control">
+                    <label>
+                        <input type="text" class="textfield" v-model="form.suCode" id="suCode" style="width:160px;" />
+                        <span class="codelabel">验证码</span>
+                    </label>
+                    <img id="imgcode" src="/Login/GetAuthCode" style="vertical-align: bottom;" width="80" height="25" />
+                    <a v-on:click="switchCode" href="javascript:void(0);" style="text-decoration: none;vertical-align: bottom;">换一张</a>
+                </div>
+                <br><br>
+                <a v-on:click="open" class="button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Login
+                </a>
+                <br><br><br><br><br>
+            </div>
+        </div>
+
+    </div>
+    <script src="/js/vue.min.js?v=1.0.1"></script>
+    <script src="/js/index.js?v=1.0.1"></script>
+    <script src="/js/vue-resource.min.js?v=1.0.0"></script>
+    <script>
+        new Vue({
+            el: '#loginApp',
+            data: {
+                codeSrc: null,
+                form: {
+                    suId: null,
+                    suPwd: null,
+                    suCode: null
+                }
+            },
+            methods: {
+                open: function () {
+                    if (this.form.suCode == null) {
+                        document.getElementById("suCode").focus();
+                    }
+                    if (this.form.suPwd == null) {
+                        document.getElementById("suPwd").focus();
+                    }
+                    if (this.form.suId == null) {
+                        document.getElementById("suId").focus();
+                    }
+                    this.$http.post('/Login/Login', this.form, { emulateJSON: true }).then((response) => {
+                        var resp = response.body;
+                        if (resp.code == -10) {
+                            this.$message({ message: '验证码错误', type: 'error', showClose: true });
+                            document.getElementById("suCode").focus();
+                        }
+                        if (resp.code == -11) {
+                            this.$message({ message: '账号或密码错误', type: 'error', showClose: true });
+                            document.getElementById("suId").focus();
+                        }
+                        if (resp.code == 0) {
+                            this.$message({ message: '登录成功', type: 'success', showClose: true });
+                            window.setTimeout(function () {
+                                window.location.href = "/Home/Index";
+                            }, 500);
+                        }
+                        console.log(resp);
+                    }, (error) => {
+                        console.log(error);
+                    });
+                },
+                switchCode: function () {
+                    var str = "/Login/GetAuthCode?random=" + Math.random();
+                    document.getElementById("imgcode").setAttribute("src", str);
+                }
+            },
+            created() {
+                if (top.location != self.location) {
+                    top.location = self.location;
+                }
+                var _this = this;
+                document.onkeydown = function (e) {
+                    if (!e) e = window.event;
+                    if ((e.keyCode || e.which) == 13) {
+                        _this.open();
+                    }
+                }
+            },
+            mounted() {
+                var label_suid = document.getElementsByClassName('suIdlabel')[0];
+                var label_password = document.getElementsByClassName('passwordlabel')[0];
+                var label_code = document.getElementsByClassName('codelabel')[0];
+                this.$nextTick(() => {
+                    document.getElementById('suId').addEventListener('blur', () => {
+                        if (this.form.suId) {
+                            label_suid.className = 'labelactive';
+                        } else {
+                            label_suid.className = '';
+                        }
+                    })
+                });
+                this.$nextTick(() => {
+                    document.getElementById('suPwd').addEventListener('blur', () => {
+                        if (this.form.suPwd) {
+                            label_password.className = 'labelactive';
+                        } else {
+                            label_password.className = '';
+                        }
+                    })
+                });
+                this.$nextTick(() => {
+                    document.getElementById('suCode').addEventListener('blur', () => {
+                        if (this.form.suCode) {
+                            label_code.className = 'labelactive';
+                        } else {
+                            label_code.className = '';
+                        }
+                    })
+                });
+            }
+        });
+    </script>
+</body>
+</html>

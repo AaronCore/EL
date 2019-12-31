@@ -32,7 +32,7 @@ namespace EL.Application
             total = _logRepository.GetEntitiesCount(where);
             return logList;
         }
-        public async Task SaveException(Exception ex)
+        public void SaveException(Exception ex)
         {
             var entity = new LogEntity
             {
@@ -49,7 +49,7 @@ namespace EL.Application
                 stacktrace = entity.StackTrace,
                 createtime = entity.CreateTime
             };
-            await _dapperRepository.ExecuteAsync(sql, param);
+            _dapperRepository.Execute(sql, param);
         }
         public async Task<bool> Deletes(int[] ids)
         {

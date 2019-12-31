@@ -13,5 +13,7 @@ namespace EL.Application
         Task<AccountEntity> GetAccount(int id);
         List<AccountDto> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey);
         Task Submit(AccountEntity entity);
+        Task<AccountEntity> Login(string account, string password);
+        List<AccountMenDto> GetAccountMenu(int userId);
     }
 }

@@ -8,7 +8,7 @@ namespace EL.Application
 {
     public interface ILogService
     {
-        Task SaveException(Exception ex);
+        void SaveException(Exception ex);
         Task<bool> Deletes(int[] ids);
         Task<LogEntity> GetLog(int id);
         List<LogEntity> GetLogPageList(int pageIndex, int pageSize, out int total, string searchKey);

@@ -27,7 +27,7 @@ namespace EL.Common
         /// <returns>密文</returns>
         public static string Encrypt(string original)
         {
-            return Encrypt(original, "kuiyu.net");
+            return Encrypt(original, "!@#1234.netcore");
         }
         /// <summary>
         /// 使用缺省密钥字符串解密string
@@ -36,7 +36,7 @@ namespace EL.Common
         /// <returns>明文</returns>
         public static string Decrypt(string original)
         {
-            return Decrypt(original, "kuiyu.net", System.Text.Encoding.Default);
+            return Decrypt(original, "!@#1234.netcore", System.Text.Encoding.Default);
 
         }
 

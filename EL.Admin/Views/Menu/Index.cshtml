@@ -53,7 +53,7 @@
         <el-dialog title="菜单编辑" :visible.sync="menuFormVisible">
             <el-form :model="menuForm" ref="menuForm" :rules="rules" label-position="right" label-width="100px">
                 <el-form-item label="上级菜单">
-                    <el-cascader style="width:250px;" ref="menuRef" v-model="menuForm.parentId"
+                    <el-cascader style="width:250px;" ref="menuRef" prop="parentId" v-model="menuForm.parentId"
                                  :options="menuOptions" clearable placeholder="请选择"
                                  :props="{ checkStrictly: true }">
                     </el-cascader>
@@ -67,10 +67,10 @@
                 <el-form-item label="Code" prop="code">
                     <el-input v-model="menuForm.code" placeholder="请输入菜单代码"></el-input>
                 </el-form-item>
-                <el-form-item label="Icon">
+                <el-form-item label="Icon" prop="icon">
                     <el-input v-model="menuForm.icon" placeholder="Icon"></el-input>
                 </el-form-item>
-                <el-form-item label="排序号">
+                <el-form-item label="排序号" prop="sort">
                     <el-input-number v-model="menuForm.sort" :min="1" :max="1000" placeholder="排序号"></el-input-number>
                 </el-form-item>
                 <el-form-item label="状态">
@@ -111,7 +111,6 @@
                 },
                 rules: {
                     name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-                    path: [{ required: true, message: '请输入菜单地址', trigger: 'blur' }],
                     code: [
                         { required: true, message: '请输入菜单编码', trigger: 'blur' },
                         { pattern: /^[0-9a-zA-Z_]+$/, message: '菜单编码只能是英文、数字、下划线组合' }
@@ -141,7 +140,6 @@
                     if (this.$refs[formName] !== undefined) {
                         this.$refs[formName].resetFields();
                     }
-                    this.menuForm.parentId = 0;
                 },
                 //表单提交
                 submitForm: function (formName) {

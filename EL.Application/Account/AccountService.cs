@@ -15,14 +15,49 @@ namespace EL.Application
     {
         private readonly IBaseRepository<AccountEntity> _accountRepository;
         private readonly IBaseRepository<RoleEntity> _roleRepository;
+        private readonly IBaseRepository<MenuEntity> _menuRepository;
         private readonly DapperRepository _dapperRepository = new DapperRepository();
 
-        public AccountService(IBaseRepository<AccountEntity> accountRepository, IBaseRepository<RoleEntity> roleRepository)
+        public AccountService(IBaseRepository<AccountEntity> accountRepository, IBaseRepository<RoleEntity> roleRepository, IBaseRepository<MenuEntity> menuRepository)
         {
             _accountRepository = accountRepository;
             _roleRepository = roleRepository;
+            _menuRepository = menuRepository;
         }
 
+        public List<AccountMenDto> GetAccountMenu(int userId)
+        {
+            var account = _accountRepository.WhereLoadEntity(p => p.Id == userId);
+            var sql = string.Format("select b.* from sys_role_menus a left join sys_menus b on a.MenuId=b.Id where a.RoleId={0}", account.RoleId);
+            var menus = _menuRepository.GetModeListlBySql(sql);
+            var result = MenuTree(menus, 0);
+            return result;
+        }
+        private List<AccountMenDto> MenuTree(List<MenuEntity> data, int parentId)
+        {
+            var treeList = new List<AccountMenDto>();
+            var list = data.Where(p => p.ParentId == parentId).OrderBy(p => p.Sort).ToList();
+            foreach (var item in list)
+            {
+                bool hasChildren = data.Count(p => p.ParentId == item.Id) > 0;
+                var model = new AccountMenDto
+                {
+                    Title = item.Name,
+                    Key = item.Code,
+                    Show = true,
+                    Url = item.Path,
+                    Icon = item.Icon,
+                    Children = hasChildren ? MenuTree(data, item.Id) : null
+                };
+                treeList.Add(model);
+            }
+            return treeList;
+        }
+
+        public async Task<AccountEntity> Login(string account, string password)
+        {
+            return await _accountRepository.WhereLoadEntityAsync(p => p.Account == account && p.Password == password);
+        }
         public async Task Submit(AccountEntity entity)
         {
             if (entity.Id > 0)

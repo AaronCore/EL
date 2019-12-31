@@ -79,94 +79,92 @@ var homeTab = {
 };
 new Vue({
     el: '#homeApp',
-    data: function () {
-        return {
-            isCollapse: false,
-            gobalParams: gobal.params,
-            loadding: {},
-            menuDefaultActive: 'useDocTemplate',
-            menuArr: [
-                {
-                    key: 'base_manage',
-                    title: '基础管理',
-                    show: true,
-                    //url: '',
-                    icon: 'el-icon-fa-cubes',
-                    children: [
-                        {
-                            key: 'icon_list',
-                            title: 'Icon列表',
-                            show: true,
-                            url: '/Basis/Icon',
-                            icon: 'el-icon-fa-list',
-                        }
-                    ]
-                },
-                {
-                    key: 'log_manage',
-                    title: '日志管理',
-                    show: true,
-                    //url: '',
-                    icon: 'el-icon-fa-file-text',
-                    children: [
-                        {
-                            key: 'log_list',
-                            title: '日志列表',
-                            show: true,
-                            url: '/Log/Index',
-                            icon: 'el-icon-fa-list'
-                        }
-                    ]
-                },
-                {
-                    key: 'permission_manage',
-                    title: '权限管理',
-                    show: true,
-                    //url: '',
-                    icon: 'el-icon-setting',
-                    children: [
-                        {
-                            key: 'account_list',
-                            title: '账号列表',
-                            show: true,
-                            url: '/Account/Index',
-                            icon: 'el-icon-fa-list',
-                        },
-                        {
-                            key: 'role_list',
-                            title: '角色列表',
-                            show: true,
-                            url: '/Role/Index',
-                            icon: 'el-icon-fa-list',
-                        },
-                        {
-                            key: 'menu_list',
-                            title: '菜单列表',
-                            show: true,
-                            url: '/Menu/Index',
-                            icon: 'el-icon-fa-list',
-                        }
-                    ]
-                },
-                {
-                    key: 'gerenzhongxin',
-                    title: '个人中心',
-                    show: true,
-                    url: 'http://supalle.gitee.io/sal/layout.html',
-                    icon: 'layui_icon layui_icon_friends'
-                }
-            ],
-
-            tabItems: [homeTab],
-            tabActive: homeTab.key,
-            tabsPopper: {
-                id: homeTab.key,
-                isShow: false,
-                top: '0px',
-                left: '0px'
-            },
-            tabParams: {}
-        }
+    data: {
+        isCollapse: false,
+        gobalParams: gobal.params,
+        loadding: {},
+        menuDefaultActive: 'useDocTemplate',
+        menuArr: [],
+        //menuArr: [
+        //    {
+        //        key: 'base_manage',
+        //        title: '基础管理',
+        //        show: true,
+        //        //url: '',
+        //        icon: 'el-icon-fa-cubes',
+        //        children: [
+        //            {
+        //                key: 'icon_list',
+        //                title: 'Icon列表',
+        //                show: true,
+        //                url: '/Basis/Icon',
+        //                icon: 'el-icon-fa-list',
+        //            }
+        //        ]
+        //    },
+        //    {
+        //        key: 'log_manage',
+        //        title: '日志管理',
+        //        show: true,
+        //        //url: '',
+        //        icon: 'el-icon-fa-file-text',
+        //        children: [
+        //            {
+        //                key: 'log_list',
+        //                title: '日志列表',
+        //                show: true,
+        //                url: '/Log/Index',
+        //                icon: 'el-icon-fa-list'
+        //            }
+        //        ]
+        //    },
+        //    {
+        //        key: 'permission_manage',
+        //        title: '权限管理',
+        //        show: true,
+        //        //url: '',
+        //        icon: 'el-icon-setting',
+        //        children: [
+        //            {
+        //                key: 'account_list',
+        //                title: '账号列表',
+        //                show: true,
+        //                url: '/Account/Index',
+        //                icon: 'el-icon-fa-list',
+        //            },
+        //            {
+        //                key: 'role_list',
+        //                title: '角色列表',
+        //                show: true,
+        //                url: '/Role/Index',
+        //                icon: 'el-icon-fa-list',
+        //            },
+        //            {
+        //                key: 'menu_list',
+        //                title: '菜单列表',
+        //                show: true,
+        //                url: '/Menu/Index',
+        //                icon: 'el-icon-fa-list',
+        //            }
+        //        ]
+        //    },
+        //    {
+        //        key: 'gerenzhongxin',
+        //        title: '个人中心',
+        //        show: true,
+        //        url: 'http://supalle.gitee.io/sal/layout.html',
+        //        icon: 'layui_icon layui_icon_friends'
+        //    }
+        //],
+        tabItems: [homeTab],
+        tabActive: homeTab.key,
+        tabsPopper: {
+            id: homeTab.key,
+            isShow: false,
+            top: '0px',
+            left: '0px'
+        },
+        tabParams: {}
     },
     created: function () {
         var _this = this;
@@ -422,9 +420,20 @@ new Vue({
             } else {
                 this.menuDefaultActive = this.tabsPopper.id;
             }
+        },
+        getAccountMenu: function () {
+            ajax.get('/Account/GetAccountMenu').then((res) => {
+                this.menuArr = res;
+            });
+        },
+        signOut: function () {
+            ajax.get('/Login/SignOut').then((res) => {
+                window.location.href = "/Login/Index";
+            });
         }
     },
     mounted: function () {
+        this.getAccountMenu();
         //this.$nextTick(function () {
         //    // Code that will run only after the
         //    // entire view has been rendered

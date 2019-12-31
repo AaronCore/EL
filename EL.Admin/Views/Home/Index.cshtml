@@ -58,7 +58,7 @@
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item icon="el-icon-fa-user"> 个人中心</el-dropdown-item>
                             <el-dropdown-item icon="el-icon-fa-key"> 修改密码</el-dropdown-item>
-                            <el-dropdown-item icon="el-icon-fa-sign-out" divided> 登出</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-fa-sign-out" v-on:click.native="signOut" divided> 登出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </span>

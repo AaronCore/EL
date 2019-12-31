@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using EL.Application;
 using EL.Entity;
+using Microsoft.AspNetCore.Http;
 
 namespace EL.Admin.Controllers
 {
@@ -21,6 +22,14 @@ namespace EL.Admin.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetAccountMenu()
+        {
+            int uid = HttpContext.Session.GetInt32("uid") ?? 0;
+            var list = _accountService.GetAccountMenu(uid);
+            return Json(list);
         }
 
         [HttpGet]
