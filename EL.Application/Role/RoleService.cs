@@ -14,12 +14,10 @@ namespace EL.Application
     public class RoleService : IRoleService
     {
         private readonly IBaseRepository<RoleEntity> _roleRepository;
-        private readonly IBaseRepository<MenuEntity> _menuRepository;
         private readonly IBaseRepository<RoleMenuEntity> _roleMenuRepository;
-        public RoleService(IBaseRepository<RoleEntity> roleRepository, IBaseRepository<MenuEntity> menuRepository, IBaseRepository<RoleMenuEntity> roleMenuRepository)
+        public RoleService(IBaseRepository<RoleEntity> roleRepository, IBaseRepository<RoleMenuEntity> roleMenuRepository)
         {
             _roleRepository = roleRepository;
-            _menuRepository = menuRepository;
             _roleMenuRepository = roleMenuRepository;
         }
 

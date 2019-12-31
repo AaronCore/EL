@@ -112,6 +112,7 @@ namespace EL.Application.Menu
             }
             else
             {
+                entity.Code = Guid.NewGuid().ToString();
                 entity.CreateTime = DateTime.Now;
                 await _menuRepository.AddEntityAsync(entity);
             }

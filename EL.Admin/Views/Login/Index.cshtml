@@ -33,7 +33,7 @@
                 </div>
                 <div class="form-control">
                     <label>
-                        <input type="text" class="textfield" v-model="form.suCode" id="suCode" style="width:160px;" />
+                        <input type="text" class="textfield" v-model="form.suCode" id="suCode" maxlength="4" style="width:160px;" />
                         <span class="codelabel">验证码</span>
                     </label>
                     <img id="imgcode" src="/Login/GetAuthCode" style="vertical-align: bottom;" width="80" height="25" />
@@ -81,6 +81,8 @@
                         var resp = response.body;
                         if (resp.code == -10) {
                             this.$message({ message: '验证码错误', type: 'error', showClose: true });
+                            this.form.suCode = null;
+                            this.switchCode();
                             document.getElementById("suCode").focus();
                         }
                         if (resp.code == -11) {

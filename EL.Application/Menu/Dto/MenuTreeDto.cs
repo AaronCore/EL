@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using EL.Common;
 
 namespace EL.Application
 {
-    public class MenuDto
+    public class MenuTreeDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,5 +14,7 @@ namespace EL.Application
         public int ParentId { get; set; }
         public int Sort { get; set; }
         public bool Enabled { get; set; }
+        public string CreateTime { get; set; }
+        public List<MenuTreeDto> Children { get; set; }
     }
 }

@@ -8,20 +8,20 @@ using EL.Common;
 using EL.Entity;
 using Dapper;
 using EL.DapperCore;
+using MySql.Data.MySqlClient;
 
 namespace EL.Application
 {
     public class AccountService : IAccountService
     {
         private readonly IBaseRepository<AccountEntity> _accountRepository;
-        private readonly IBaseRepository<RoleEntity> _roleRepository;
+
         private readonly IBaseRepository<MenuEntity> _menuRepository;
         private readonly DapperRepository _dapperRepository = new DapperRepository();
 
-        public AccountService(IBaseRepository<AccountEntity> accountRepository, IBaseRepository<RoleEntity> roleRepository, IBaseRepository<MenuEntity> menuRepository)
+        public AccountService(IBaseRepository<AccountEntity> accountRepository, IBaseRepository<MenuEntity> menuRepository)
         {
             _accountRepository = accountRepository;
-            _roleRepository = roleRepository;
             _menuRepository = menuRepository;
         }
 

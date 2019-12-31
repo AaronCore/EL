@@ -64,9 +64,6 @@
                 <el-form-item label="地址" prop="path">
                     <el-input v-model="menuForm.path" placeholder="请输入菜单地址"></el-input>
                 </el-form-item>
-                <el-form-item label="Code" prop="code">
-                    <el-input v-model="menuForm.code" placeholder="请输入菜单代码"></el-input>
-                </el-form-item>
                 <el-form-item label="Icon" prop="icon">
                     <el-input v-model="menuForm.icon" placeholder="Icon"></el-input>
                 </el-form-item>
@@ -110,11 +107,7 @@
                     enabled: true
                 },
                 rules: {
-                    name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
-                    code: [
-                        { required: true, message: '请输入菜单编码', trigger: 'blur' },
-                        { pattern: /^[0-9a-zA-Z_]+$/, message: '菜单编码只能是英文、数字、下划线组合' }
-                    ]
+                    name: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }]
                 },
                 ids: [],
                 tableData: [],
