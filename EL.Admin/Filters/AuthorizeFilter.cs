@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EL.Admin.Filters
 {
-    public class AuthFilter : Attribute, IAuthorizationFilter
+    public class AuthorizeFilter : Attribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {

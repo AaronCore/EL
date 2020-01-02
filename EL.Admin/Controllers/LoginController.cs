@@ -6,15 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 using EL.Common;
 using EL.Application;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace EL.Admin.Controllers
 {
     public class LoginController : Controller
     {
         private readonly IAccountService _accountService;
-        public LoginController(IAccountService accountService)
+        private readonly IDistributedCache _cache;
+        public LoginController(IAccountService accountService, IDistributedCache cache)
         {
             _accountService = accountService;
+            _cache = cache;
         }
 
         public IActionResult Index()
@@ -25,13 +28,14 @@ namespace EL.Admin.Controllers
         [HttpGet]
         public ActionResult GetAuthCode()
         {
-            return File(new VerifyCode().GetVerifyCode(), @"image/Gif");
+            var ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+            return File(new VerifyCode().GetVerifyCode(ipAddress), @"image/Gif");
         }
 
         [HttpPost]
         public async Task<ActionResult> Login(string suId, string suPwd, string suCode)
         {
-            var code = RedisHelper.Get("verifycode");
+            var code = RedisHelper.Get(HttpContext.Connection.RemoteIpAddress.ToString());
             var a = Md5Helper.GetMD5_32(suCode.ToLower());
             if (string.IsNullOrWhiteSpace(suCode) || string.IsNullOrWhiteSpace(code) || Md5Helper.GetMD5_32(suCode.ToLower()) != code)
             {
@@ -49,7 +53,7 @@ namespace EL.Admin.Controllers
         [HttpGet]
         public ActionResult SignOut()
         {
-            HttpContext.Session.Remove("uid");
+            HttpContext.Session.Clear();
             return RedirectToAction("Index", "Login", null);
         }
     }

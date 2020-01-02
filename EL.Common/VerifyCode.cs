@@ -9,7 +9,7 @@ namespace EL.Common
 {
     public class VerifyCode
     {
-        public byte[] GetVerifyCode()
+        public byte[] GetVerifyCode(string key)
         {
             int codeW = 80;
             int codeH = 30;
@@ -28,7 +28,7 @@ namespace EL.Common
                 chkCode += character[rnd.Next(character.Length)];
             }
             //写入Redis、验证码加密
-            RedisHelper.Set("verifycode", Md5Helper.GetMD5_32(chkCode.ToLower()), 60);
+            RedisHelper.Set(key, Md5Helper.GetMD5_32(chkCode.ToLower()), 60);
             //创建画布
             Bitmap bmp = new Bitmap(codeW, codeH);
             Graphics g = Graphics.FromImage(bmp);

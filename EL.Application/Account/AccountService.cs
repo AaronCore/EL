@@ -15,10 +15,8 @@ namespace EL.Application
     public class AccountService : IAccountService
     {
         private readonly IBaseRepository<AccountEntity> _accountRepository;
-
         private readonly IBaseRepository<MenuEntity> _menuRepository;
         private readonly DapperRepository _dapperRepository = new DapperRepository();
-
         public AccountService(IBaseRepository<AccountEntity> accountRepository, IBaseRepository<MenuEntity> menuRepository)
         {
             _accountRepository = accountRepository;
@@ -53,7 +51,6 @@ namespace EL.Application
             }
             return treeList;
         }
-
         public async Task<AccountEntity> Login(string account, string password)
         {
             return await _accountRepository.WhereLoadEntityAsync(p => p.Account == account && p.Password == password);
@@ -105,12 +102,12 @@ namespace EL.Application
         public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            return await _accountRepository.DelEntityAsync(p => idArrar.Contains(p.Id)) > 0;
+            return await _accountRepository.DelEntityAsync(p => p.Account != "admin" && idArrar.Contains(p.Id)) > 0;
         }
         public async Task Enableds(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            var list = _accountRepository.WhereLoadEntityEnumerable(p => idArrar.Contains(p.Id)).ToList();
+            var list = _accountRepository.WhereLoadEntityEnumerable(p => p.Account != "admin" && idArrar.Contains(p.Id)).ToList();
             foreach (var item in list)
             {
                 item.Enabled = item.Enabled ? false : true;

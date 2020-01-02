@@ -72,12 +72,12 @@ namespace EL.Application
         public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            return await _roleRepository.DelEntityAsync(p => idArrar.Contains(p.Id)) > 0;
+            return await _roleRepository.DelEntityAsync(p => p.Name != "admin" && idArrar.Contains(p.Id)) > 0;
         }
         public async Task Enableds(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
-            var list = await _roleRepository.WhereLoadEntityEnumerableAsync(p => idArrar.Contains(p.Id));
+            var list = await _roleRepository.WhereLoadEntityEnumerableAsync(p => p.Name != "admin" && idArrar.Contains(p.Id));
             foreach (var item in list)
             {
                 item.Enabled = item.Enabled ? false : true;

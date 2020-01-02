@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 using Autofac;
 using CSRedis;
 using EL.Common;
@@ -36,18 +38,24 @@ namespace EL.Admin
             // Redis注册
             // CsRedis：https://github.com/2881099/csredis
             // Redis命令参考：http://doc.redisfans.com/sorted_set/zadd.html
-            var redisConnection = jsonConfigManager.GetValue<string>("RedisConnection");
-            RedisHelper.Initialization(new CSRedisClient(redisConnection));
+            var redisConn = jsonConfigManager.GetValue<string>("RedisConnection");
+            RedisHelper.Initialization(new CSRedisClient(redisConn));
             // 数据库连接注册
             var connection = jsonConfigManager.GetValue<string>("ELConnection");
             services.AddDbContext<ELDbContext>(options => options.UseMySql(connection));
-            services.AddDistributedMemoryCache()
-                    .AddSession(options =>
-                    {
-                        options.IdleTimeout = TimeSpan.FromMinutes(30);
-                        options.Cookie.HttpOnly = true;
-                        options.Cookie.IsEssential = true;
-                    });
+            // 分布式缓存
+            var sessionRedisConn = jsonConfigManager.GetValue<string>("RedisConnection");
+            services.AddSingleton<IDistributedCache>(new Microsoft.Extensions.Caching.Redis.CSRedisCache(new CSRedisClient(sessionRedisConn)));
+
+            services.AddDistributedMemoryCache();
+            services.AddMvc();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();
         }
         public void ConfigureContainer(ContainerBuilder builder)
@@ -71,6 +79,7 @@ namespace EL.Admin
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            app.UseStaticHttpContext();
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

@@ -7,7 +7,7 @@ using EL.Admin.Filters;
 
 namespace EL.Admin.Controllers
 {
-    [AuthFilter]
+    [AuthorizeFilter]
     [ExceptionFilter]
     public class BaseController : Controller
     {
