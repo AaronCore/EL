@@ -57,7 +57,7 @@
                         </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item icon="el-icon-fa-user"> 个人中心</el-dropdown-item>
-                            <el-dropdown-item icon="el-icon-fa-key"> 修改密码</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-fa-key" v-on:click.native="editPwd"> 修改密码</el-dropdown-item>
                             <el-dropdown-item icon="el-icon-fa-sign-out" v-on:click.native="signOut" divided> 登出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -78,8 +78,6 @@
                 <div class="right_shade" v-show="!isCollapse && gobalParams.windowIsXs" v-on:click="isCollapse = !isCollapse"></div>
             </transition>
         </div>
-
-
         <!-- tabs右键菜单 -->
         <transition name="fade">
             <ul v-show="tabsPopper.isShow" class="el-dropdown-menu el-popper" id="dropdown-menu-20190222161055"
@@ -98,6 +96,25 @@
                 <li tabindex="-1" v-show="tabsPopper.id !== homeTab.name" class="el-dropdown-menu__item" v-on:click="tabCloseAll">关闭全部</li>
             </ul>
         </transition>
+    </template>
+    <template>
+        <el-dialog title="修改密码" width="35%" :visible.sync="editPwdFormVisible">
+            <el-form :model="editPwdForm" ref="editPwdForm" :rules="editPwdRules" label-position="right" label-width="80px">
+                <el-form-item label="原始密码" prop="password">
+                    <el-input type="password" v-model="editPwdForm.password" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="newPassword">
+                    <el-input type="password" v-model="editPwdForm.newPassword" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="checkNewPassword">
+                    <el-input type="password" v-model="editPwdForm.checkNewPassword" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button v-on:click="resetEditPwdForm('editPwdForm')">重 置</el-button>
+                <el-button type="primary" v-on:click="submitEditPwdForm('editPwdForm')" v-bind:loading="editPwdLoading">确 定</el-button>
+            </div>
+        </el-dialog>
     </template>
 </div>
 

@@ -77,94 +77,128 @@ var homeTab = {
     icon: 'layui_icon font-size16 layui_icon_home',
     notClosable: true
 };
+
 new Vue({
     el: '#homeApp',
-    data: {
-        isCollapse: false,
-        gobalParams: gobal.params,
-        loadding: {},
-        menuDefaultActive: 'useDocTemplate',
-        menuArr: [],
-        //menuArr: [
-        //    {
-        //        key: 'base_manage',
-        //        title: '基础管理',
-        //        show: true,
-        //        //url: '',
-        //        icon: 'el-icon-fa-cubes',
-        //        children: [
-        //            {
-        //                key: 'icon_list',
-        //                title: 'Icon列表',
-        //                show: true,
-        //                url: '/Basis/Icon',
-        //                icon: 'el-icon-fa-list',
-        //            }
-        //        ]
-        //    },
-        //    {
-        //        key: 'log_manage',
-        //        title: '日志管理',
-        //        show: true,
-        //        //url: '',
-        //        icon: 'el-icon-fa-file-text',
-        //        children: [
-        //            {
-        //                key: 'log_list',
-        //                title: '日志列表',
-        //                show: true,
-        //                url: '/Log/Index',
-        //                icon: 'el-icon-fa-list'
-        //            }
-        //        ]
-        //    },
-        //    {
-        //        key: 'permission_manage',
-        //        title: '权限管理',
-        //        show: true,
-        //        //url: '',
-        //        icon: 'el-icon-setting',
-        //        children: [
-        //            {
-        //                key: 'account_list',
-        //                title: '账号列表',
-        //                show: true,
-        //                url: '/Account/Index',
-        //                icon: 'el-icon-fa-list',
-        //            },
-        //            {
-        //                key: 'role_list',
-        //                title: '角色列表',
-        //                show: true,
-        //                url: '/Role/Index',
-        //                icon: 'el-icon-fa-list',
-        //            },
-        //            {
-        //                key: 'menu_list',
-        //                title: '菜单列表',
-        //                show: true,
-        //                url: '/Menu/Index',
-        //                icon: 'el-icon-fa-list',
-        //            }
-        //        ]
-        //    },
-        //    {
-        //        key: 'gerenzhongxin',
-        //        title: '个人中心',
-        //        show: true,
-        //        url: 'http://supalle.gitee.io/sal/layout.html',
-        //        icon: 'layui_icon layui_icon_friends'
-        //    }
-        //],
-        tabItems: [homeTab],
-        tabActive: homeTab.key,
-        tabsPopper: {
-            id: homeTab.key,
-            isShow: false,
-            top: '0px',
-            left: '0px'
-        },
-        tabParams: {}
+    data() {
+        var validatePass2 = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请再次输入密码'));
+            } else if (value !== this.editPwdForm.newPassword) {
+                callback(new Error('两次输入密码不一致!'));
+            } else {
+                callback();
+            }
+        };
+        return {
+            editPwdFormVisible: false,
+            editPwdLoading: false,
+            editPwdForm: {
+                password: null,
+                newPassword: null,
+                checkNewPassword: null
+            },
+            editPwdRules: {
+                password: [
+                    { required: true, message: '请输入原始密码', trigger: 'blur' },
+                    { min: 6, max: 15, message: '长度在 6 到 15 个字符' }
+                ],
+                newPassword: [
+                    { required: true, message: '请输入新密码', trigger: 'blur' },
+                    { min: 6, max: 15, message: '长度在 6 到 15 个字符' }
+                ],
+                checkNewPassword: [
+                    { required: true, message: '请输入确认密码', trigger: 'blur' },
+                    { min: 6, max: 15, message: '长度在 6 到 15 个字符' },
+                    { validator: validatePass2, trigger: 'blur' }
+                ],
+            },
+            isCollapse: false,
+            gobalParams: gobal.params,
+            loadding: {},
+            menuDefaultActive: 'useDocTemplate',
+            menuArr: [],
+            //menuArr: [
+            //    {
+            //        key: 'base_manage',
+            //        title: '基础管理',
+            //        show: true,
+            //        //url: '',
+            //        icon: 'el-icon-fa-cubes',
+            //        children: [
+            //            {
+            //                key: 'icon_list',
+            //                title: 'Icon列表',
+            //                show: true,
+            //                url: '/Basis/Icon',
+            //                icon: 'el-icon-fa-list',
+            //            }
+            //        ]
+            //    },
+            //    {
+            //        key: 'log_manage',
+            //        title: '日志管理',
+            //        show: true,
+            //        //url: '',
+            //        icon: 'el-icon-fa-file-text',
+            //        children: [
+            //            {
+            //                key: 'log_list',
+            //                title: '日志列表',
+            //                show: true,
+            //                url: '/Log/Index',
+            //                icon: 'el-icon-fa-list'
+            //            }
+            //        ]
+            //    },
+            //    {
+            //        key: 'permission_manage',
+            //        title: '权限管理',
+            //        show: true,
+            //        //url: '',
+            //        icon: 'el-icon-setting',
+            //        children: [
+            //            {
+            //                key: 'account_list',
+            //                title: '账号列表',
+            //                show: true,
+            //                url: '/Account/Index',
+            //                icon: 'el-icon-fa-list',
+            //            },
+            //            {
+            //                key: 'role_list',
+            //                title: '角色列表',
+            //                show: true,
+            //                url: '/Role/Index',
+            //                icon: 'el-icon-fa-list',
+            //            },
+            //            {
+            //                key: 'menu_list',
+            //                title: '菜单列表',
+            //                show: true,
+            //                url: '/Menu/Index',
+            //                icon: 'el-icon-fa-list',
+            //            }
+            //        ]
+            //    },
+            //    {
+            //        key: 'gerenzhongxin',
+            //        title: '个人中心',
+            //        show: true,
+            //        url: 'http://supalle.gitee.io/sal/layout.html',
+            //        icon: 'layui_icon layui_icon_friends'
+            //    }
+            //],
+            tabItems: [homeTab],
+            tabActive: homeTab.key,
+            tabsPopper: {
+                id: homeTab.key,
+                isShow: false,
+                top: '0px',
+                left: '0px'
+            },
+            tabParams: {}
+        }
     },
     created: function () {
         var _this = this;
@@ -430,7 +464,35 @@ new Vue({
             ajax.get('/Login/SignOut').then((res) => {
                 window.location.href = "/Login/Index";
             });
-        }
+        },
+        editPwd: function () {
+            this.editPwdFormVisible = true;
+            this.resetEditPwdForm("editPwdForm");
+        },
+        resetEditPwdForm: function (formName) {
+            if (this.$refs[formName] !== undefined) {
+                this.$refs[formName].resetFields();
+            }
+        },
+        submitEditPwdForm: function (formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.editPwdLoading = true;
+                    ajax.post('/Home/ResetPassword', this.editPwdForm).then((res) => {
+                        if (res.code == 0) {
+                            this.editPwdLoading = false;
+                            api.showMsg("修改密码成功...", "success");
+                            window.location.href = "/Home/Index";
+                        } else {
+                            api.showMsg("修改密码失败，详情请查看错误日志...", "error");
+                        }
+                    });
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
     },
     mounted: function () {
         this.getAccountMenu();

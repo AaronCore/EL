@@ -15,5 +15,6 @@ namespace EL.Application
         Task Submit(AccountEntity entity);
         Task<AccountEntity> Login(string account, string password);
         List<AccountMenDto> GetAccountMenu(int userId);
+        Task<int> ResetPassword(int accountId, string password, string newPassword);
     }
 }
