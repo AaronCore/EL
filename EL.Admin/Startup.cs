@@ -44,11 +44,11 @@ namespace EL.Admin
             var connection = jsonConfigManager.GetValue<string>("ELConnection");
             services.AddDbContext<ELDbContext>(options => options.UseMySql(connection));
             // ·Ö²¼Ê½»º´æ
-            var sessionRedisConn = jsonConfigManager.GetValue<string>("RedisConnection");
-            services.AddSingleton<IDistributedCache>(new Microsoft.Extensions.Caching.Redis.CSRedisCache(new CSRedisClient(sessionRedisConn)));
-
+            var cacheRedisConn = jsonConfigManager.GetValue<string>("CacheRedisConnection");
+            services.AddSingleton<IDistributedCache>(new Microsoft.Extensions.Caching.Redis.CSRedisCache(new CSRedisClient(cacheRedisConn)));
             services.AddDistributedMemoryCache();
             services.AddMvc();
+            //Session
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
