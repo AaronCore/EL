@@ -69,7 +69,7 @@
             <div class="right_body">
                 <el-tabs v-model="tabActive" type="card" v-on:tab-remove="tabClose">
                     <el-tab-pane v-for="(item, index) in tabItems" :key="item.name" :label="item.title" :name="item.name" :closable="!item.notClosable">
-                        <span slot="label"><i :class="[item.icon]"></i>{{item.title}}</span>
+                        <span slot="label"><i :class="[item.icon]"></i>&nbsp;{{item.title}}</span>
                         <iframe :id="'iframe_'+item.name" :name="'iframe_name_'+item.name" class="xsl_tab_iframe" :src="item.url"></iframe>
                     </el-tab-pane>
                 </el-tabs>
