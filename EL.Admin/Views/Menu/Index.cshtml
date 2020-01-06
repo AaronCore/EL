@@ -144,13 +144,17 @@
                         if (valid) {
                             this.editLoading = true;
                             ajax.post('/Menu/Submit', this.menuForm).then((res) => {
-                                if (res.code == 0) {
-                                    this.editLoading = false;
+                                if (res.code === 0) {
                                     api.showMsg("操作成功...", "success");
+                                    this.editLoading = false;
                                     this.resetForm("menuForm");
                                     this.menuFormVisible = false;
                                     this.getTableData();
-                                } else {
+                                } else if (res.code === -2) {
+                                    api.showMsg("菜单名称重复...", "warning");
+                                    this.editLoading = false;
+                                }
+                                else {
                                     api.showMsg("操作失败，详情请查看错误日志...", "error");
                                 }
                             });

@@ -40,7 +40,7 @@ namespace EL.Application
         {
             return await _roleRepository.WhereLoadEntityAsync(p => p.Id == id);
         }
-        public async Task Submit(RoleEntity entity)
+        public async Task<int> Submit(RoleEntity entity)
         {
             if (entity.Id > 0)
             {
@@ -53,10 +53,15 @@ namespace EL.Application
             }
             else
             {
+                if (_roleRepository.GetEntitiesCount(p => p.Name == entity.Name) > 0)
+                {
+                    return -2;
+                }
                 entity.CreateTime = DateTime.Now;
                 await _roleRepository.AddEntityAsync(entity);
             }
             await _roleRepository.CommitAsync();
+            return 0;
         }
         public List<RoleEntity> GetRolePageList(int pageIndex, int pageSize, out int total, string searchKey)
         {

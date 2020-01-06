@@ -64,8 +64,8 @@ namespace EL.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Submit(MenuEntity entity)
         {
-            await _menuService.Submit(entity);
-            return Json(new { code = 0 });
+            var result = await _menuService.Submit(entity);
+            return Json(new { code = result });
         }
 
         [HttpPost]

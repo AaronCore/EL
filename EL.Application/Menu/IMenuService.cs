@@ -12,7 +12,7 @@ namespace EL.Application
         Task<List<MenuListDto>> GetMenuList();
         Task<List<MenuListDto>> GetSelectMenuList();
         Task<MenuEntity> GetMenu(int id);
-        Task Submit(MenuEntity menuDto);
+        Task<int> Submit(MenuEntity menuDto);
         Task<bool> Deletes(int[] ids);
         Task Enableds(int[] ids);
     }

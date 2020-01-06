@@ -22,7 +22,7 @@ namespace EL.Application
             _accountRepository = accountRepository;
             _menuRepository = menuRepository;
         }
-        
+
         public async Task<int> ResetPassword(int accountId, string password, string newPassword)
         {
             password = Md5Helper.GetMD5_32(password.ToLower());
@@ -70,7 +70,7 @@ namespace EL.Application
         {
             return await _accountRepository.WhereLoadEntityAsync(p => p.Account == account && p.Password == password);
         }
-        public async Task Submit(AccountEntity entity)
+        public async Task<int> Submit(AccountEntity entity)
         {
             if (entity.Id > 0)
             {
@@ -82,11 +82,16 @@ namespace EL.Application
             }
             else
             {
+                if (_accountRepository.GetEntitiesCount(p => p.Account == entity.Account) > 0)
+                {
+                    return -2;
+                }
                 entity.Password = Md5Helper.GetMD5_32(entity.Password.ToLower());
                 entity.CreateTime = DateTime.Now;
                 await _accountRepository.AddEntityAsync(entity);
             }
             await _accountRepository.CommitAsync();
+            return 0;
         }
         public List<AccountDto> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey)
         {

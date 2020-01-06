@@ -62,8 +62,8 @@ namespace EL.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Submit(AccountEntity entity)
         {
-            await _accountService.Submit(entity);
-            return Json(new { code = 0 });
+            var result = await _accountService.Submit(entity);
+            return Json(new { code = result });
         }
 
         [HttpPost]

@@ -59,8 +59,8 @@ namespace EL.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Submit(RoleEntity entity)
         {
-            await _roleService.Submit(entity);
-            return Json(new { code = 0 });
+            var result = await _roleService.Submit(entity);
+            return Json(new { code = result });
         }
 
         [HttpPost]

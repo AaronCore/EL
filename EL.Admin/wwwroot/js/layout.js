@@ -480,8 +480,8 @@ new Vue({
                     this.editPwdLoading = true;
                     ajax.post('/Home/ResetPassword', this.editPwdForm).then((res) => {
                         if (res.code == 0) {
-                            this.editPwdLoading = false;
                             api.showMsg("修改密码成功...", "success");
+                            this.editPwdLoading = false;
                             window.location.href = "/Home/Index";
                         } else {
                             api.showMsg("修改密码失败，详情请查看错误日志...", "error");

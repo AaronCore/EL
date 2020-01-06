@@ -95,11 +95,11 @@ namespace EL.Application.Menu
         {
             return await _menuRepository.WhereLoadEntityAsync(p => p.Id == id);
         }
-        public async Task Submit(MenuEntity entity)
+        public async Task<int> Submit(MenuEntity entity)
         {
             if (entity.Id > 0)
             {
-                var model = _menuRepository.WhereLoadEntity(p => p.Id == entity.Id);
+                var model = await _menuRepository.WhereLoadEntityAsync(p => p.Id == entity.Id);
                 model.ParentId = entity.ParentId;
                 model.Name = entity.Name;
                 model.Path = entity.Path;
@@ -112,11 +112,16 @@ namespace EL.Application.Menu
             }
             else
             {
+                if (_menuRepository.GetEntitiesCount(p => p.Name == entity.Name) > 0)
+                {
+                    return -2;
+                }
                 entity.Code = Guid.NewGuid().ToString();
                 entity.CreateTime = DateTime.Now;
                 await _menuRepository.AddEntityAsync(entity);
             }
             await _menuRepository.CommitAsync();
+            return 0;
         }
         public async Task<bool> Deletes(int[] ids)
         {

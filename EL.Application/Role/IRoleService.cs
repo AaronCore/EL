@@ -11,7 +11,7 @@ namespace EL.Application
         Task<bool> Deletes(int[] ids);
         Task Enableds(int[] ids);
         List<RoleEntity> GetRolePageList(int pageIndex, int pageSize, out int total, string searchKey);
-        Task Submit(RoleEntity entity);
+        Task<int> Submit(RoleEntity entity);
         Task<RoleEntity> GetRole(int id);
         Task RoleMenuSubmit(int roleId, int[] menuIds);
         Task<List<RoleEntity>> GetRoleList();

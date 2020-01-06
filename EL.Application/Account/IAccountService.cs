@@ -12,7 +12,7 @@ namespace EL.Application
         Task Enableds(int[] ids);
         Task<AccountEntity> GetAccount(int id);
         List<AccountDto> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey);
-        Task Submit(AccountEntity entity);
+        Task<int> Submit(AccountEntity entity);
         Task<AccountEntity> Login(string account, string password);
         List<AccountMenDto> GetAccountMenu(int userId);
         Task<int> ResetPassword(int accountId, string password, string newPassword);
