@@ -37,7 +37,7 @@ namespace EL.Admin
 
             // Redis注册
             // CsRedis：https://github.com/2881099/csredis
-            // Redis命令参考：http://doc.redisfans.com/sorted_set/zadd.html
+            // Redis命令参考：http://doc.redisfans.com/index.html
             var redisConn = jsonConfigManager.GetValue<string>("RedisConnection");
             RedisHelper.Initialization(new CSRedisClient(redisConn));
             // 数据库连接注册
