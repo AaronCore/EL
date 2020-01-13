@@ -40,7 +40,7 @@ namespace EL.DapperCore
 
         #endregion
 
-        #region 返回单个查询
+        #region 返回单列值SQL查询
 
         public virtual T ExecuteScalar<T>(string sql, object param = null)
         {

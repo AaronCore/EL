@@ -12,9 +12,9 @@ namespace EL.Repository
     public class BaseRepository<T> : UnitOfWork, IBaseRepository<T> where T : class, new()
     {
         private readonly ELDbContext _dbContext;
-        public BaseRepository(ELDbContext myContext) : base(myContext)
+        public BaseRepository(ELDbContext dbContext) : base(dbContext)
         {
-            _dbContext = myContext;
+            _dbContext = dbContext;
         }
 
         #region  新增

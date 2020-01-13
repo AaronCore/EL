@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace EL.Common
 {
-    public class SessionExt
+    public class SessionHelper
     {
         public static void SetString(string key, string value)
         {
