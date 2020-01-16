@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EL.Repository", "EL.Reposit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EL.EntityFrameworkCore", "EL.EntityFrameworkCore\EL.EntityFrameworkCore.csproj", "{DB45B29F-68E7-4D8B-A970-9EA5648556B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EL.DapperCore", "EL.DapperCore\EL.DapperCore.csproj", "{45EF74F0-AF47-4B0A-9C84-1BF0C94203B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EL.DapperCore", "EL.DapperCore\EL.DapperCore.csproj", "{45EF74F0-AF47-4B0A-9C84-1BF0C94203B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
