@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EL.Api.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -24,6 +25,7 @@ namespace EL.Api.Controllers
         }
 
         [HttpGet]
+        //[ModelBinder(BinderType =typeof(ArrayModelBinder))]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
