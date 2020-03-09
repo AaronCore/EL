@@ -21,7 +21,7 @@ namespace EL.DapperCore
             return new MySqlConnection(_connectionString);
         }
 
-        #region 添加、修改
+        #region Execute
 
         public virtual bool Execute(string sql, object param = null)
         {
@@ -40,7 +40,7 @@ namespace EL.DapperCore
 
         #endregion
 
-        #region 返回单列值SQL查询
+        #region ExecuteScalar
 
         public virtual T ExecuteScalar<T>(string sql, object param = null)
         {
@@ -59,7 +59,7 @@ namespace EL.DapperCore
 
         #endregion
 
-        #region List查询
+        #region Query
 
         public virtual IEnumerable<T> Query<T>(string sql, object param = null)
         {
@@ -78,7 +78,7 @@ namespace EL.DapperCore
 
         #endregion
 
-        #region Model查询
+        #region QueryFirst
 
         public virtual T QueryFirst<T>(string sql, object param = null)
         {
