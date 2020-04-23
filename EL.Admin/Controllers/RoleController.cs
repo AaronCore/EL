@@ -13,6 +13,7 @@ namespace EL.Admin.Controllers
     public class RoleController : BaseController
     {
         private readonly IRoleService _roleService;
+
         public RoleController(IRoleService roleService)
         {
             _roleService = roleService;

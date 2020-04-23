@@ -46,6 +46,7 @@ namespace EL.Application
             var result = MenuTree(menus, 0);
             return result;
         }
+
         private List<AccountMenDto> MenuTree(List<MenuEntity> data, int parentId)
         {
             var treeList = new List<AccountMenDto>();
@@ -66,10 +67,12 @@ namespace EL.Application
             }
             return treeList;
         }
+
         public async Task<AccountEntity> Login(string account, string password)
         {
             return await _accountRepository.WhereLoadEntityAsync(p => p.Account == account && p.Password == password);
         }
+
         public async Task<int> Submit(AccountEntity entity)
         {
             if (entity.Id > 0)
@@ -93,6 +96,7 @@ namespace EL.Application
             await _accountRepository.CommitAsync();
             return 0;
         }
+
         public List<AccountDto> GetAccountPageList(int pageIndex, int pageSize, out int total, string searchKey)
         {
             --pageIndex;
@@ -115,15 +119,18 @@ namespace EL.Application
             var roleList = _dapperRepository.Query<AccountDto>(sb.ToString(), parameters).ToList();
             return roleList;
         }
+
         public async Task<AccountEntity> GetAccount(int id)
         {
             return await _accountRepository.WhereLoadEntityAsync(p => p.Id == id);
         }
+
         public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
             return await _accountRepository.DelEntityAsync(p => p.Account != "admin" && idArrar.Contains(p.Id)) > 0;
         }
+
         public async Task Enableds(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();

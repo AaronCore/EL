@@ -14,6 +14,7 @@ namespace EL.Admin.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IDistributedCache _cache;
+
         public LoginController(IAccountService accountService, IDistributedCache cache)
         {
             _accountService = accountService;

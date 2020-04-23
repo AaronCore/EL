@@ -24,6 +24,7 @@ namespace EL.Application.Menu
             var resultList = SelectMenuTree(list, 0);
             return resultList;
         }
+
         private List<MenuListDto> SelectMenuTree(List<MenuEntity> data, int parentId)
         {
             List<MenuListDto> treeList = new List<MenuListDto>();
@@ -41,12 +42,14 @@ namespace EL.Application.Menu
             }
             return treeList;
         }
+
         public async Task<List<MenuTreeDto>> GetMenuTreeList()
         {
             var list = await _menuRepository.LoadEntityAllAsync();
             var resultList = MenuTree(list, 0);
             return resultList;
         }
+
         private List<MenuTreeDto> MenuTree(List<MenuEntity> data, int parentId)
         {
             List<MenuTreeDto> treeList = new List<MenuTreeDto>();
@@ -61,6 +64,7 @@ namespace EL.Application.Menu
             }
             return treeList;
         }
+
         public async Task<List<MenuListDto>> GetMenuList()
         {
             var resultList = new List<MenuListDto>();
@@ -91,10 +95,12 @@ namespace EL.Application.Menu
             }
             return resultList;
         }
+
         public async Task<MenuEntity> GetMenu(int id)
         {
             return await _menuRepository.WhereLoadEntityAsync(p => p.Id == id);
         }
+
         public async Task<int> Submit(MenuEntity entity)
         {
             if (entity.Id > 0)
@@ -123,11 +129,13 @@ namespace EL.Application.Menu
             await _menuRepository.CommitAsync();
             return 0;
         }
+
         public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
             return await _menuRepository.DelEntityAsync(p => idArrar.Contains(p.Id)) > 0;
         }
+
         public async Task Enableds(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();

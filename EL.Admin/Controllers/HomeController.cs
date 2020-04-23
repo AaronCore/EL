@@ -15,6 +15,7 @@ namespace EL.Admin.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly ILogger _logger;
+
         public HomeController(ILogger<HomeController> logger, IAccountService accountService)
         {
             _logger = logger;

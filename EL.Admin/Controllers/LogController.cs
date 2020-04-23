@@ -10,6 +10,7 @@ namespace EL.Admin.Controllers
     public class LogController : BaseController
     {
         private readonly ILogService _logService;
+
         public LogController(ILogService logService)
         {
             _logService = logService;
@@ -19,6 +20,7 @@ namespace EL.Admin.Controllers
         {
             return View();
         }
+
         public IActionResult Details()
         {
             return View();

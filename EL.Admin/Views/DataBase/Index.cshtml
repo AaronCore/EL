@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "DataBase";
+}
+<div id="dataBaseApp" v-clock>
+    <el-container>
+        <el-container>
+            <el-aside style="width:300px;height:900px; margin:10px;border: 1px solid #eee;">
+                <el-tree :data="treeOptions" default-expand-all accordion :props="defaultProps" v-on:node-click="handleNodeClick"></el-tree>
+            </el-aside>
+            <el-main style="margin:10px;border: 1px solid #eee;">
+                <template>
+                    <el-container>
+                        <el-header>
+                            <el-form ref="form" :inline="true" :model="search_form">
+                                <el-row :gutter="10">
+                                    <el-col :span="6">
+                                        <el-form-item label="搜索：">
+                                            <el-input style="width:300px;" size="medium" v-model="search_form.search_key" placeholder="请输入关键字"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span="8">
+                                        <el-button type="primary" size="medium" v-on:click="search" icon="el-icon-fa-search">查询</el-button>
+                                        <el-button type="primary" size="medium" v-on:click="reset" icon="el-icon-fa-recycle">重置</el-button>
+                                        <el-button type="success" size="medium" icon="el-icon-document-add">实体生成</el-button>
+                                        <el-button type="success" size="medium" icon="el-icon-fa-plus">创建表</el-button>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                        </el-header>
+                        <el-main>
+                            <el-table :data="tableData" border size="medium" style="width:100%" :max-height="maxHeight" v-on:selection-change="selectionChange">
+                                <el-table-column type="selection" width="40">
+                                </el-table-column>
+                                <el-table-column header-align="center" align="center" prop="name" label="表名">
+                                </el-table-column>
+                            </el-table>
+                        </el-main>
+                    </el-container>
+                </template>
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+@section script {
+    <script>
+        new Vue({
+            el: "#dataBaseApp",
+            data: {
+                maxHeight: 700,
+                search_form: {
+                    search_key: null,
+                },
+                dataBaseName: null,
+                tableData: [],
+                treeOptions: [],
+                defaultProps: {
+                    label: 'label',
+                    children: 'children'
+                }
+            },
+            methods: {
+                handleNodeClick(e) {
+                    this.dataBaseName = e.label;
+                    this.getTables(e.label);
+                },
+                getDataBase() {
+                    var option = {
+                        label: 'DataBases',
+                        children: []
+                    };
+                    $.get("/DataBase/GetDataBases", function (res) {
+                        res.forEach(item => {
+                            option.children.push({ label: item });
+                        });
+                    });
+                    this.treeOptions.push(option);
+                },
+                getTables: function (database) {
+                    var self = this;
+                    var url = "/DataBase/GetTables?dataBase=" + database;
+                    $.get(url, function (res) {
+                        self.tableData = res;
+                    });
+                },
+                //查询
+                search: function () {
+                    var self = this;
+                    var url = "/DataBase/TableSearch?dataBase=" + self.dataBaseName + "&search=" + self.search_form.search_key;
+                    $.get(url, function (res) {
+                        self.tableData = res;
+                    });
+                },
+                //重置
+                reset: function () {
+                    this.search_form.search_key = null;
+                    this.getTables(this.dataBaseName);
+                },
+                selectionChange: function (rows) {
+
+                },
+            },
+            created: function () {
+                this.getDataBase();
+            }
+        });
+    </script>
+}
+

@@ -4,12 +4,12 @@
 <div id="logApp" v-clock>
     <template>
         <el-container>
-            <el-header style="padding-top:25px;">
+            <el-header style="margin-top:25px;">
                 <el-form ref="form" :inline="true" :model="search_form">
                     <el-row :gutter="10">
                         <el-col :span="6">
                             <el-form-item label="搜索：">
-                                <el-input style="width:300px;" size="medium" v-model="search_form.search_key" placeholder="请输入关键字"></el-input>
+                                <el-input style="        width: 300px;" size="medium" v-model="search_form.search_key" placeholder="请输入关键字"></el-input>
                             </el-form-item>
                         </el-col>
                         <el-col :span="8">

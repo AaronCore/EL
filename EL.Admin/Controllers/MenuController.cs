@@ -12,6 +12,7 @@ namespace EL.Admin.Controllers
     public class MenuController : BaseController
     {
         private readonly IMenuService _menuService;
+
         public MenuController(IMenuService menuService)
         {
             _menuService = menuService;

@@ -25,10 +25,12 @@ namespace EL.Application
         {
             return await _roleMenuRepository.WhereLoadEntityEnumerableAsync(p => p.RoleId == roleId);
         }
+
         public async Task<List<RoleEntity>> GetRoleList()
         {
             return await _roleRepository.WhereLoadEntityEnumerableAsync(p => p.Enabled);
         }
+
         public async Task RoleMenuSubmit(int roleId, int[] menuIds)
         {
             await _roleMenuRepository.DelEntityAsync(p => p.RoleId == roleId);
@@ -36,10 +38,12 @@ namespace EL.Application
             await _roleMenuRepository.AddRangeAsync(listModel);
             await _roleMenuRepository.CommitAsync();
         }
+
         public async Task<RoleEntity> GetRole(int id)
         {
             return await _roleRepository.WhereLoadEntityAsync(p => p.Id == id);
         }
+
         public async Task<int> Submit(RoleEntity entity)
         {
             if (entity.Id > 0)
@@ -63,6 +67,7 @@ namespace EL.Application
             await _roleRepository.CommitAsync();
             return 0;
         }
+
         public List<RoleEntity> GetRolePageList(int pageIndex, int pageSize, out int total, string searchKey)
         {
             Expression<Func<RoleEntity, bool>> where = e => true;
@@ -74,11 +79,13 @@ namespace EL.Application
             total = _roleRepository.GetEntitiesCount(where);
             return roleList;
         }
+
         public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
             return await _roleRepository.DelEntityAsync(p => p.Name != "admin" && idArrar.Contains(p.Id)) > 0;
         }
+
         public async Task Enableds(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();

@@ -32,6 +32,7 @@ namespace EL.Application
             total = _logRepository.GetEntitiesCount(where);
             return logList;
         }
+
         public void SaveException(Exception ex)
         {
             var entity = new LogEntity
@@ -51,11 +52,13 @@ namespace EL.Application
             };
             _dapperRepository.Execute(sql, param);
         }
+
         public async Task<bool> Deletes(int[] ids)
         {
             var idArrar = ids.Distinct().ToArray();
             return await _logRepository.DelEntityAsync(p => idArrar.Contains(p.Id)) > 0;
         }
+
         public async Task<LogEntity> GetLog(int id)
         {
             return await _logRepository.WhereLoadEntityAsync(p => p.Id == id);

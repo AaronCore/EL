@@ -13,6 +13,7 @@ namespace EL.Admin.Controllers
     {
         private readonly IAccountService _accountService;
         private readonly IRoleService _roleService;
+
         public AccountController(IAccountService accountService, IRoleService roleService)
         {
             _accountService = accountService;
