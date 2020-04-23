@@ -117,10 +117,10 @@
                         searchKey: self.search_form.search_key
                     };
                     $.post("/Log/GetLogPageList", options, function (res) {
-                        self.tableData = resp.data;
-                        self.pageIndex = resp.pageIndex;
-                        self.pageSize = resp.pageSize;
-                        self.total = resp.total;
+                        self.tableData = res.data;
+                        self.pageIndex = res.pageIndex;
+                        self.pageSize = res.pageSize;
+                        self.total = res.total;
                     });
                 },
                 handleSizeChange(val) {

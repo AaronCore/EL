@@ -38,10 +38,10 @@
                 details: function () {
                     var self = this;
                     $.get('/Log/GetLog?id=' + self.id, function (res) {
-                        self.createTime = resp.createTime;
-                        self.message = resp.message;
-                        self.exception = resp.exception;
-                        self.stackTrace = resp.stackTrace;
+                        self.createTime = res.createTime;
+                        self.message = res.message;
+                        self.exception = res.exception;
+                        self.stackTrace = res.stackTrace;
                     });
                 }
             },
