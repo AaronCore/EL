@@ -36,11 +36,12 @@
             },
             methods: {
                 details: function () {
-                    ajax.get('/Log/GetLog?id=' + this.id).then((res) => {
-                        this.createTime = resp.createTime;
-                        this.message = resp.message;
-                        this.exception = resp.exception;
-                        this.stackTrace = resp.stackTrace;
+                    var self = this;
+                    $.get('/Log/GetLog?id=' + self.id, function (res) {
+                        self.createTime = resp.createTime;
+                        self.message = resp.message;
+                        self.exception = resp.exception;
+                        self.stackTrace = resp.stackTrace;
                     });
                 }
             },

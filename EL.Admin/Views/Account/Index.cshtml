@@ -162,40 +162,44 @@
                     this.getTableData();
                 },
                 getRole: function (row) {
-                    ajax.get("/Account/GetRoleList").then((res) => {
-                        this.roleOptions = res;
+                    var self = this;
+                    $.get("/Account/GetRoleList", function (res) {
+                        self.roleOptions = res;
                     });
                 },
                 //编辑
                 edit: function (row) {
-                    this.passwordShow = false;
-                    ajax.get("/Account/GetAccount?id=" + row.id).then((res) => {
-                        this.accountForm = res;
-                        this.accountFormVisible = true;
+                    var self = this;
+                    self.passwordShow = false;
+                    $.get("/Account/GetAccount?id=" + row.id, function (res) {
+                        self.accountForm = res;
+                        self.accountFormVisible = true;
                     });
                 },
                 //表单提交
                 submitForm: function (formName) {
-                    if (this.accountForm.id <= 0) {
-                        this.required = true;
-                        this.rules.password = [
+                    var self = this;
+                    if (self.accountForm.id <= 0) {
+                        self.required = true;
+                        self.rules.password = [
                             { required: true, message: '请输入密码' },
                             { min: 6, max: 15, message: '长度在 6 到 15 个字符' }
                         ];
                     }
+
                     this.$refs[formName].validate((valid) => {
                         if (valid) {
-                            this.editLoading = true;
-                            ajax.post('/Account/Submit', this.accountForm).then((res) => {
+                            self.editLoading = true;
+                            $.post("/Account/Submit", self.accountForm, function (res) {
                                 if (res.code == 0) {
                                     api.showMsg("操作成功...", "success");
-                                    this.editLoading = false;
-                                    this.resetForm("accountForm");
-                                    this.accountFormVisible = false;
-                                    this.getTableData();
+                                    self.editLoading = false;
+                                    self.resetForm("accountForm");
+                                    self.accountFormVisible = false;
+                                    self.getTableData();
                                 } else if (res.code === -2) {
                                     api.showMsg("账号重复...", "warning");
-                                    this.editLoading = false;
+                                    self.editLoading = false;
                                 } else {
                                     api.showMsg("操作失败，详情请查看错误日志...", "error");
                                 }
@@ -230,16 +234,17 @@
                 },
                 //获取列表
                 getTableData: function () {
+                    var self = this;
                     var options = {
-                        pageIndex: this.pageIndex,
-                        pageSize: this.pageSize,
-                        searchKey: this.search_form.search_key
+                        pageIndex: self.pageIndex,
+                        pageSize: self.pageSize,
+                        searchKey: self.search_form.search_key
                     };
-                    ajax.post("/Account/GetAccountPageList", options).then((res) => {
-                        this.tableData = res.data;
-                        this.pageIndex = res.pageIndex;
-                        this.pageSize = res.pageSize;
-                        this.total = res.total;
+                    $.post("/Account/GetAccountPageList", options, function (res) {
+                        self.tableData = res.data;
+                        self.pageIndex = res.pageIndex;
+                        self.pageSize = res.pageSize;
+                        self.total = res.total;
                     });
                 },
                 //获取选中行

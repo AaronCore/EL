@@ -110,16 +110,17 @@
                     }
                 },
                 getTableData: function () {
+                    var self = this;
                     var options = {
-                        pageIndex: this.pageIndex,
-                        pageSize: this.pageSize,
-                        searchKey: this.search_form.search_key
+                        pageIndex: self.pageIndex,
+                        pageSize: self.pageSize,
+                        searchKey: self.search_form.search_key
                     };
-                    ajax.post('/Log/GetLogPageList', options).then((res) => {
-                        this.tableData = resp.data;
-                        this.pageIndex = resp.pageIndex;
-                        this.pageSize = resp.pageSize;
-                        this.total = resp.total;
+                    $.post("/Log/GetLogPageList", options, function (res) {
+                        self.tableData = resp.data;
+                        self.pageIndex = resp.pageIndex;
+                        self.pageSize = resp.pageSize;
+                        self.total = resp.total;
                     });
                 },
                 handleSizeChange(val) {

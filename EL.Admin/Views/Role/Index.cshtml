@@ -158,20 +158,24 @@
                     this.getTableData();
                 },
                 getMenu: function () {
-                    ajax.get('/Menu/GetSelectMenuList').then((res) => {
-                        this.menuOptions = res;
+                    var self = this;
+                    $.get("/Menu/GetSelectMenuList", function (res) {
+                        self.menuOptions = res;
                     });
                 },
                 roleMenu: function (row) {
-                    this.roleId = row.id;
-                    this.roleMenuFormVisible = true;
-                    this.getMenu();
-                    ajax.get("/Role/GetRoleMenu?id=" + row.id).then((res) => {
+                    var self = this;
+
+                    self.roleId = row.id;
+                    self.roleMenuFormVisible = true;
+                    self.getMenu();
+
+                    $.get("/Role/GetRoleMenu?id=" + row.id, function (res) {
                         var menuIds = res.menuIds;
                         menuIds.forEach((i, n) => {
-                            var node = this.$refs.roleMenuTree.getNode(i);
+                            var node = self.$refs.roleMenuTree.getNode(i);
                             if (node.isLeaf) {
-                                this.$refs.roleMenuTree.setChecked(node, true);
+                                self.$refs.roleMenuTree.setChecked(node, true);
                             }
                         });
                     });
@@ -180,13 +184,16 @@
                     this.$refs.roleMenuTree.setCheckedKeys([]);
                 },
                 roleMenuSubmit: function () {
-                    this.roleMenuLoading = true;
-                    var menuIds = this.$refs.roleMenuTree.getCheckedKeys().concat(this.$refs.roleMenuTree.getHalfCheckedKeys());
-                    ajax.post('/Role/RoleMenuSubmit', { roleId: this.roleId, menuIds: menuIds }).then((res) => {
+                    var self = this;
+
+                    self.roleMenuLoading = true;
+                    var menuIds = self.$refs.roleMenuTree.getCheckedKeys().concat(self.$refs.roleMenuTree.getHalfCheckedKeys());
+
+                    $.post("/Role/RoleMenuSubmit", { roleId: this.roleId, menuIds: menuIds }, function (res) {
                         if (res.code == 0) {
                             api.showMsg("操作成功...", "success");
-                            this.roleMenuLoading = false;
-                            this.roleMenuFormVisible = false;
+                            self.roleMenuLoading = false;
+                            self.roleMenuFormVisible = false;
                         } else {
                             api.showMsg("操作失败，详情请查看错误日志...", "error");
                         }
@@ -194,26 +201,29 @@
                 },
                 //编辑
                 edit: function (row) {
-                    ajax.get("/Role/GetRole?id=" + row.id).then((res) => {
-                        this.roleForm = res;
-                        this.roleFormVisible = true;
+                    var self = this;
+                    $.get("/Role/GetRole?id=" + row.id, function (res) {
+                        self.roleForm = res;
+                        self.roleFormVisible = true;
                     });
                 },
                 //表单提交
                 submitForm: function (formName) {
-                    this.$refs[formName].validate((valid) => {
+                    var self = this;
+
+                    self.$refs[formName].validate((valid) => {
                         if (valid) {
-                            this.editLoading = true;
-                            ajax.post('/Role/Submit', this.roleForm).then((res) => {
+                            self.editLoading = true;
+                            $.post("/Role/Submit", self.roleForm, function (res) {
                                 if (res.code === 0) {
                                     api.showMsg("操作成功...", "success");
-                                    this.editLoading = false;
-                                    this.resetForm("menuForm");
-                                    this.roleFormVisible = false;
-                                    this.getTableData();
+                                    self.editLoading = false;
+                                    self.resetForm("menuForm");
+                                    self.roleFormVisible = false;
+                                    self.getTableData();
                                 } else if (res.code === -2) {
                                     api.showMsg("角色名称重复...", "warning");
-                                    this.editLoading = false;
+                                    self.editLoading = false;
                                 } else {
                                     api.showMsg("操作失败，详情请查看错误日志...", "error");
                                 }
@@ -248,16 +258,17 @@
                 },
                 //获取列表
                 getTableData: function () {
+                    var self = this;
                     var options = {
-                        pageIndex: this.pageIndex,
-                        pageSize: this.pageSize,
-                        searchKey: this.search_form.search_key
+                        pageIndex: self.pageIndex,
+                        pageSize: self.pageSize,
+                        searchKey: self.search_form.search_key
                     };
-                    ajax.post('/Role/GetRolePageList', options).then((res) => {
-                        this.tableData = res.data;
-                        this.pageIndex = res.pageIndex;
-                        this.pageSize = res.pageSize;
-                        this.total = res.total;
+                    $.post("/Role/GetRolePageList", options, function (res) {
+                        self.tableData = res.data;
+                        self.pageIndex = res.pageIndex;
+                        self.pageSize = res.pageSize;
+                        self.total = res.total;
                     });
                 },
                 selectionChange: function (rows) {

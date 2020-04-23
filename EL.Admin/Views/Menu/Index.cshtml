@@ -122,10 +122,11 @@
                 },
                 //编辑
                 edit: function (row) {
-                    this.getMenu();
-                    ajax.get("/Menu/GetMenu?id=" + row.id).then((res) => {
-                        this.menuForm = res;
-                        this.menuFormVisible = true;
+                    var self = this;
+                    self.getMenu();
+                    $.get("/Menu/GetMenu?id=" + row.id, function (res) {
+                        self.menuForm = res;
+                        self.menuFormVisible = true;
                     });
                 },
                 //表单重置
@@ -136,23 +137,24 @@
                 },
                 //表单提交
                 submitForm: function (formName) {
-                    if (this.$refs.menuRef.getCheckedNodes() != null && this.$refs.menuRef.getCheckedNodes().length > 1) {
-                        var parentArray = this.$refs.menuRef.getCheckedNodes()[0].path;
-                        this.menuForm.parentId = parentArray[parentArray.length - 1];
+                    var self = this;
+                    if (self.$refs.menuRef.getCheckedNodes() != null && self.$refs.menuRef.getCheckedNodes().length > 1) {
+                        var parentArray = self.$refs.menuRef.getCheckedNodes()[0].path;
+                        self.menuForm.parentId = parentArray[parentArray.length - 1];
                     }
-                    this.$refs[formName].validate((valid) => {
+                    self.$refs[formName].validate((valid) => {
                         if (valid) {
-                            this.editLoading = true;
-                            ajax.post('/Menu/Submit', this.menuForm).then((res) => {
+                            self.editLoading = true;
+                            $.post("/Menu/Submit", self.menuForm, function (res) {
                                 if (res.code === 0) {
                                     api.showMsg("操作成功...", "success");
-                                    this.editLoading = false;
-                                    this.resetForm("menuForm");
-                                    this.menuFormVisible = false;
-                                    this.getTableData();
+                                    self.editLoading = false;
+                                    self.resetForm("menuForm");
+                                    self.menuFormVisible = false;
+                                    self.getTableData();
                                 } else if (res.code === -2) {
                                     api.showMsg("菜单名称重复...", "warning");
-                                    this.editLoading = false;
+                                    self.editLoading = false;
                                 }
                                 else {
                                     api.showMsg("操作失败，详情请查看错误日志...", "error");
@@ -182,13 +184,15 @@
                 },
                 //获取列表
                 getTableData: function () {
-                    ajax.get('/Menu/GetTreeList').then((res) => {
-                        this.tableData = res;
+                    var self = this;
+                    $.get("/Menu/GetTreeList", function (res) {
+                        self.tableData = res;
                     });
                 },
                 getMenu: function () {
-                    ajax.get('/Menu/GetMenuList').then((res) => {
-                        this.menuOptions = res;
+                    var self = this;
+                    $.get("/Menu/GetMenuList", function (res) {
+                        self.menuOptions = res;
                     });
                 },
                 //获取选中行

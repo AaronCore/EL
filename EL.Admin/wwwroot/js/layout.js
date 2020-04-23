@@ -1,3 +1,6 @@
+/*
+ * http://supalle.gitee.io/sal/layout.html
+ */
 var api = {
     // 1.提示框
     showMsgByObj: function ({
@@ -456,12 +459,13 @@ new Vue({
             }
         },
         getAccountMenu: function () {
-            ajax.get('/Account/GetAccountMenu').then((res) => {
-                this.menuArr = res;
+            var self = this;
+            $.get("/Account/GetAccountMenu", function (res) {
+                self.menuArr = res;
             });
         },
         signOut: function () {
-            ajax.get('/Login/SignOut').then((res) => {
+            $.get("/Login/SignOut", function () {
                 window.location.href = "/Login/Index";
             });
         },
@@ -477,11 +481,12 @@ new Vue({
         submitEditPwdForm: function (formName) {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.editPwdLoading = true;
-                    ajax.post('/Home/ResetPassword', this.editPwdForm).then((res) => {
+                    var self = this;
+                    self.editPwdLoading = true;
+                    $.post("/Home/ResetPassword", self.editPwdForm, function (res) {
                         if (res.code == 0) {
                             api.showMsg("修改密码成功...", "success");
-                            this.editPwdLoading = false;
+                            self.editPwdLoading = false;
                             window.location.href = "/Home/Index";
                         } else {
                             api.showMsg("修改密码失败，详情请查看错误日志...", "error");

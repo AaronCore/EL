@@ -6,13 +6,9 @@
 
   <ItemGroup>
     <Compile Remove="Logs\**" />
-    <Compile Remove="wwwroot\fonts\**" />
     <Content Remove="Logs\**" />
-    <Content Remove="wwwroot\fonts\**" />
     <EmbeddedResource Remove="Logs\**" />
-    <EmbeddedResource Remove="wwwroot\fonts\**" />
     <None Remove="Logs\**" />
-    <None Remove="wwwroot\fonts\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +35,13 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    
+    <None Include="wwwroot\fonts\fontawesome-webfont.svg" />
+    <None Include="wwwroot\fonts\fontawesome-webfont.woff2" />
+    <None Include="wwwroot\fonts\iconfont.svg" />
   </ItemGroup>
 
 

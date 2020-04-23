@@ -1,19 +1,4 @@
-﻿var ajax = {
-    post: function (url, params) {
-        return Vue.http.post(url, params, { emulateJSON: true }).then((response) => {
-            return resp = response.body;
-        }, (error) => {
-            return error;
-        });
-    },
-    get: function (url, params = null) {
-        return Vue.http.get(url, params, { emulateJSON: true }).then((response) => {
-            return resp = response.body;
-        }, (error) => {
-            return error;
-        });
-    }
-};
+﻿
 var common = {
     deletes: function (the, url, param) {
         the.$msgbox({
@@ -27,7 +12,7 @@ var common = {
                 if (action === 'confirm') {
                     instance.confirmButtonLoading = true;
                     instance.confirmButtonText = '执行中...';
-                    ajax.post(url, param).then((res) => {
+                    $.post(url, param, function (res) {
                         if (res.code == 0) {
                             api.showMsg("删除成功...", "success");
                             the.getTableData();
@@ -55,7 +40,7 @@ var common = {
                 if (action === 'confirm') {
                     instance.confirmButtonLoading = true;
                     instance.confirmButtonText = '执行中...';
-                    ajax.post(url, param).then((res) => {
+                    $.post(url, param, function (res) {
                         if (res.code == 0) {
                             api.showMsg("修改成功...", "success");
                             the.getTableData();
