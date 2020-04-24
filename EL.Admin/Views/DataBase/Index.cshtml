@@ -13,12 +13,12 @@
                         <el-header>
                             <el-form ref="form" :inline="true" :model="search_form">
                                 <el-row :gutter="10">
-                                    <el-col :span="6">
+                                    <el-col :span="7">
                                         <el-form-item label="搜索：">
                                             <el-input style="width:300px;" size="medium" v-model="search_form.search_key" placeholder="请输入关键字"></el-input>
                                         </el-form-item>
                                     </el-col>
-                                    <el-col :span="8">
+                                    <el-col :span="10">
                                         <el-button type="primary" size="medium" v-on:click="search" icon="el-icon-fa-search">查询</el-button>
                                         <el-button type="primary" size="medium" v-on:click="reset" icon="el-icon-fa-recycle">重置</el-button>
                                         <el-button type="success" size="medium" icon="el-icon-document-add">实体生成</el-button>
@@ -31,7 +31,15 @@
                             <el-table :data="tableData" border size="medium" style="width:100%" :max-height="maxHeight" v-on:selection-change="selectionChange">
                                 <el-table-column type="selection" width="40">
                                 </el-table-column>
-                                <el-table-column header-align="center" align="center" prop="name" label="表名">
+                                <el-table-column header-align="center" align="center" prop="table_Name" label="表名">
+                                </el-table-column>
+                                <el-table-column header-align="center" align="center" prop="table_Comment" label="描述">
+                                </el-table-column>
+                                <el-table-column header-align="center" align="center" prop="table_Rows" label="行数" width="80">
+                                </el-table-column>
+                                <el-table-column header-align="center" align="center" prop="create_Time" label="创建日期" width="200">
+                                </el-table-column>
+                                <el-table-column header-align="center" align="center" prop="update_Time" label="修改日期" width="200">
                                 </el-table-column>
                             </el-table>
                         </el-main>

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EL.Admin.Controllers
 {
-    public class DataBaseController : BaseController
+    public class DataBaseController : Controller
     {
         private readonly IDataBaseService _dataBaseService;
 
@@ -21,6 +21,7 @@ namespace EL.Admin.Controllers
             return View();
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetDataBases()
         {
@@ -32,23 +33,15 @@ namespace EL.Admin.Controllers
         public async Task<IActionResult> GetTables(string dataBase)
         {
             var result = await _dataBaseService.GetDataBaseTables(dataBase);
-            var obj = result.Select(p => new
-            {
-                name = p
-            });
-            return Json(obj);
+            return Json(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> TableSearch(string dataBase, string search)
         {
             var list = await _dataBaseService.GetDataBaseTables(dataBase);
-            var result = list.Where(p => p.Contains(search));
-            var obj = result.Select(p => new
-            {
-                name = p
-            });
-            return Json(obj);
+            var result = list.Where(p => p.Table_Name.Contains(search));
+            return Json(result);
         }
     }
 }

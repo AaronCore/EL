@@ -8,6 +8,6 @@ namespace EL.Application
     public interface IDataBaseService
     {
         Task<List<string>> GetDataBases();
-        Task<List<string>> GetDataBaseTables(string dataBase);
+        Task<List<DataBaseTableDto>> GetDataBaseTables(string dataBase);
     }
 }
