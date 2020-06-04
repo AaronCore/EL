@@ -9,5 +9,6 @@ namespace EL.Application
     {
         Task<List<string>> GetDataBases();
         Task<List<DataBaseTableDto>> GetDataBaseTables(string dataBase);
+        Task<bool> CreateTableEntity(string dataBaseName, string[] tables, string namespaceName, string savePath);
     }
 }

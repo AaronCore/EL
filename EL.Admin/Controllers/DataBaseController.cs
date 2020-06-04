@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using EL.Application;
@@ -42,6 +43,27 @@ namespace EL.Admin.Controllers
             var list = await _dataBaseService.GetDataBaseTables(dataBase);
             var result = list.Where(p => p.Table_Name.Contains(search));
             return Json(result);
+        }
+
+        [HttpGet]
+        public IActionResult GetCreateEntityInfo()
+        {
+            var namespaceName = "EL.Entity";
+            var fullName = new DirectoryInfo(@"..").FullName;
+            var savePath = Path.Combine(fullName, namespaceName);
+            var obj = new
+            {
+                namespaceName,
+                savePath
+            };
+            return Json(obj);
+        }
+
+        [HttpPost]
+        public IActionResult CreateTableEntity(string dataBaseName, string[] tables, string namespaceName, string savePath)
+        {
+
+            return Json(null);
         }
     }
 }

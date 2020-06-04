@@ -21,7 +21,7 @@
                                     <el-col :span="10">
                                         <el-button type="primary" size="medium" v-on:click="search" icon="el-icon-fa-search">查询</el-button>
                                         <el-button type="primary" size="medium" v-on:click="reset" icon="el-icon-fa-recycle">重置</el-button>
-                                        <el-button type="success" size="medium" icon="el-icon-document-add">实体生成</el-button>
+                                        <el-button type="success" size="medium" v-on:click="createEntity" icon="el-icon-document-add">实体生成</el-button>
                                         <el-button type="success" size="medium" icon="el-icon-fa-plus">创建表</el-button>
                                     </el-col>
                                 </el-row>
@@ -48,6 +48,22 @@
             </el-main>
         </el-container>
     </el-container>
+    <template>
+        <el-dialog title="实体生成" :visible.sync="createEntityFormVisible">
+            <el-form :model="createEntityForm" ref="createEntityForm" :rules="rules" label-position="right" label-width="100px">
+                <el-form-item label="命名空间" prop="namespace">
+                    <el-input v-model="createEntityForm.namespace" placeholder="请输入实体命名空间"></el-input>
+                </el-form-item>
+                <el-form-item label="存放路径" prop="savePath">
+                    <el-input v-model="createEntityForm.savePath" placeholder="请输入文件存放路径"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button v-on:click="resetForm('createEntityForm')">重 置</el-button>
+                <el-button type="primary" v-on:click="submitForm('createEntityForm')" v-bind:loading="editLoading">确 定</el-button>
+            </div>
+        </el-dialog>
+    </template>
 </div>
 @section script {
     <script>
@@ -55,6 +71,17 @@
             el: "#dataBaseApp",
             data: {
                 maxHeight: 700,
+                tables: [],
+                createEntityFormVisible: false,
+                editLoading: false,
+                createEntityForm: {
+                    namespace: null,
+                    savePath: null
+                },
+                rules: {
+                    namespace: [{ required: true, message: '请输入实体命名空间', trigger: 'blur' }],
+                    savePath: [{ required: true, message: '请输入文件存放路径', trigger: 'blur' }]
+                },
                 search_form: {
                     search_key: null,
                 },
@@ -90,6 +117,61 @@
                         self.tableData = res;
                     });
                 },
+                // 生成实体
+                createEntity: function () {
+                    var self = this;
+                    $.get("/DataBase/GetCreateEntityInfo", function (res) {
+                        self.createEntityForm.namespace = res.namespaceName;
+                        self.createEntityForm.savePath = res.savePath;
+                    });
+                    self.createEntityFormVisible = true;
+                },
+                // 实体创建
+                submitForm: function (formName) {
+                    var self = this;
+                    if (self.dataBaseName === "" || self.dataBaseName === null) {
+                        api.showMsg("请选择数据库", "warning");
+                        return false;
+                    }
+                    if (self.tables.length <= 0) {
+                        api.showMsg("请选择表", "warning");
+                        return false;
+                    }
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            self.editLoading = true;
+                            var postData = {
+                                dataBaseName: self.dataBaseName,
+                                tables: self.tables,
+                                namespaceName: self.createEntityForm.namespace,
+                                savePath: self.createEntityForm.savePath,
+                            };
+                            $.post("/DataBase/CreateTableEntity", self.accountForm, function (res) {
+                                //if (res.code == 0) {
+                                //    api.showMsg("操作成功...", "success");
+                                //    self.editLoading = false;
+                                //    self.resetForm("accountForm");
+                                //    self.accountFormVisible = false;
+                                //    self.getTableData();
+                                //} else if (res.code === -2) {
+                                //    api.showMsg("账号重复...", "warning");
+                                //    self.editLoading = false;
+                                //} else {
+                                //    api.showMsg("操作失败，详情请查看错误日志...", "error");
+                                //}
+                            });
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                },
+                //表单重置
+                resetForm: function (formName) {
+                    if (this.$refs[formName] !== undefined) {
+                        this.$refs[formName].resetFields();
+                    }
+                },
                 //查询
                 search: function () {
                     var self = this;
@@ -104,7 +186,13 @@
                     this.getTables(this.dataBaseName);
                 },
                 selectionChange: function (rows) {
-
+                    var rowArr = [];
+                    if (rows) {
+                        rows.forEach(row => {
+                            rowArr.push(row.table_Name);
+                        });
+                        this.tables = rowArr;
+                    }
                 },
             },
             created: function () {
