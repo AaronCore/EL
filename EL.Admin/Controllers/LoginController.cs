@@ -37,7 +37,6 @@ namespace EL.Admin.Controllers
         public async Task<ActionResult> Login(string suId, string suPwd, string suCode)
         {
             var code = RedisHelper.Get(HttpContext.Connection.RemoteIpAddress.ToString());
-            var a = Md5Helper.GetMD5_32(suCode.ToLower());
             if (string.IsNullOrWhiteSpace(suCode) || string.IsNullOrWhiteSpace(code) || Md5Helper.GetMD5_32(suCode.ToLower()) != code)
             {
                 return Json(new { code = -10 });
