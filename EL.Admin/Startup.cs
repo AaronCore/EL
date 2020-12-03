@@ -29,7 +29,7 @@ namespace EL.Admin
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var jsonConfigManager = new JsonConfigManager();
+            var jsonConfigManager = new ConfigHelper();
 
             // Redis×¢²á
             // CsRedis£ºhttps://github.com/2881099/csredis
@@ -40,10 +40,9 @@ namespace EL.Admin
             var connection = jsonConfigManager.GetValue<string>("ELConnection");
             services.AddDbContext<ELDbContext>(options => options.UseMySql(connection));
             // ·Ö²¼Ê½»º´æ
-            var cacheRedisConn = jsonConfigManager.GetValue<string>("CacheRedisConnection");
-            services.AddSingleton<IDistributedCache>(new Microsoft.Extensions.Caching.Redis.CSRedisCache(new CSRedisClient(cacheRedisConn)));
-            services.AddDistributedMemoryCache();
-            services.AddMvc();
+            //var cacheRedisConn = jsonConfigManager.GetValue<string>("CacheRedisConnection");
+            //services.AddSingleton<IDistributedCache>(new Microsoft.Extensions.Caching.Redis.CSRedisCache(new CSRedisClient(cacheRedisConn)));
+            //services.AddDistributedMemoryCache();
             //Session
             services.AddSession(options =>
             {
@@ -51,8 +50,9 @@ namespace EL.Admin
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();
+            services.AddMvc();
         }
         public void ConfigureContainer(ContainerBuilder builder)
         {
@@ -75,7 +75,7 @@ namespace EL.Admin
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-            app.UseStaticHttpContext();
+            //app.UseStaticHttpContext();
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();

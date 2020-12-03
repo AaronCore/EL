@@ -30,7 +30,7 @@ namespace EL.Admin.Controllers
         public ActionResult GetAuthCode()
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-            return File(new VerifyCode().GetVerifyCode(ipAddress), @"image/Gif");
+            return File(new VerifyCodeHelper().GetVerifyCode(ipAddress), @"image/Gif");
         }
 
         [HttpPost]

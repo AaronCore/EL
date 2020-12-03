@@ -7,16 +7,15 @@ using EL.Repository;
 using EL.Common;
 using EL.Entity;
 using Dapper;
-using EL.DapperCore;
 using MySql.Data.MySqlClient;
 
 namespace EL.Application
 {
     public class AccountService : IAccountService
     {
+        private static readonly DapperHelper _dapperHelper = new DapperHelper();
         private readonly IBaseRepository<AccountEntity> _accountRepository;
         private readonly IBaseRepository<MenuEntity> _menuRepository;
-        private readonly DapperRepository _dapperRepository = new DapperRepository();
         public AccountService(IBaseRepository<AccountEntity> accountRepository, IBaseRepository<MenuEntity> menuRepository)
         {
             _accountRepository = accountRepository;
@@ -110,13 +109,13 @@ namespace EL.Application
                 parameters.Add("@searchKey", searchKey);
             }
 
-            total = _dapperRepository.Query<AccountDto>(sb.ToString(), parameters).Count();
+            total = _dapperHelper.Query<AccountDto>(sb.ToString(), parameters).Count();
 
             sb.Append(" order by a.id desc limit @pageIndex,@pageSize");
             parameters.Add("@pageIndex", pageIndex * pageSize);
             parameters.Add("@pageSize", pageSize);
 
-            var roleList = _dapperRepository.Query<AccountDto>(sb.ToString(), parameters).ToList();
+            var roleList = _dapperHelper.Query<AccountDto>(sb.ToString(), parameters).ToList();
             return roleList;
         }
 

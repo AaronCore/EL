@@ -12,7 +12,7 @@ namespace EL.EntityFrameworkCore
         public ELDbContext CreateDbContext(string[] args)
         {
             var builder = new DbContextOptionsBuilder<ELDbContext>();
-            var connection = new JsonConfigManager().GetValue<string>("ELConnection");
+            var connection = new ConfigHelper().GetValue<string>("ELConnection");
             builder.UseMySql(connection);
             return new ELDbContext(builder.Options);
         }

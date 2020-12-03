@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace EL.Common
 {
-    public class Log
+    /// <summary>
+    /// Log帮助类
+    /// </summary>
+    public class LogHelper
     {
         private static object lockObj = new object();
         /// <summary>
@@ -17,14 +16,14 @@ namespace EL.Common
         /// <param name="folder">文件夹名称</param>
         public static void Write(string message, string folder = "folder")
         {
-            Task.Run(() => { WriteLog(message, folder); });
+            WriteLog(message, folder);
         }
         private static void WriteLog(string message, string folder)
         {
             lock (lockObj)
             {
                 var dt = DateTime.Now;
-                var baseDir = Environment.CurrentDirectory;//AppDomain.CurrentDomain.BaseDirectory;
+                var baseDir = AppDomain.CurrentDomain.BaseDirectory; //Environment.CurrentDirectory;
                 try
                 {
                     var dir = Path.Combine(baseDir, "Logs", dt.ToString("yyyy-MM-dd"), folder);
@@ -38,8 +37,10 @@ namespace EL.Common
                         sw.Close();
                     }
                 }
-                catch (Exception ex)
-                { }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
         }
     }

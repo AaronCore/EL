@@ -7,10 +7,13 @@ using Microsoft.Extensions.Options;
 
 namespace EL.Common
 {
-    public class JsonConfigManager
+    /// <summary>
+    /// 配置文件帮助类
+    /// </summary>
+    public class ConfigHelper
     {
         private string _fileName;
-        public JsonConfigManager(string fileName = "appsettings.json")
+        public ConfigHelper(string fileName = "appsettings.json")
         {
             _fileName = fileName;
         }

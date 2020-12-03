@@ -1,27 +1,27 @@
-﻿using EL.DapperCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EL.Common;
 
 namespace EL.Application
 {
     public class DataBaseService : IDataBaseService
     {
-        private readonly DapperRepository _dapperRepository = new DapperRepository();
+        private static readonly DapperHelper _dapperHelper = new DapperHelper();
 
         public async Task<List<string>> GetDataBases()
         {
             var sql = "SELECT TABLE_SCHEMA FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE' GROUP BY TABLE_SCHEMA ORDER BY TABLE_SCHEMA";
-            var result = await _dapperRepository.QueryAsync<string>(sql);
+            var result = await _dapperHelper.QueryAsync<string>(sql);
             return result.OrderBy(p => p).ToList();
         }
 
         public async Task<List<DataBaseTableDto>> GetDataBaseTables(string dataBase)
         {
             var sql = string.Format("SELECT TABLE_SCHEMA,TABLE_NAME,TABLE_COMMENT,TABLE_ROWS,CREATE_TIME,UPDATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='{0}';", dataBase);
-            var queryResult = await _dapperRepository.QueryAsync<DataBaseTableDto>(sql);
+            var queryResult = await _dapperHelper.QueryAsync<DataBaseTableDto>(sql);
 
             var result = queryResult.OrderBy(p => p.Table_Name).Select(p => new DataBaseTableDto
             {
@@ -40,7 +40,7 @@ namespace EL.Application
             try
             {
                 string sql = string.Format("SELECT COUNT(*) FROM {0}.{1}", dataBase, table);
-                var result = _dapperRepository.ExecuteScalar<int>(sql);
+                var result = _dapperHelper.ExecuteScalar<int>(sql);
                 return result;
             }
             catch (Exception)
@@ -64,7 +64,7 @@ namespace EL.Application
 	                                            COLUMN_COMMENT as Remark 
                                            from information_schema.columns 
                                            where table_schema = '{0}' and table_name = '{1}'", dataBaseName, item);
-                var result = await _dapperRepository.QueryAsync<TableDetails>(sql);
+                var result = await _dapperHelper.QueryAsync<TableDetails>(sql);
             }
             return false;
         }

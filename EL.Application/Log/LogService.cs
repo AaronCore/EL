@@ -6,16 +6,19 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using EL.Entity;
 using EL.Repository;
-using EL.DapperCore;
 using EL.Common;
 
 namespace EL.Application
 {
     public class LogService : ILogService
     {
+        private static readonly DapperHelper _dapperHelper = new DapperHelper();
         private readonly IBaseRepository<LogEntity> _logRepository;
-        private readonly DapperRepository _dapperRepository = new DapperRepository();
-        public LogService() { }
+
+        public LogService()
+        {
+
+        }
         public LogService(IBaseRepository<LogEntity> logRepository)
         {
             _logRepository = logRepository;
@@ -50,7 +53,7 @@ namespace EL.Application
                 stacktrace = entity.StackTrace,
                 createtime = entity.CreateTime
             };
-            _dapperRepository.Execute(sql, param);
+            _dapperHelper.Execute(sql, param);
         }
 
         public async Task<bool> Deletes(int[] ids)
