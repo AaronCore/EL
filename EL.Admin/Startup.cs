@@ -11,9 +11,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Autofac;
 using CSRedis;
-using EL.Common;
+using AutoMapper;
+using EL.Application;
 using EL.EntityFrameworkCore;
 using EL.Repository;
+using EL.Common;
 
 namespace EL.Admin
 {
@@ -50,6 +52,7 @@ namespace EL.Admin
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            services.AddAutoMapper(typeof(AutoMapperConfigs));
             //services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddControllersWithViews();
             services.AddMvc();
@@ -65,7 +68,6 @@ namespace EL.Admin
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseSession();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -75,11 +77,13 @@ namespace EL.Admin
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            app.UseRouting();
+
             //app.UseStaticHttpContext();
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseRouting();
             app.UseAuthorization();
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

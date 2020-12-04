@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using EL.Application;
-using EL.Entity;
 using Microsoft.AspNetCore.Http;
+using EL.Entity;
+using EL.Application;
 
 namespace EL.Admin.Controllers
 {

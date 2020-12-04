@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using EL.Common;
 using EL.Entity;
 using EL.Repository;
@@ -13,9 +14,11 @@ namespace EL.Application.Menu
     public class MenuService : IMenuService
     {
         private readonly IBaseRepository<MenuEntity> _menuRepository;
-        public MenuService(IBaseRepository<MenuEntity> menuRepository)
+        private readonly IMapper _mapper;
+        public MenuService(IBaseRepository<MenuEntity> menuRepository, IMapper mapper)
         {
             _menuRepository = menuRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<MenuListDto>> GetSelectMenuList()
@@ -57,7 +60,7 @@ namespace EL.Application.Menu
             foreach (var item in list)
             {
                 bool hasChildren = data.Count(p => p.ParentId == item.Id) > 0;
-                var model = item.MapTo<MenuTreeDto>();
+                var model = _mapper.Map<MenuTreeDto>(item);
                 model.CreateTime = item.CreateTime.ToString("yyyy-MM-dd HH:mm:ss");
                 model.Children = hasChildren ? MenuTree(data, item.Id) : null;
                 treeList.Add(model);

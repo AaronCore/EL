@@ -36,7 +36,7 @@
                         <input type="text" class="textfield" v-model="form.suCode" id="suCode" maxlength="4" style="width:160px;" />
                         <span class="codelabel">验证码</span>
                     </label>
-                    <img id="imgcode" src="/Login/GetAuthCode" style="vertical-align: bottom;" width="80" height="25" />
+                    <img id="imgcode" src="/Login/GetVerifyCode" style="vertical-align: bottom;" width="80" height="25" />
                     <a v-on:click="switchCode" href="javascript:void(0);" style="text-decoration: none;vertical-align: bottom;">换一张</a>
                 </div>
                 <br><br>
@@ -99,7 +99,7 @@
                     });
                 },
                 switchCode: function () {
-                    var str = "/Login/GetAuthCode?random=" + Math.random();
+                    var str = "/Login/GetVerifyCode?random=" + Math.random();
                     document.getElementById("imgcode").setAttribute("src", str);
                 }
             },

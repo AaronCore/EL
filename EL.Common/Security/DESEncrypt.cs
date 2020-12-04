@@ -22,12 +22,12 @@ namespace EL.Common
         {
             return Encrypt(Text, "el!@#123");
         }
-        /// <summary> 
-        /// 加密数据 
-        /// </summary> 
-        /// <param name="Text"></param> 
-        /// <param name="sKey"></param> 
-        /// <returns></returns> 
+        /// <summary>
+        /// 加密数据
+        /// </summary>
+        /// <param name="Text"></param>
+        /// <param name="sKey"></param>
+        /// <returns></returns>
         public static string Encrypt(string Text, string sKey)
         {
             try
@@ -65,12 +65,12 @@ namespace EL.Common
         {
             return Decrypt(Text, "el!@#123");
         }
-        /// <summary> 
-        /// 解密数据 
-        /// </summary> 
-        /// <param name="Text"></param> 
-        /// <param name="sKey"></param> 
-        /// <returns></returns> 
+        /// <summary>
+        /// 解密数据
+        /// </summary>
+        /// <param name="Text"></param>
+        /// <param name="sKey"></param>
+        /// <returns></returns>
         public static string Decrypt(string Text, string sKey)
         {
             try
