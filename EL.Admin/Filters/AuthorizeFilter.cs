@@ -12,8 +12,10 @@ namespace EL.Admin.Filters
             int uid = context.HttpContext.Session.GetInt32("uid") ?? 0;
             if (uid <= 0)
             {
-                RedirectToActionResult content = new RedirectToActionResult("Index", "Login", null);
-                context.Result = content;
+                context.Result = new ContentResult
+                {
+                    Content = "<script type='text/javascript'>top.location.href='/Login/Index';</script>"
+                };
             }
         }
     }

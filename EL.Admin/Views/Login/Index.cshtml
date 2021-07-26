@@ -56,6 +56,14 @@
     <script src="/js/index.js"></script>
     <script src="/js/jquery-3.0.0.min.js"></script>
     <script>
+        $(function () {
+            //防止页面后退
+            history.pushState(null, null, document.URL);
+            window.addEventListener('popstate', function () {
+                history.pushState(null, null, document.URL);
+            });
+        });
+
         new Vue({
             el: '#loginApp',
             data: {
